@@ -4,16 +4,13 @@
   "private": true,
   "description": "Plataforma de calculadoras financieras para trabajadores",
   "workspaces": [
-    "apps/*",
+    "apps/web",
     "packages/*"
   ],
   "scripts": {
     "start:web": "npm --workspace apps/web start",
-    "start:api": "npm --workspace apps/api run start:dev",
     "build:web": "npm --workspace apps/web run build",
-    "build:api": "npm --workspace apps/api run build",
-    "test:web": "npm --workspace apps/web test",
-    "test:api": "npm --workspace apps/api run test"
+    "test:web": "npm --workspace apps/web test"
   },
   "engines": {
     "node": ">=24.15.0",
