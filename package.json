@@ -8,9 +8,10 @@
     "packages/*"
   ],
   "scripts": {
-    "start:web": "npm --workspace apps/web start",
-    "build:web": "npm --workspace apps/web run build",
-    "test:web": "npm --workspace apps/web test"
+    "build:engine": "npm --workspace packages/calculation-engine run build",
+    "start:web": "npm run build:engine && npm --workspace apps/web start",
+    "build:web": "npm run build:engine && npm --workspace apps/web run build",
+    "test:web": "npm run build:engine && npm --workspace apps/web run test -- --watch=false"
   },
   "engines": {
     "node": ">=24.15.0",

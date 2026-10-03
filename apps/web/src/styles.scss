@@ -1,1 +1,76 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+
+* { box-sizing: border-box; }
+
+html { min-width: 320px; scroll-behavior: smooth; }
+
+body {
+	min-width: 320px;
+	margin: 0;
+	font-family: 'DM Sans', 'Segoe UI', sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+
+button, input, select { font: inherit; }
+
+@keyframes rise-in {
+	from { opacity: 0; transform: translateY(10px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.app-shell *, .app-shell *::before, .app-shell *::after {
+		animation-duration: 0.01ms !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+.check-control {
+	min-height: 58px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 8px 12px;
+	border: 1px solid #d4ded7;
+	border-radius: 3px;
+	background: #fbfcfa;
+	color: #344941;
+	cursor: pointer;
+}
+
+.check-control input { width: 16px; height: 16px; margin: 0; accent-color: #1f6a4f; }
+.check-copy { display: flex; flex-direction: column; gap: 3px; }
+.check-copy strong { font-size: 12px; }
+.check-copy small { color: #68766f; font-size: 10px; }
+
+.result-panel {
+	margin-top: 22px;
+	padding: 23px 24px 18px;
+	border-top: 2px solid #d6ef84;
+	background: #f6f8f2;
+	animation: rise-in 300ms ease-out both;
+}
+
+.result-lead { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.result-kicker { color: #1f6a4f; font-size: 9px; font-weight: 700; letter-spacing: 1.1px; }
+.result-lead > strong { color: #18352f; font-family: 'DM Serif Display', Georgia, serif; font-size: 34px; font-weight: 400; line-height: 1.2; }
+.result-lead > strong small { color: #68766f; font-family: 'DM Sans', sans-serif; font-size: 12px; }
+.result-lead > span:last-child { color: #68766f; font-size: 11px; }
+.result-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 19px; padding-top: 16px; border-top: 1px solid #dce5df; }
+.result-metrics > div { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.result-metrics span { color: #68766f; font-size: 10px; }
+.result-metrics strong { color: #18352f; font-size: 13px; }
+.monthly-breakdown { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 19px; padding: 16px 0; border-top: 1px solid #dce5df; border-bottom: 1px solid #dce5df; }
+.monthly-breakdown > div { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.monthly-breakdown span { color: #68766f; font-size: 10px; }
+.monthly-breakdown strong { color: #18352f; font-size: 13px; }
+.monthly-breakdown .monthly-net strong { color: #1f6a4f; font-weight: 700; }
+.result-caveat { margin: 15px 0 0; color: #78857d; font-size: 10px; line-height: 1.55; }
+.result-ineligible > strong { color: #a85431; font-size: 25px; }
+
+@media (max-width: 650px) {
+	.result-panel { padding: 19px 16px 16px; }
+	.result-lead > strong { font-size: 29px; }
+	.result-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 15px; }
+	.monthly-breakdown { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 15px; }
+}
