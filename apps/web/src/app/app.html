@@ -79,15 +79,27 @@
           <span class="workspace-number">01<span> / 03</span></span>
         </div>
 
-        <form class="salary-form" (ngSubmit)="calculateSalary()">
-          <label class="field field-wide" for="annual-gross">
-            <span class="field-label">Salario bruto anual</span>
-            <span class="input-with-suffix">
-              <input id="annual-gross" name="annualGross" type="number" min="1" step="100" required [(ngModel)]="salaryData.annualGross" />
-              <span>€ / año</span>
-            </span>
-            <span class="field-hint">Puedes encontrarlo en tu contrato o nómina.</span>
-          </label>
+        <form #salaryForm class="salary-form" (ngSubmit)="calculateSalary()" (input)="refreshSalaryResult(salaryForm)" (change)="refreshSalaryResult(salaryForm)">
+          <div class="field field-wide">
+            <span class="field-label" id="salary-amount-label">Salario bruto</span>
+            <div class="input-mode" role="group" aria-labelledby="salary-amount-label">
+              <button type="button" [class.is-active]="salaryInputMode === 'annual'" [attr.aria-pressed]="salaryInputMode === 'annual'" (click)="setSalaryInputMode('annual')">Anual</button>
+              <button type="button" [class.is-active]="salaryInputMode === 'monthly'" [attr.aria-pressed]="salaryInputMode === 'monthly'" (click)="setSalaryInputMode('monthly')">Mensual</button>
+            </div>
+            @if (salaryInputMode === 'annual') {
+              <label class="input-with-suffix" for="annual-gross">
+                <input id="annual-gross" name="annualGross" type="number" min="0.01" step="any" required [(ngModel)]="salaryData.annualGross" />
+                <span>€ / año</span>
+              </label>
+              <span class="field-hint">Puedes encontrarlo en tu contrato o nómina.</span>
+            } @else {
+              <label class="input-with-suffix" for="monthly-gross">
+                <input id="monthly-gross" name="monthlyGross" type="number" min="1" step="0.01" required [(ngModel)]="salaryData.monthlyGross" />
+                <span>€ / paga</span>
+              </label>
+              <span class="field-hint">Indica el importe bruto de cada paga; lo anualizamos según el número de pagas.</span>
+            }
+          </div>
 
           <label class="field" for="payments">
             <span class="field-label">¿En cuántas pagas?</span>
@@ -105,14 +117,54 @@
             </select>
           </label>
 
-          <label class="field" for="children">
-            <span class="field-label">Hijos a cargo</span>
-            <input id="children" name="children" type="number" min="0" max="20" step="1" [(ngModel)]="salaryData.children" />
+          <p class="form-section-title field-wide">Situación personal y familiar</p>
+
+          <label class="field" for="taxpayer-age">
+            <span class="field-label">Tu edad</span>
+            <input id="taxpayer-age" name="age" type="number" min="16" max="100" step="1" required [(ngModel)]="salaryData.age" />
           </label>
 
-          <label class="check-control" for="disability">
-            <input id="disability" name="disability" type="checkbox" [(ngModel)]="salaryData.disability" />
-            <span class="check-copy"><strong>Situación personal</strong><small>Tengo una discapacidad reconocida</small></span>
+          <label class="field" for="qualifying-children">
+            <span class="field-label">¿Cuántos hijos o descendientes dan derecho al mínimo fiscal?</span>
+            <input id="qualifying-children" name="qualifyingChildren" type="number" min="0" max="20" step="1" required [(ngModel)]="salaryData.qualifyingChildren" (ngModelChange)="updateQualifyingChildren($event, salaryForm)" />
+            <span class="field-hint">No es un complemento de pensión. En general: menores de 25 años que conviven contigo y no superan 8.000 € de rentas anuales, o descendientes con discapacidad que cumplen los requisitos.</span>
+          </label>
+
+          @if (salaryData.qualifyingChildren > 0) {
+            <label class="field" for="children-under-three">
+              <span class="field-label">¿Cuántos tienen menos de 3 años?</span>
+              <input id="children-under-three" name="childrenUnderThree" type="number" min="0" [max]="salaryData.qualifyingChildren" step="1" required [(ngModel)]="salaryData.childrenUnderThree" (ngModelChange)="refreshSalaryResult(salaryForm)" />
+            </label>
+
+            <label class="field" for="child-minimum-share">
+              <span class="field-label">¿Cómo se reparte el mínimo fiscal?</span>
+              <select id="child-minimum-share" name="childMinimumShare" [(ngModel)]="salaryData.childMinimumShare" (ngModelChange)="updateChildMinimumShare($event, salaryForm)">
+                <option value="shared">Al 50 % con el otro progenitor (lo habitual si ambos tienen derecho)</option>
+                <option value="full">El 100 % me corresponde a mí (no se comparte)</option>
+              </select>
+              <span class="field-hint">Esto modifica la retención estimada de IRPF, no descuenta directamente un importe del sueldo. El resultado se actualiza al cambiar la opción.</span>
+            </label>
+          }
+
+          <label class="field" for="disability-level">
+            <span class="field-label">Discapacidad reconocida</span>
+            <select id="disability-level" name="disabilityLevel" [(ngModel)]="salaryData.disabilityLevel">
+              <option value="none">No</option>
+              <option value="33">Entre 33 % y 64 %</option>
+              <option value="65">65 % o más</option>
+            </select>
+          </label>
+
+          @if (salaryData.disabilityLevel !== 'none') {
+            <label class="check-control" for="reduced-mobility">
+              <input id="reduced-mobility" name="reducedMobility" type="checkbox" [(ngModel)]="salaryData.reducedMobility" />
+              <span class="check-copy"><strong>Movilidad reducida o necesidad de asistencia</strong><small>Reconocida oficialmente</small></span>
+            </label>
+          }
+
+          <label class="check-control" for="other-non-exempt-income">
+            <input id="other-non-exempt-income" name="otherNonExemptIncomeOver6500" type="checkbox" [(ngModel)]="salaryData.otherNonExemptIncomeOver6500" />
+            <span class="check-copy"><strong>Tengo otras rentas no exentas superiores a 6.500 € al año</strong><small>Además de este salario</small></span>
           </label>
 
           <div class="form-footer">
@@ -123,7 +175,7 @@
 
         @if (salaryResult(); as result) {
           <div class="result-panel" role="status" aria-live="polite">
-            <div class="result-lead"><span class="result-kicker">PROMEDIO NETO MENSUAL</span><strong>{{ formatMoney(result.netMonthlyAverage) }}<small> / mes</small></strong><span>{{ formatMoney(result.netAnnual) }} netos al año · media de {{ formatMoney(result.netPerPayment) }} por paga en {{ salaryData.payments }} pagas</span></div>
+            <div class="result-lead"><span class="result-kicker">PROMEDIO NETO MENSUAL</span><strong>{{ formatMoney(result.netMonthlyAverage) }}<small> / mes</small></strong><span>{{ formatMoney(result.netAnnual) }} netos al año · media orientativa de {{ formatMoney(result.netPerPayment) }} por paga en {{ salaryData.payments }} pagas</span></div>
             <div class="monthly-breakdown">
               <div><span>Bruto promedio mensual</span><strong>{{ formatMoney(result.annualGross / 12) }}</strong></div>
               <div><span>Seguridad Social mensual</span><strong>−{{ formatMoney(result.socialSecurity / 12) }}</strong></div>
@@ -135,8 +187,14 @@
               <div><span>Seguridad Social</span><strong>{{ formatMoney(result.socialSecurity) }}</strong></div>
               <div><span>IRPF aproximado</span><strong>{{ formatMoney(result.incomeTax) }}</strong></div>
               <div><span>Retención total estimada</span><strong>{{ (result.effectiveRate * 100) | number:'1.1-1' }}%</strong></div>
+              @if (result.employmentIncomeReduction > 0) {
+                <div><span>Reducción por rendimientos del trabajo</span><strong>{{ formatMoney(result.employmentIncomeReduction) }}</strong></div>
+              }
+              @if (result.solidarityContribution > 0) {
+                <div><span>Cuota de solidaridad (incluida en Seguridad Social)</span><strong>{{ formatMoney(result.solidarityContribution) }}</strong></div>
+              }
             </div>
-            <p class="result-caveat">Orientativo: usa tramos de referencia simplificados y no contempla escala autonómica, topes de cotización, deducciones particulares ni todas las circunstancias familiares. El neto real puede variar.</p>
+            <p class="result-caveat">Estimación de nómina con reglas y cotizaciones de referencia de 2026; no equivale a la declaración anual. Asume salario todo el año, no incluye otras rentas, ascendientes, tributación conjunta, situaciones especiales ni todas las regularizaciones de nómina. El IRPF final varía según la comunidad autónoma y las circunstancias personales; confirma el resultado con el simulador de retenciones de la AEAT.</p>
           </div>
         }
       </section>
@@ -152,7 +210,7 @@
         </div>
 
         <form class="salary-form" (ngSubmit)="calculateMortgage()">
-          <label class="field" for="property-price"><span class="field-label">Precio de la vivienda</span><span class="input-with-suffix"><input id="property-price" name="propertyPrice" type="number" min="1" step="1000" required [(ngModel)]="mortgageData.propertyPrice" /><span>€</span></span></label>
+          <label class="field" for="property-price"><span class="field-label">Precio de la vivienda</span><span class="input-with-suffix"><input id="property-price" name="propertyPrice" type="number" min="0.01" step="any" required [(ngModel)]="mortgageData.propertyPrice" /><span>€</span></span></label>
           <label class="field" for="down-payment"><span class="field-label">Aportación inicial</span><span class="input-with-suffix"><input id="down-payment" name="downPaymentPercent" type="number" min="0" max="100" step="1" required [(ngModel)]="mortgageData.downPaymentPercent" /><span>%</span></span></label>
           <label class="field" for="interest-rate"><span class="field-label">Interés anual</span><span class="input-with-suffix"><input id="interest-rate" name="annualInterestRate" type="number" min="0" max="30" step="0.01" required [(ngModel)]="mortgageData.annualInterestRate" /><span>% TIN</span></span></label>
           <label class="field" for="mortgage-term"><span class="field-label">Plazo</span><span class="input-with-suffix"><input id="mortgage-term" name="termYears" type="number" min="1" max="50" step="1" required [(ngModel)]="mortgageData.termYears" /><span>años</span></span></label>
@@ -185,11 +243,42 @@
           <span class="workspace-number">03<span> / 03</span></span>
         </div>
 
-        <form class="salary-form" (ngSubmit)="calculatePension()">
+        <form #pensionForm class="salary-form" (ngSubmit)="calculatePension()" (input)="refreshPensionResult(pensionForm)" (change)="refreshPensionResult(pensionForm)">
+          <p class="form-section-title field-wide">Edad y cotización</p>
           <label class="field" for="current-age"><span class="field-label">Edad actual</span><span class="input-with-suffix"><input id="current-age" name="currentAge" type="number" min="16" max="75" step="1" required [(ngModel)]="pensionData.currentAge" /><span>años</span></span></label>
-          <label class="field" for="retirement-age"><span class="field-label">Edad prevista de jubilación</span><span class="input-with-suffix"><input id="retirement-age" name="retirementAge" type="number" min="16" max="75" step="1" required [(ngModel)]="pensionData.retirementAge" /><span>años</span></span></label>
+          <label class="field" for="retirement-age"><span class="field-label">Edad prevista de jubilación</span><span class="input-with-suffix"><input id="retirement-age" name="retirementAge" type="number" [min]="pensionData.currentAge" max="75" step="0.1" required [(ngModel)]="pensionData.retirementAge" /><span>años</span></span></label>
           <label class="field" for="contribution-years"><span class="field-label">Años cotizados hasta hoy</span><span class="input-with-suffix"><input id="contribution-years" name="currentContributionYears" type="number" min="0" max="60" step="0.1" required [(ngModel)]="pensionData.currentContributionYears" /><span>años</span></span></label>
-          <label class="field" for="contribution-base"><span class="field-label">Base media mensual de cotización</span><span class="input-with-suffix"><input id="contribution-base" name="averageMonthlyContributionBase" type="number" min="1" step="100" required [(ngModel)]="pensionData.averageMonthlyContributionBase" /><span>€ / mes</span></span></label>
+          <label class="field" for="contribution-base"><span class="field-label">Base media mensual de cotización</span><span class="input-with-suffix"><input id="contribution-base" name="averageMonthlyContributionBase" type="number" min="0.01" step="any" required [(ngModel)]="pensionData.averageMonthlyContributionBase" /><span>€ / mes</span></span><span class="field-hint">No es la cuota que pagas: es la base mensual de tu informe de cotización. Usa una media representativa del período que se calculará.</span></label>
+          <p class="form-section-title field-wide">Complementos opcionales</p>
+          <label class="field" for="pension-children">
+            <span class="field-label">Hijos para simular el complemento por brecha de género (0–4)</span>
+            <span class="input-with-suffix"><input id="pension-children" name="children" type="number" min="0" max="4" step="1" required [(ngModel)]="pensionData.children" (ngModelChange)="updatePensionChildren($event, pensionForm)" /><span>hijos</span></span>
+            <span class="field-hint">Pon 0 si no quieres incluirlo. Con uno o más hijos se muestra un escenario orientativo; el complemento requiere cumplir condiciones legales y no se concede automáticamente.</span>
+          </label>
+          <label class="check-control" for="include-minimum-supplement">
+            <input id="include-minimum-supplement" name="includeMinimumSupplement" type="checkbox" [(ngModel)]="pensionData.includeMinimumSupplement" />
+            <span class="check-copy"><strong>Simular posible complemento a mínimos</strong><small>Depende de rentas, residencia y situación familiar</small></span>
+          </label>
+          @if (pensionData.includeMinimumSupplement) {
+            <label class="field" for="minimum-pension-category">
+              <span class="field-label">Situación conyugal para la pensión mínima</span>
+              <select id="minimum-pension-category" name="minimumPensionCategory" required [(ngModel)]="pensionData.minimumPensionCategory">
+                <option value="none" disabled>Selecciona una opción</option>
+                <option value="no-spouse">Sin cónyuge · mínimo 13.106,80 €/año</option>
+                <option value="spouse-dependent">Cónyuge a cargo · mínimo 17.592,40 €/año</option>
+                <option value="spouse-not-dependent">Cónyuge no a cargo · mínimo 12.441,80 €/año</option>
+              </select>
+            </label>
+            <label class="field" for="other-annual-income">
+              <span class="field-label">Otros ingresos computables al año</span>
+              <span class="input-with-suffix"><input id="other-annual-income" name="otherAnnualIncome" type="number" min="0" step="any" required [(ngModel)]="pensionData.otherAnnualIncome" /><span>€ / año</span></span>
+              <span class="field-hint">Sin contar esta pensión; incluye ingresos computables del cónyuge si está a cargo. Límites 2026: 9.442 € o 11.013 € con cónyuge a cargo.</span>
+            </label>
+            <label class="check-control" for="resides-in-spain">
+              <input id="resides-in-spain" name="residesInSpain" type="checkbox" [(ngModel)]="pensionData.residesInSpain" />
+              <span class="check-copy"><strong>Resido en España</strong><small>Requisito para este escenario de complemento</small></span>
+            </label>
+          }
           <div class="form-footer">
             <p><span class="privacy-mark" aria-hidden="true">●</span> Supone que cotizas de forma continua hasta jubilarte.</p>
             <button class="submit-button" type="submit">Estimar pensión <span aria-hidden="true">→</span></button>
@@ -199,16 +288,24 @@
         @if (pensionResult(); as result) {
           <div class="result-panel" role="status" aria-live="polite">
             @if (result.eligible) {
-              <div class="result-lead"><span class="result-kicker">PENSIÓN BRUTA ORIENTATIVA</span><strong>{{ formatMoney(result.monthlyGross) }}<small> / mes</small></strong><span>{{ formatMoney(result.annualGross) }} brutos al año en 14 pagas</span></div>
+              <div class="result-lead"><span class="result-kicker">{{ pensionData.children > 0 || pensionData.includeMinimumSupplement ? 'ESCENARIO BRUTO CON COMPLEMENTOS' : 'PENSIÓN BRUTA CONTRIBUTIVA ORIENTATIVA' }}</span><strong>{{ formatMoney(pensionMonthlyTotal(result)) }}<small> / mes</small></strong><span>{{ formatMoney(pensionAnnualTotal(result)) }} brutos al año en 14 pagas</span></div>
               <div class="result-metrics">
                 <div><span>Años cotizados previstos</span><strong>{{ result.projectedContributionYears | number:'1.0-1' }} años</strong></div>
+                <div><span>Edad ordinaria de referencia</span><strong>{{ result.statutoryRetirementAge | number:'1.0-1' }} años</strong></div>
                 <div><span>Porcentaje aplicado</span><strong>{{ (result.replacementPercentage * 100) | number:'1.1-1' }}%</strong></div>
                 <div><span>Base reguladora estimada</span><strong>{{ formatMoney(result.regulatoryBase) }} / mes</strong></div>
+                <div><span>Pensión contributiva estimada</span><strong>{{ formatMoney(result.monthlyGross) }} / mes</strong></div>
+                @if (pensionChildSupplement(result) > 0) {
+                  <div><span>Complemento por hijos (escenario)</span><strong>+{{ formatMoney(pensionChildSupplement(result)) }} / mes</strong></div>
+                }
+                @if (pensionMinimumSupplement(result) > 0) {
+                  <div><span>Complemento a mínimos estimado</span><strong>+{{ formatMoney(pensionMinimumSupplement(result)) }} / mes</strong></div>
+                }
               </div>
             } @else {
-              <div class="result-lead result-ineligible"><span class="result-kicker">AÑOS COTIZADOS PREVISTOS</span><strong>{{ result.projectedContributionYears | number:'1.0-1' }} años</strong><span>La estimación no alcanza los 15 años mínimos de cotización para una pensión contributiva.</span></div>
+              <div class="result-lead result-ineligible"><span class="result-kicker">NO CUMPLE LOS REQUISITOS ORDINARIOS ESTIMADOS</span><strong>{{ result.projectedContributionYears | number:'1.0-1' }} años cotizados</strong><span>{{ result.meetsMinimumContribution ? 'La edad prevista es anterior a la edad ordinaria estimada; no se modela jubilación anticipada.' : 'La estimación no alcanza los 15 años mínimos de cotización para una pensión contributiva.' }}</span></div>
             }
-            <p class="result-caveat">Proyección simplificada con las reglas generales de referencia de 2026. No contempla edad legal aplicable, jubilación anticipada o demorada, topes, lagunas de cotización, mínimos, máximos ni revalorización.</p>
+            <p class="result-caveat">Proyección con reglas de referencia de 2026 y cotización continua hasta la edad indicada. La base media no reproduce el historial mensual ni permite seleccionar las bases más favorables de 2026. El complemento a mínimos solo se estima si se activa y se cumplen los ingresos y residencia declarados; no se verifica la dependencia económica del cónyuge ni otros requisitos. El complemento de brecha de género (36,90 € por hijo/mes en 2026, máximo cuatro) es solo un escenario, requiere cumplir sus condiciones —incluida la fecha de reconocimiento de la pensión— y solo se reconoce a un progenitor. No se calculan fiscalidad ni revalorizaciones futuras.</p>
           </div>
         }
       </section>

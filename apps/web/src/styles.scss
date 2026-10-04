@@ -43,6 +43,31 @@ button, input, select { font: inherit; }
 .check-copy strong { font-size: 12px; }
 .check-copy small { color: #68766f; font-size: 10px; }
 
+.input-mode { display: flex; gap: 6px; }
+.input-mode button {
+	padding: 7px 13px;
+	border: 1px solid #dce5df;
+	border-radius: 3px;
+	background: white;
+	color: #68766f;
+	font: inherit;
+	font-size: 11px;
+	cursor: pointer;
+}
+.input-mode button.is-active { background: #1f6a4f; color: white; }
+
+.salary-form .field { min-height: 86px; }
+.form-section-title {
+	grid-column: 1 / -1;
+	margin: 4px 0 -6px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #dce5df;
+	color: #1f6a4f;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.4px;
+}
+
 .result-panel {
 	margin-top: 22px;
 	padding: 23px 24px 18px;

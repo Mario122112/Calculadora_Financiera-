@@ -267,6 +267,7 @@ select:focus-visible {
 .salary-form {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
+	align-items: stretch;
 	column-gap: 22px;
 	row-gap: 20px;
 	padding-top: 23px;
@@ -445,4 +446,3 @@ select:focus-visible {
 	.submit-button { justify-content: center; }
 	.page-footer { gap: 12px; font-size: 9px; }
 }
-

@@ -23,13 +23,20 @@ export class App {
   protected readonly salaryResult = signal<SalaryEstimate | null>(null);
   protected readonly mortgageResult = signal<MortgageEstimate | null>(null);
   protected readonly pensionResult = signal<PensionEstimate | null>(null);
+  protected salaryInputMode: 'annual' | 'monthly' = 'annual';
 
   protected salaryData = {
     annualGross: 30000,
+    monthlyGross: 2500,
     payments: 14 as 12 | 14,
     contractType: 'permanent' as 'permanent' | 'temporary',
-    children: 0,
-    disability: false
+    age: 35,
+    qualifyingChildren: 0,
+    childrenUnderThree: 0,
+    childMinimumShare: 'shared' as 'full' | 'shared',
+    disabilityLevel: 'none' as 'none' | '33' | '65',
+    reducedMobility: false,
+    otherNonExemptIncomeOver6500: false
   };
 
   protected mortgageData = {
@@ -43,7 +50,12 @@ export class App {
     currentAge: 35,
     currentContributionYears: 10,
     retirementAge: 67,
-    averageMonthlyContributionBase: 2200
+    averageMonthlyContributionBase: 2200,
+    children: 0,
+    includeMinimumSupplement: false,
+    minimumPensionCategory: 'none' as 'none' | 'no-spouse' | 'spouse-dependent' | 'spouse-not-dependent',
+    otherAnnualIncome: 0,
+    residesInSpain: true
   };
 
   private readonly euroFormatter = new Intl.NumberFormat('es-ES', {
@@ -60,7 +72,52 @@ export class App {
   }
 
   protected calculateSalary(): void {
-    this.salaryResult.set(calculateSalaryNet(this.salaryData));
+    this.salaryResult.set(calculateSalaryNet({
+      ...this.salaryData,
+      annualGross: this.salaryInputMode === 'annual'
+        ? this.salaryData.annualGross
+        : this.salaryData.monthlyGross * this.salaryData.payments
+    }));
+  }
+
+  protected refreshSalaryResult(form: HTMLFormElement): void {
+    if (this.salaryResult() && form.checkValidity()) {
+      this.calculateSalary();
+    }
+  }
+
+  protected updateQualifyingChildren(children: number, form: HTMLFormElement): void {
+    this.salaryData.qualifyingChildren = children;
+    this.salaryData.childrenUnderThree = Math.min(this.salaryData.childrenUnderThree, children);
+    this.refreshSalaryResult(form);
+  }
+
+  protected updateChildMinimumShare(share: 'full' | 'shared', form: HTMLFormElement): void {
+    this.salaryData.childMinimumShare = share;
+    this.refreshSalaryResult(form);
+  }
+
+  protected updatePensionChildren(children: number, form: HTMLFormElement): void {
+    this.pensionData.children = children;
+    this.refreshPensionResult(form);
+  }
+
+  protected setSalaryInputMode(mode: 'annual' | 'monthly'): void {
+    if (mode === this.salaryInputMode) {
+      return;
+    }
+
+    if (mode === 'monthly') {
+      this.salaryData.monthlyGross = this.salaryData.annualGross / this.salaryData.payments;
+    } else {
+      this.salaryData.annualGross = this.salaryData.monthlyGross * this.salaryData.payments;
+    }
+
+    const hadResult = this.salaryResult() !== null;
+    this.salaryInputMode = mode;
+    if (hadResult) {
+      this.calculateSalary();
+    }
   }
 
   protected calculateMortgage(): void {
@@ -73,7 +130,42 @@ export class App {
   }
 
   protected calculatePension(): void {
-    this.pensionResult.set(calculatePensionEstimate(this.pensionData));
+    this.pensionResult.set(calculatePensionEstimate({
+      ...this.pensionData,
+      includeGenderGapSupplement: this.pensionData.children > 0
+    }));
+  }
+
+  protected refreshPensionResult(form: HTMLFormElement): void {
+    if (this.pensionResult() && form.checkValidity()) {
+      this.calculatePension();
+    }
+  }
+
+  protected pensionChildSupplement(result: PensionEstimate): number {
+    if (Number.isFinite(result.monthlyChildSupplement)) {
+      return result.monthlyChildSupplement;
+    }
+    return this.pensionData.children * 36.9;
+  }
+
+  protected pensionMinimumSupplement(result: PensionEstimate): number {
+    return Number.isFinite(result.monthlyMinimumSupplement) ? result.monthlyMinimumSupplement : 0;
+  }
+
+  protected pensionMonthlyTotal(result: PensionEstimate): number {
+    if (Number.isFinite(result.monthlyTotalGross)) {
+      return result.monthlyTotalGross;
+    }
+    return result.monthlyGross + this.pensionChildSupplement(result) + this.pensionMinimumSupplement(result);
+  }
+
+  protected pensionAnnualTotal(result: PensionEstimate): number {
+    if (Number.isFinite(result.annualTotalGross)) {
+      return result.annualTotalGross;
+    }
+    return result.monthlyGross * 14 +
+      (this.pensionChildSupplement(result) + this.pensionMinimumSupplement(result)) * 14;
   }
 
   protected formatMoney(amount: number): string {
