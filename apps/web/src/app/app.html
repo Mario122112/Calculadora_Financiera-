@@ -260,24 +260,51 @@
             <span class="check-copy"><strong>Simular posible complemento a mínimos</strong><small>Depende de rentas, residencia y situación familiar</small></span>
           </label>
           @if (pensionData.includeMinimumSupplement) {
-            <label class="field" for="minimum-pension-category">
-              <span class="field-label">Situación conyugal para la pensión mínima</span>
-              <select id="minimum-pension-category" name="minimumPensionCategory" required [(ngModel)]="pensionData.minimumPensionCategory">
-                <option value="none" disabled>Selecciona una opción</option>
-                <option value="no-spouse">Sin cónyuge · mínimo 13.106,80 €/año</option>
-                <option value="spouse-dependent">Cónyuge a cargo · mínimo 17.592,40 €/año</option>
-                <option value="spouse-not-dependent">Cónyuge no a cargo · mínimo 12.441,80 €/año</option>
+            <label class="field" for="family-status">
+              <span class="field-label">Situación familiar</span>
+              <select id="family-status" name="familyStatus" required [(ngModel)]="pensionData.familyStatus" (ngModelChange)="updatePensionFamilyStatus($event, pensionForm)">
+                <option value="unknown" disabled>Selecciona una opción</option>
+                <option value="single">Soltero/a</option>
+                <option value="married">Casado/a</option>
+                <option value="widowed">Viudo/a</option>
+                <option value="divorced-separated">Divorciado/a o separado/a</option>
               </select>
             </label>
-            <label class="field" for="other-annual-income">
-              <span class="field-label">Otros ingresos computables al año</span>
-              <span class="input-with-suffix"><input id="other-annual-income" name="otherAnnualIncome" type="number" min="0" step="any" required [(ngModel)]="pensionData.otherAnnualIncome" /><span>€ / año</span></span>
-              <span class="field-hint">Sin contar esta pensión; incluye ingresos computables del cónyuge si está a cargo. Límites 2026: 9.442 € o 11.013 € con cónyuge a cargo.</span>
+            @if (pensionData.familyStatus === 'married') {
+              <label class="field" for="spouse-income-status">
+                <span class="field-label">¿Tu cónyuge tiene ingresos propios?</span>
+                <select id="spouse-income-status" name="spouseIncomeStatus" required [(ngModel)]="pensionData.spouseIncomeStatus" (ngModelChange)="updateSpouseIncomeStatus($event, pensionForm)">
+                  <option value="unknown" disabled>Selecciona una opción</option>
+                  <option value="no">No</option>
+                  <option value="yes">Sí</option>
+                </select>
+              </label>
+              @if (pensionData.spouseIncomeStatus === 'yes') {
+                <label class="field" for="spouse-annual-income">
+                  <span class="field-label">Ingresos anuales aproximados del cónyuge</span>
+                  <span class="input-with-suffix"><input id="spouse-annual-income" name="spouseAnnualIncome" type="number" min="0" step="any" required [(ngModel)]="pensionData.spouseAnnualIncome" /><span>€ / año</span></span>
+                </label>
+              }
+            }
+            <label class="field" for="other-income-status">
+              <span class="field-label">¿Tienes otros ingresos anuales además de la pensión?</span>
+              <select id="other-income-status" name="otherIncomeStatus" required [(ngModel)]="pensionData.otherIncomeStatus" (ngModelChange)="updateOtherIncomeStatus($event, pensionForm)">
+                <option value="unknown" disabled>Selecciona una opción</option>
+                <option value="no">No</option>
+                <option value="yes">Sí</option>
+              </select>
             </label>
+            @if (pensionData.otherIncomeStatus === 'yes') {
+              <label class="field" for="other-annual-income">
+                <span class="field-label">Otros ingresos anuales aproximados</span>
+                <span class="input-with-suffix"><input id="other-annual-income" name="otherAnnualIncome" type="number" min="0" step="any" required [(ngModel)]="pensionData.otherAnnualIncome" /><span>€ / año</span></span>
+              </label>
+            }
             <label class="check-control" for="resides-in-spain">
               <input id="resides-in-spain" name="residesInSpain" type="checkbox" [(ngModel)]="pensionData.residesInSpain" />
               <span class="check-copy"><strong>Resido en España</strong><small>Requisito para este escenario de complemento</small></span>
             </label>
+            <span class="field-hint field-wide">No se presupone que estar casado/a implique tener cónyuge a cargo. Para jubilaciones futuras no se proyectan cuantías mínimas ni límites de ingresos de 2026.</span>
           }
           <div class="form-footer">
             <p><span class="privacy-mark" aria-hidden="true">●</span> Supone que cotizas de forma continua hasta jubilarte.</p>
@@ -288,12 +315,15 @@
         @if (pensionResult(); as result) {
           <div class="result-panel" role="status" aria-live="polite">
             @if (result.eligible) {
-              <div class="result-lead"><span class="result-kicker">{{ pensionData.children > 0 || pensionData.includeMinimumSupplement ? 'ESCENARIO BRUTO CON COMPLEMENTOS' : 'PENSIÓN BRUTA CONTRIBUTIVA ORIENTATIVA' }}</span><strong>{{ formatMoney(pensionMonthlyTotal(result)) }}<small> / mes</small></strong><span>{{ formatMoney(pensionAnnualTotal(result)) }} brutos al año en 14 pagas</span></div>
+              <div class="result-lead"><span class="result-kicker">{{ pensionData.children > 0 || pensionData.includeMinimumSupplement ? 'ESTIMACIÓN MENSUAL TOTAL' : 'PENSIÓN BRUTA CONTRIBUTIVA ORIENTATIVA' }}</span><strong>{{ formatMoney(pensionMonthlyTotal(result)) }}<small> / mes</small></strong><span>{{ formatMoney(pensionAnnualTotal(result)) }} brutos al año en 14 pagas@if (pensionData.includeMinimumSupplement && result.monthlyMinimumSupplement === 0) { · sin complemento a mínimos calculado }</span></div>
               <div class="result-metrics">
                 <div><span>Años cotizados previstos</span><strong>{{ result.projectedContributionYears | number:'1.0-1' }} años</strong></div>
-                <div><span>Edad ordinaria de referencia</span><strong>{{ result.statutoryRetirementAge | number:'1.0-1' }} años</strong></div>
-                <div><span>Porcentaje aplicado</span><strong>{{ (result.replacementPercentage * 100) | number:'1.1-1' }}%</strong></div>
-                <div><span>Base reguladora estimada</span><strong>{{ formatMoney(result.regulatoryBase) }} / mes</strong></div>
+                <div><span>Edad ordinaria</span><strong>{{ result.ordinaryRetirementAge | number:'1.0-1' }} años</strong></div>
+                <div><span>Edad prevista</span><strong>{{ pensionData.retirementAge | number:'1.0-1' }} años</strong></div>
+                <div><span>Jubilación demorada</span><strong>{{ result.retirementDelayYears | number:'1.0-1' }} años</strong></div>
+                <div><span>Incentivo por demora</span><strong>+{{ result.delayIncentivePercent | number:'1.0-1' }}%</strong></div>
+                <div><span>Porcentaje por años cotizados</span><strong>{{ (result.replacementPercentage * 100) | number:'1.1-1' }}%</strong></div>
+                <div><span>Base reguladora estimada mediante escenario simplificado</span><strong>{{ formatMoney(result.regulatoryBase) }} / mes</strong></div>
                 <div><span>Pensión contributiva estimada</span><strong>{{ formatMoney(result.monthlyGross) }} / mes</strong></div>
                 @if (pensionChildSupplement(result) > 0) {
                   <div><span>Complemento por hijos (escenario)</span><strong>+{{ formatMoney(pensionChildSupplement(result)) }} / mes</strong></div>
@@ -305,7 +335,10 @@
             } @else {
               <div class="result-lead result-ineligible"><span class="result-kicker">NO CUMPLE LOS REQUISITOS ORDINARIOS ESTIMADOS</span><strong>{{ result.projectedContributionYears | number:'1.0-1' }} años cotizados</strong><span>{{ result.meetsMinimumContribution ? 'La edad prevista es anterior a la edad ordinaria estimada; no se modela jubilación anticipada.' : 'La estimación no alcanza los 15 años mínimos de cotización para una pensión contributiva.' }}</span></div>
             }
-            <p class="result-caveat">Proyección con reglas de referencia de 2026 y cotización continua hasta la edad indicada. La base media no reproduce el historial mensual ni permite seleccionar las bases más favorables de 2026. El complemento a mínimos solo se estima si se activa y se cumplen los ingresos y residencia declarados; no se verifica la dependencia económica del cónyuge ni otros requisitos. El complemento de brecha de género (36,90 € por hijo/mes en 2026, máximo cuatro) es solo un escenario, requiere cumplir sus condiciones —incluida la fecha de reconocimiento de la pensión— y solo se reconoce a un progenitor. No se calculan fiscalidad ni revalorizaciones futuras.</p>
+            @if (pensionData.includeMinimumSupplement) {
+              <p class="result-caveat">{{ result.minimumSupplementMessage }}</p>
+            }
+            <p class="result-caveat">Proyección con reglas de referencia de 2026 y cotización continua hasta la edad indicada. Estimación basada en la base media mensual introducida. El cálculo oficial de la Seguridad Social utiliza las bases de cotización históricas reales y puede producir un resultado diferente; esta estimación no reconstruye las bases mes a mes ni permite seleccionar las más favorables. Para jubilaciones futuras no se proyectan las cuantías de 2026 del complemento a mínimos; estar casado/a no confirma la dependencia económica y el resultado depende de requisitos, ingresos y cuantías del año de jubilación. El complemento de brecha de género (36,90 € por hijo/mes en 2026, máximo cuatro) es solo un escenario, requiere cumplir sus condiciones —incluida la fecha de reconocimiento de la pensión— y solo se reconoce a un progenitor. No se calculan fiscalidad ni revalorizaciones futuras.</p>
           </div>
         }
       </section>

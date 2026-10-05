@@ -53,7 +53,10 @@ export class App {
     averageMonthlyContributionBase: 2200,
     children: 0,
     includeMinimumSupplement: false,
-    minimumPensionCategory: 'none' as 'none' | 'no-spouse' | 'spouse-dependent' | 'spouse-not-dependent',
+    familyStatus: 'unknown' as 'unknown' | 'single' | 'married' | 'widowed' | 'divorced-separated',
+    spouseIncomeStatus: 'unknown' as 'unknown' | 'no' | 'yes',
+    spouseAnnualIncome: 0,
+    otherIncomeStatus: 'unknown' as 'unknown' | 'no' | 'yes',
     otherAnnualIncome: 0,
     residesInSpain: true
   };
@@ -99,6 +102,34 @@ export class App {
 
   protected updatePensionChildren(children: number, form: HTMLFormElement): void {
     this.pensionData.children = children;
+    this.refreshPensionResult(form);
+  }
+
+  protected updatePensionFamilyStatus(
+    status: 'unknown' | 'single' | 'married' | 'widowed' | 'divorced-separated',
+    form: HTMLFormElement
+  ): void {
+    this.pensionData.familyStatus = status;
+    if (status !== 'married') {
+      this.pensionData.spouseIncomeStatus = 'unknown';
+      this.pensionData.spouseAnnualIncome = 0;
+    }
+    this.refreshPensionResult(form);
+  }
+
+  protected updateSpouseIncomeStatus(status: 'unknown' | 'no' | 'yes', form: HTMLFormElement): void {
+    this.pensionData.spouseIncomeStatus = status;
+    if (status === 'no') {
+      this.pensionData.spouseAnnualIncome = 0;
+    }
+    this.refreshPensionResult(form);
+  }
+
+  protected updateOtherIncomeStatus(status: 'unknown' | 'no' | 'yes', form: HTMLFormElement): void {
+    this.pensionData.otherIncomeStatus = status;
+    if (status === 'no') {
+      this.pensionData.otherAnnualIncome = 0;
+    }
     this.refreshPensionResult(form);
   }
 

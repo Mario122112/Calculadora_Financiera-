@@ -224,7 +224,7 @@ describe('App', () => {
     expect(result.projectedContributionYears).toBe(42);
     expect(result.replacementPercentage).toBe(1);
     expect(result.eligible).toBe(true);
-    expect(result.monthlyGross).toBeCloseTo(1885.71, 2);
+    expect(result.monthlyGross).toBeCloseTo(2036.57, 2);
   });
 
   it('should not estimate a contributory pension before 15 years', () => {
@@ -287,7 +287,7 @@ describe('App', () => {
     expect(result.annualTotalGross).toBeCloseTo(7678.32, 2);
   });
 
-  it('should estimate the 2026 minimum pension top-up when declared conditions qualify', () => {
+  it('should not apply 2026 minimum pension amounts to a future retirement year', () => {
     const result = calculatePensionEstimate({
       currentAge: 59,
       currentContributionYears: 15,
@@ -302,8 +302,10 @@ describe('App', () => {
     });
 
     expect(result.annualGross).toBeCloseTo(6645.12, 2);
-    expect(result.annualMinimumSupplement).toBeCloseTo(13106.8 - 6645.12, 2);
-    expect(result.monthlyTotalGross).toBeCloseTo(936.2, 2);
+    expect(result.annualMinimumSupplement).toBe(0);
+    expect(result.minimumSupplementAssessment).toBe('possible-future');
+    expect(result.minimumSupplementMessage).toContain('No se proyectan importes');
+    expect(result.monthlyTotalGross).toBeCloseTo(result.monthlyGross, 2);
   });
 
   it('should not estimate the minimum top-up above the income threshold or when not resident', () => {
@@ -333,7 +335,9 @@ describe('App', () => {
     });
 
     expect(aboveIncomeLimit.annualMinimumSupplement).toBe(0);
+    expect(aboveIncomeLimit.minimumSupplementAssessment).toBe('above-reference-income-limit');
     expect(notResident.annualMinimumSupplement).toBe(0);
+    expect(notResident.minimumSupplementAssessment).toBe('not-resident');
   });
 
   it('should cap the contributory pension and add supplements separately', () => {
@@ -375,7 +379,7 @@ describe('App', () => {
     expect(result.meetsMinimumContribution).toBe(true);
     expect(result.meetsOrdinaryRetirementAge).toBe(false);
     expect(result.eligible).toBe(false);
-    expect(result.replacementPercentage).toBe(0);
+    expect(result.replacementPercentage).toBeCloseTo(0.6238, 4);
   });
 
   it('should project 22 contribution years for age 60, 15 years contributed, and retirement at 67', () => {
@@ -445,7 +449,7 @@ describe('App', () => {
     fixture.detectChanges();
 
     const result = element.querySelector('.result-lead > strong')?.textContent?.replace(/\u00a0/g, ' ');
-    expect(result).toContain('1886 € / mes');
+    expect(result).toContain('2037 € / mes');
   });
 
   it('should annualize a monthly salary using the selected number of payments', () => {
@@ -497,5 +501,464 @@ describe('App', () => {
     fixture.componentInstance['calculatePension']();
 
     expect(fixture.componentInstance['pensionResult']()?.monthlyChildSupplement).toBeGreaterThan(0);
+  });
+
+  it('should clear spouse income when the answer is no', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.componentInstance['pensionData'].spouseAnnualIncome = 2400;
+    fixture.componentInstance['updateSpouseIncomeStatus'](
+      'no',
+      document.createElement('form')
+    );
+    expect(fixture.componentInstance['pensionData'].spouseAnnualIncome).toBe(0);
+  });
+
+  it('TEST 1: should estimate the mother case with 15 contributed years and 2 children', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 59,
+      currentContributionYears: 15,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 800,
+      children: 2,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: false,
+      minimumPensionCategory: 'none',
+      otherAnnualIncome: 0,
+      residesInSpain: true
+    });
+
+    expect(result.projectedContributionYears).toBe(23);
+    expect(result.ordinaryRetirementAge).toBe(67);
+    expect(result.retirementDelayYears).toBe(0);
+    expect(result.replacementPercentage).toBeCloseTo(0.6922, 4);
+    expect(result.monthlyChildSupplement).toBeCloseTo(73.8, 2);
+  });
+
+  it('TEST 2: should estimate the father case with a long career and 2-year delay', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 60,
+      currentContributionYears: 38,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 2200,
+      children: 2,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: false,
+      minimumPensionCategory: 'none',
+      otherAnnualIncome: 0,
+      residesInSpain: true
+    });
+
+    expect(result.projectedContributionYears).toBe(45);
+    expect(result.ordinaryRetirementAge).toBe(65);
+    expect(result.retirementDelayYears).toBe(2);
+    expect(result.delayIncentivePercent).toBe(8);
+    expect(result.replacementPercentage).toBe(1);
+    expect(result.monthlyGross).toBeCloseTo(2036.57, 1);
+    expect(result.monthlyChildSupplement).toBeCloseTo(73.8, 2);
+    expect(result.monthlyTotalGross).toBeCloseTo(2110.37, 2);
+  });
+
+  it('TEST 3: should keep the pension at ordinary retirement age without delay', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 62,
+      currentContributionYears: 35.5,
+      retirementAge: 65,
+      averageMonthlyContributionBase: 1800,
+      children: 0,
+      includeGenderGapSupplement: false,
+      includeMinimumSupplement: false,
+      minimumPensionCategory: 'none',
+      otherAnnualIncome: 0,
+      residesInSpain: true
+    });
+
+    expect(result.ordinaryRetirementAge).toBe(65);
+    expect(result.retirementDelayYears).toBe(0);
+    expect(result.delayIncentivePercent).toBe(0);
+    expect(result.eligible).toBe(true);
+  });
+
+  it('TEST 4: should apply a one-year delay incentive', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 60,
+      currentContributionYears: 38,
+      retirementAge: 66,
+      averageMonthlyContributionBase: 2000,
+      children: 0,
+      includeGenderGapSupplement: false,
+      includeMinimumSupplement: false,
+      minimumPensionCategory: 'none',
+      otherAnnualIncome: 0,
+      residesInSpain: true
+    });
+
+    expect(result.ordinaryRetirementAge).toBe(65);
+    expect(result.retirementDelayYears).toBe(1);
+    expect(result.delayIncentivePercent).toBe(4);
+  });
+
+  it('TEST 5: should apply a two-year delay incentive', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 60,
+      currentContributionYears: 38,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 2000,
+      children: 0,
+      includeGenderGapSupplement: false,
+      includeMinimumSupplement: false,
+      minimumPensionCategory: 'none',
+      otherAnnualIncome: 0,
+      residesInSpain: true
+    });
+
+    expect(result.ordinaryRetirementAge).toBe(65);
+    expect(result.retirementDelayYears).toBe(2);
+    expect(result.delayIncentivePercent).toBe(8);
+  });
+
+  it('should apply the simplified base-regulatory factor for 2033, 2034, and 2037 without changing the delay incentive', () => {
+    const scenarios = [
+      { retirementAge: 67, expectedYear: 2033 },
+      { retirementAge: 68, expectedYear: 2034 },
+      { retirementAge: 71, expectedYear: 2037 }
+    ];
+
+    for (const scenario of scenarios) {
+      const result = calculatePensionEstimate({
+        currentAge: 60,
+        currentContributionYears: 38,
+        retirementAge: scenario.retirementAge,
+        averageMonthlyContributionBase: 2200,
+        children: 2,
+        includeGenderGapSupplement: true,
+        includeMinimumSupplement: false,
+        minimumPensionCategory: 'none',
+        otherAnnualIncome: 0,
+        residesInSpain: true
+      });
+
+      expect(result.retirementYear).toBe(scenario.expectedYear);
+      expect(result.regulatoryBase).toBeCloseTo(2200 * 300 / 350, 2);
+    }
+
+    const twoYearDelay = calculatePensionEstimate({
+      currentAge: 60,
+      currentContributionYears: 38,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 2200,
+      children: 2,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: false,
+      minimumPensionCategory: 'none',
+      otherAnnualIncome: 0,
+      residesInSpain: true
+    });
+    expect(twoYearDelay.delayIncentivePercent).toBe(8);
+    expect(twoYearDelay.monthlyTotalGross).toBeCloseTo(2110.37, 2);
+  });
+
+  it('should treat a single person as a no-spouse scenario without applying future minimum amounts', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 59,
+      currentContributionYears: 15,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 800,
+      children: 2,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: true,
+      familyStatus: 'single',
+      spouseIncomeStatus: 'unknown',
+      spouseAnnualIncome: 0,
+      otherIncomeStatus: 'no',
+      otherAnnualIncome: 0,
+      minimumPensionCategory: 'none',
+      residesInSpain: true
+    });
+
+    expect(result.minimumPensionCategoryScenario).toBe('no-spouse');
+    expect(result.minimumSupplementAssessment).toBe('possible-future');
+    expect(result.annualMinimumSupplement).toBe(0);
+  });
+
+  it('should not infer legal spouse dependency merely from marriage and no reported spouse income', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 59,
+      currentContributionYears: 15,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 800,
+      children: 2,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: true,
+      familyStatus: 'married',
+      spouseIncomeStatus: 'no',
+      spouseAnnualIncome: 0,
+      otherIncomeStatus: 'no',
+      otherAnnualIncome: 0,
+      minimumPensionCategory: 'none',
+      residesInSpain: true
+    });
+
+    expect(result.minimumPensionCategoryScenario).toBe('spouse-dependent');
+    expect(result.minimumSupplementAssessment).toBe('possible-future');
+    expect(result.minimumSupplementMessage).toContain('la dependencia económica legal no queda confirmada');
+    expect(result.annualMinimumSupplement).toBe(0);
+  });
+
+  it('should switch to a spouse-not-dependent scenario when the spouse reports income', () => {
+    const withoutSpouseIncome = calculatePensionEstimate({
+      currentAge: 59,
+      currentContributionYears: 15,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 800,
+      children: 2,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: true,
+      familyStatus: 'married',
+      spouseIncomeStatus: 'no',
+      spouseAnnualIncome: 0,
+      otherIncomeStatus: 'no',
+      otherAnnualIncome: 0,
+      minimumPensionCategory: 'none',
+      residesInSpain: true
+    });
+    const withSpouseIncome = calculatePensionEstimate({
+      currentAge: 59,
+      currentContributionYears: 15,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 800,
+      children: 2,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: true,
+      familyStatus: 'married',
+      spouseIncomeStatus: 'yes',
+      spouseAnnualIncome: 18000,
+      otherIncomeStatus: 'no',
+      otherAnnualIncome: 0,
+      minimumPensionCategory: 'none',
+      residesInSpain: true
+    });
+
+    expect(withoutSpouseIncome.minimumPensionCategoryScenario).toBe('spouse-dependent');
+    expect(withSpouseIncome.minimumPensionCategoryScenario).toBe('spouse-not-dependent');
+    expect(withSpouseIncome.minimumSupplementMessage).toContain('no se presume cónyuge a cargo');
+    expect(withSpouseIncome.annualMinimumSupplement).toBe(0);
+  });
+
+  it('should reflect own additional income against 2026 reference limits without projecting a future minimum', () => {
+    const noOtherIncome = calculatePensionEstimate({
+      currentAge: 59,
+      currentContributionYears: 15,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 800,
+      children: 2,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: true,
+      familyStatus: 'married',
+      spouseIncomeStatus: 'no',
+      spouseAnnualIncome: 0,
+      otherIncomeStatus: 'no',
+      otherAnnualIncome: 0,
+      minimumPensionCategory: 'none',
+      residesInSpain: true
+    });
+    const withOtherIncome = calculatePensionEstimate({
+      currentAge: 59,
+      currentContributionYears: 15,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 800,
+      children: 2,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: true,
+      familyStatus: 'married',
+      spouseIncomeStatus: 'no',
+      spouseAnnualIncome: 0,
+      otherIncomeStatus: 'yes',
+      otherAnnualIncome: 12000,
+      minimumPensionCategory: 'none',
+      residesInSpain: true
+    });
+
+    expect(noOtherIncome.minimumSupplementAssessment).toBe('possible-future');
+    expect(withOtherIncome.minimumSupplementAssessment).toBe('above-reference-income-limit');
+    expect(withOtherIncome.annualMinimumSupplement).toBe(0);
+    expect(withOtherIncome.monthlyGross).toBe(noOtherIncome.monthlyGross);
+    expect(withOtherIncome.monthlyChildSupplement).toBe(noOtherIncome.monthlyChildSupplement);
+    expect(withOtherIncome.delayIncentivePercent).toBe(noOtherIncome.delayIncentivePercent);
+  });
+
+  it('should report the minimum supplement as undeterminable when family or income details are missing', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 59,
+      currentContributionYears: 15,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 800,
+      children: 2,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: true,
+      familyStatus: 'unknown',
+      spouseIncomeStatus: 'unknown',
+      spouseAnnualIncome: 0,
+      otherIncomeStatus: 'unknown',
+      otherAnnualIncome: 0,
+      minimumPensionCategory: 'none',
+      residesInSpain: true
+    });
+
+    expect(result.minimumSupplementAssessment).toBe('insufficient-data');
+    expect(result.minimumSupplementMessage).toBe(
+      'Complemento a mínimos: no determinable con precisión con los datos introducidos.'
+    );
+    expect(result.monthlyMinimumSupplement).toBe(0);
+  });
+
+  it('should keep the father pension, child supplement, and delay unchanged with family-income inputs', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 60,
+      currentContributionYears: 38,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 2200,
+      children: 2,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: false,
+      familyStatus: 'married',
+      spouseIncomeStatus: 'yes',
+      spouseAnnualIncome: 30000,
+      otherIncomeStatus: 'yes',
+      otherAnnualIncome: 5000,
+      minimumPensionCategory: 'none',
+      residesInSpain: true
+    });
+
+    expect(result.projectedContributionYears).toBe(45);
+    expect(result.ordinaryRetirementAge).toBe(65);
+    expect(result.retirementDelayYears).toBe(2);
+    expect(result.delayIncentivePercent).toBe(8);
+    expect(result.monthlyGross).toBeCloseTo(2036.57, 2);
+    expect(result.monthlyChildSupplement).toBeCloseTo(73.8, 2);
+    expect(result.monthlyTotalGross).toBeCloseTo(2110.37, 2);
+  });
+
+  it('TEST 6: should reject low contribution years before the minimum threshold', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 35,
+      currentContributionYears: 5,
+      retirementAge: 40,
+      averageMonthlyContributionBase: 1600,
+      children: 0,
+      includeGenderGapSupplement: false,
+      includeMinimumSupplement: false,
+      minimumPensionCategory: 'none',
+      otherAnnualIncome: 0,
+      residesInSpain: true
+    });
+
+    expect(result.meetsMinimumContribution).toBe(false);
+    expect(result.eligible).toBe(false);
+    expect(result.monthlyGross).toBe(0);
+  });
+
+  it('TEST 7: should cap higher replacement percentages for a long career', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 48,
+      currentContributionYears: 30,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 2000,
+      children: 0,
+      includeGenderGapSupplement: false,
+      includeMinimumSupplement: false,
+      minimumPensionCategory: 'none',
+      otherAnnualIncome: 0,
+      residesInSpain: true
+    });
+
+    expect(result.projectedContributionYears).toBe(49);
+    expect(result.replacementPercentage).toBe(1);
+    expect(result.effectiveReplacementPercentage).toBeGreaterThan(1);
+  });
+
+  it('TEST 8: should not add the child supplement when there are no children', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 60,
+      currentContributionYears: 30,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 2000,
+      children: 0,
+      includeGenderGapSupplement: false,
+      includeMinimumSupplement: false,
+      minimumPensionCategory: 'none',
+      otherAnnualIncome: 0,
+      residesInSpain: true
+    });
+
+    expect(result.monthlyChildSupplement).toBe(0);
+  });
+
+  it('TEST 9: should add the child supplement for one child', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 60,
+      currentContributionYears: 30,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 2000,
+      children: 1,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: false,
+      minimumPensionCategory: 'none',
+      otherAnnualIncome: 0,
+      residesInSpain: true
+    });
+
+    expect(result.monthlyChildSupplement).toBeCloseTo(36.9, 2);
+  });
+
+  it('TEST 10: should cap the child supplement to four children', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 60,
+      currentContributionYears: 30,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 2000,
+      children: 4,
+      includeGenderGapSupplement: true,
+      includeMinimumSupplement: false,
+      minimumPensionCategory: 'none',
+      otherAnnualIncome: 0,
+      residesInSpain: true
+    });
+
+    expect(result.monthlyChildSupplement).toBeCloseTo(147.6, 2);
+  });
+
+  it('TEST 11: should keep the minimum pension top-up off when a married spouse has income', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 59,
+      currentContributionYears: 15,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 800,
+      children: 0,
+      includeGenderGapSupplement: false,
+      includeMinimumSupplement: true,
+      minimumPensionCategory: 'spouse-not-dependent',
+      otherAnnualIncome: 12000,
+      residesInSpain: true
+    });
+
+    expect(result.annualMinimumSupplement).toBe(0);
+  });
+
+  it('TEST 12: should not project a minimum top-up for a future retirement year', () => {
+    const result = calculatePensionEstimate({
+      currentAge: 59,
+      currentContributionYears: 15,
+      retirementAge: 67,
+      averageMonthlyContributionBase: 800,
+      children: 0,
+      includeGenderGapSupplement: false,
+      includeMinimumSupplement: true,
+      minimumPensionCategory: 'spouse-dependent',
+      otherAnnualIncome: 0,
+      residesInSpain: true
+    });
+
+    expect(result.annualMinimumSupplement).toBe(0);
+    expect(result.minimumSupplementAssessment).toBe('possible-future');
   });
 });
