@@ -1,0 +1,520 @@
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" routerLink="/" aria-label="Cuenta Clara, inicio">
+      <span class="brand-mark" aria-hidden="true">€</span>
+      <span>cuenta<span class="brand-light">clara</span></span>
+    </a>
+    <nav class="topbar-nav" aria-label="Calculadoras">
+      <a routerLink="/sueldo-neto" [attr.aria-current]="selectedCalculator() === 'salary' ? 'page' : null">Sueldo neto</a>
+      <a routerLink="/calculadora-hipoteca" [attr.aria-current]="selectedCalculator() === 'mortgage' ? 'page' : null">Hipoteca</a>
+      <a routerLink="/calculadora-pension" [attr.aria-current]="selectedCalculator() === 'pension' ? 'page' : null">Pensión</a>
+      <a routerLink="/calculadora-interes-compuesto" [attr.aria-current]="selectedCalculator() === 'compound-interest' ? 'page' : null">Interés compuesto</a>
+      <a routerLink="/calculadora-finiquito-indemnizacion" [attr.aria-current]="selectedCalculator() === 'severance' ? 'page' : null">Finiquito</a>
+    </nav>
+    <div class="topbar-meta">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span>Calculadoras para España</span>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="intro" aria-labelledby="page-title">
+      @if (calculatorPage(); as page) {
+        <p class="eyebrow">CALCULADORA FINANCIERA <span>/ ESPAÑA</span></p>
+        <h1 class="page-title" id="page-title">{{ page.title }}</h1>
+        <p class="intro-copy">{{ page.summary }}</p>
+      } @else {
+        <p class="eyebrow"><span>01</span> TU ESPACIO FINANCIERO</p>
+        <h1 class="page-title" id="page-title">Decisiones claras,<br /><em>números bajo control.</em></h1>
+        <p class="intro-copy">Elige qué quieres calcular. Empezamos por lo importante: saber cuánto llega realmente a tu cuenta.</p>
+      }
+    </section>
+
+    <section class="calculator-section" aria-labelledby="calculator-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">ELIGE UNA CALCULADORA</p>
+          <h2 id="calculator-title">¿Por dónde empezamos?</h2>
+        </div>
+        <span class="section-count">05 OPCIONES</span>
+      </div>
+
+      <div class="calculator-grid">
+        <a
+          class="calculator-card"
+          [class.is-selected]="selectedCalculator() === 'salary'"
+          [attr.aria-current]="selectedCalculator() === 'salary' ? 'page' : null"
+          routerLink="/sueldo-neto"
+        >
+          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true">€</span><span class="availability available">DISPONIBLE</span></span>
+          <span class="card-title">Sueldo neto</span>
+          <span class="card-description">Descubre cuánto cobrarás después de impuestos y cotizaciones.</span>
+          <span class="card-action">Empezar <span aria-hidden="true">↗</span></span>
+        </a>
+
+        <a
+          class="calculator-card"
+          [class.is-selected]="selectedCalculator() === 'mortgage'"
+          [attr.aria-current]="selectedCalculator() === 'mortgage' ? 'page' : null"
+          routerLink="/calculadora-hipoteca"
+        >
+          <span class="card-topline"><span class="card-icon mortgage-icon" aria-hidden="true">⌂</span><span class="availability available">DISPONIBLE</span></span>
+          <span class="card-title">Hipoteca</span>
+          <span class="card-description">Calcula tu cuota mensual, intereses y coste total.</span>
+          <span class="card-action">Ver calculadora <span aria-hidden="true">↗</span></span>
+        </a>
+
+        <a
+          class="calculator-card"
+          [class.is-selected]="selectedCalculator() === 'pension'"
+          [attr.aria-current]="selectedCalculator() === 'pension' ? 'page' : null"
+          routerLink="/calculadora-pension"
+        >
+          <span class="card-topline"><span class="card-icon pension-icon" aria-hidden="true">◷</span><span class="availability available">DISPONIBLE</span></span>
+          <span class="card-title">Pensión</span>
+          <span class="card-description">Proyecta una pensión pública orientativa según tus cotizaciones.</span>
+          <span class="card-action">Ver calculadora <span aria-hidden="true">↗</span></span>
+        </a>
+
+        <a
+          class="calculator-card"
+          [class.is-selected]="selectedCalculator() === 'compound-interest'"
+          [attr.aria-current]="selectedCalculator() === 'compound-interest' ? 'page' : null"
+          routerLink="/calculadora-interes-compuesto"
+        >
+          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true">↗</span><span class="availability available">DISPONIBLE</span></span>
+          <span class="card-title">Interés compuesto</span>
+          <span class="card-description">Proyecta capital y aportaciones mensuales con una rentabilidad hipotética.</span>
+          <span class="card-action">Ver calculadora <span aria-hidden="true">↗</span></span>
+        </a>
+
+        <a
+          class="calculator-card"
+          [class.is-selected]="selectedCalculator() === 'severance'"
+          [attr.aria-current]="selectedCalculator() === 'severance' ? 'page' : null"
+          routerLink="/calculadora-finiquito-indemnizacion"
+        >
+          <span class="card-topline"><span class="card-icon mortgage-icon" aria-hidden="true">€</span><span class="availability available">DISPONIBLE</span></span>
+          <span class="card-title">Finiquito e indemnización</span>
+          <span class="card-description">Separa cantidades pendientes de cobro e indemnización estimada por despido.</span>
+          <span class="card-action">Ver calculadora <span aria-hidden="true">↗</span></span>
+        </a>
+      </div>
+    </section>
+
+    @if (calculatorPage(); as page) {
+      <section class="calculator-intro" aria-labelledby="calculator-intro-title">
+        <h2 id="calculator-intro-title">Qué calcula y cómo interpretar el resultado</h2>
+        <p>{{ page.detail }}</p>
+        <p>{{ page.interpretation }}</p>
+        <p class="result-caveat">{{ page.limitations }}</p>
+      </section>
+    }
+
+    @if (selectedCalculator() === 'salary') {
+      <section class="calculator-workspace" aria-labelledby="salary-title">
+        <div class="workspace-heading">
+          <div>
+            <p class="eyebrow">CALCULADORA 01 <span class="heading-divider">/</span> SUELDO NETO</p>
+            <h2 id="salary-title">Cuéntanos un poco sobre ti</h2>
+            <p class="workspace-copy">Completa tus datos para estimar el neto anual y el promedio por paga.</p>
+          </div>
+          <span class="workspace-number">01<span> / 05</span></span>
+        </div>
+
+        <form #salaryForm class="salary-form" (ngSubmit)="calculateSalary()" (input)="refreshSalaryResult(salaryForm)" (change)="refreshSalaryResult(salaryForm)">
+          <div class="field field-wide">
+            <span class="field-label" id="salary-amount-label">Salario bruto</span>
+            <div class="input-mode" role="group" aria-labelledby="salary-amount-label">
+              <button type="button" [class.is-active]="salaryInputMode === 'annual'" [attr.aria-pressed]="salaryInputMode === 'annual'" (click)="setSalaryInputMode('annual')">Anual</button>
+              <button type="button" [class.is-active]="salaryInputMode === 'monthly'" [attr.aria-pressed]="salaryInputMode === 'monthly'" (click)="setSalaryInputMode('monthly')">Mensual</button>
+            </div>
+            @if (salaryInputMode === 'annual') {
+              <label class="input-with-suffix" for="annual-gross">
+                <input id="annual-gross" name="annualGross" type="number" min="0.01" step="any" required [(ngModel)]="salaryData.annualGross" />
+                <span>€ / año</span>
+              </label>
+              <span class="field-hint">Puedes encontrarlo en tu contrato o nómina.</span>
+            } @else {
+              <label class="input-with-suffix" for="monthly-gross">
+                <input id="monthly-gross" name="monthlyGross" type="number" min="1" step="0.01" required [(ngModel)]="salaryData.monthlyGross" />
+                <span>€ / paga</span>
+              </label>
+              <span class="field-hint">Indica el importe bruto de cada paga; lo anualizamos según el número de pagas.</span>
+            }
+          </div>
+
+          <label class="field" for="payments">
+            <span class="field-label">¿En cuántas pagas?</span>
+            <select id="payments" name="payments" [(ngModel)]="salaryData.payments">
+              <option [ngValue]="12">12 pagas</option>
+              <option [ngValue]="14">14 pagas</option>
+            </select>
+          </label>
+
+          <label class="field" for="contract-type">
+            <span class="field-label">Tipo de contrato</span>
+            <select id="contract-type" name="contractType" [(ngModel)]="salaryData.contractType">
+              <option value="permanent">Indefinido</option>
+              <option value="temporary">Temporal</option>
+            </select>
+          </label>
+
+          <p class="form-section-title field-wide">Situación personal y familiar</p>
+
+          <label class="field" for="taxpayer-age">
+            <span class="field-label">Tu edad</span>
+            <input id="taxpayer-age" name="age" type="number" min="16" max="100" step="1" required [(ngModel)]="salaryData.age" />
+          </label>
+
+          <label class="field" for="qualifying-children">
+            <span class="field-label">¿Cuántos hijos o descendientes dan derecho al mínimo fiscal?</span>
+            <input id="qualifying-children" name="qualifyingChildren" type="number" min="0" max="20" step="1" required [(ngModel)]="salaryData.qualifyingChildren" (ngModelChange)="updateQualifyingChildren($event, salaryForm)" />
+            <span class="field-hint">No es un complemento de pensión. En general: menores de 25 años que conviven contigo y no superan 8.000 € de rentas anuales, o descendientes con discapacidad que cumplen los requisitos.</span>
+          </label>
+
+          @if (salaryData.qualifyingChildren > 0) {
+            <label class="field" for="children-under-three">
+              <span class="field-label">¿Cuántos tienen menos de 3 años?</span>
+              <input id="children-under-three" name="childrenUnderThree" type="number" min="0" [max]="salaryData.qualifyingChildren" step="1" required [(ngModel)]="salaryData.childrenUnderThree" (ngModelChange)="refreshSalaryResult(salaryForm)" />
+            </label>
+
+            <label class="field" for="child-minimum-share">
+              <span class="field-label">¿Cómo se reparte el mínimo fiscal?</span>
+              <select id="child-minimum-share" name="childMinimumShare" [(ngModel)]="salaryData.childMinimumShare" (ngModelChange)="updateChildMinimumShare($event, salaryForm)">
+                <option value="shared">Al 50 % con el otro progenitor (lo habitual si ambos tienen derecho)</option>
+                <option value="full">El 100 % me corresponde a mí (no se comparte)</option>
+              </select>
+              <span class="field-hint">Esto modifica la retención estimada de IRPF, no descuenta directamente un importe del sueldo. El resultado se actualiza al cambiar la opción.</span>
+            </label>
+          }
+
+          <label class="field" for="disability-level">
+            <span class="field-label">Discapacidad reconocida</span>
+            <select id="disability-level" name="disabilityLevel" [(ngModel)]="salaryData.disabilityLevel">
+              <option value="none">No</option>
+              <option value="33">Entre 33 % y 64 %</option>
+              <option value="65">65 % o más</option>
+            </select>
+          </label>
+
+          @if (salaryData.disabilityLevel !== 'none') {
+            <label class="check-control" for="reduced-mobility">
+              <input id="reduced-mobility" name="reducedMobility" type="checkbox" [(ngModel)]="salaryData.reducedMobility" />
+              <span class="check-copy"><strong>Movilidad reducida o necesidad de asistencia</strong><small>Reconocida oficialmente</small></span>
+            </label>
+          }
+
+          <label class="check-control" for="other-non-exempt-income">
+            <input id="other-non-exempt-income" name="otherNonExemptIncomeOver6500" type="checkbox" [(ngModel)]="salaryData.otherNonExemptIncomeOver6500" />
+            <span class="check-copy"><strong>Tengo otras rentas no exentas superiores a 6.500 € al año</strong><small>Además de este salario</small></span>
+          </label>
+
+          <div class="form-footer">
+            <p><span class="privacy-mark" aria-hidden="true">●</span> Estimación simplificada para España, ejercicio 2026.</p>
+            <button class="submit-button" type="submit">Calcular sueldo neto <span aria-hidden="true">→</span></button>
+          </div>
+        </form>
+
+        @if (salaryResult(); as result) {
+          <div class="result-panel" role="status" aria-live="polite">
+            <div class="result-lead"><span class="result-kicker">PROMEDIO NETO MENSUAL</span><strong>{{ formatMoney(result.netMonthlyAverage) }}<small> / mes</small></strong><span>{{ formatMoney(result.netAnnual) }} netos al año · media orientativa de {{ formatMoney(result.netPerPayment) }} por paga en {{ salaryData.payments }} pagas</span></div>
+            <div class="monthly-breakdown">
+              <div><span>Bruto promedio mensual</span><strong>{{ formatMoney(result.annualGross / 12) }}</strong></div>
+              <div><span>Seguridad Social mensual</span><strong>−{{ formatMoney(result.socialSecurity / 12) }}</strong></div>
+              <div><span>IRPF mensual estimado</span><strong>−{{ formatMoney(result.incomeTax / 12) }}</strong></div>
+              <div class="monthly-net"><span>Neto promedio mensual</span><strong>{{ formatMoney(result.netMonthlyAverage) }}</strong></div>
+            </div>
+            <div class="result-metrics">
+              <div><span>Bruto anual</span><strong>{{ formatMoney(result.annualGross) }}</strong></div>
+              <div><span>Seguridad Social</span><strong>{{ formatMoney(result.socialSecurity) }}</strong></div>
+              <div><span>IRPF aproximado</span><strong>{{ formatMoney(result.incomeTax) }}</strong></div>
+              <div><span>Retención total estimada</span><strong>{{ (result.effectiveRate * 100) | number:'1.1-1' }}%</strong></div>
+              @if (result.employmentIncomeReduction > 0) {
+                <div><span>Reducción por rendimientos del trabajo</span><strong>{{ formatMoney(result.employmentIncomeReduction) }}</strong></div>
+              }
+              @if (result.solidarityContribution > 0) {
+                <div><span>Cuota de solidaridad (incluida en Seguridad Social)</span><strong>{{ formatMoney(result.solidarityContribution) }}</strong></div>
+              }
+            </div>
+            <p class="result-caveat">Estimación de nómina con reglas y cotizaciones de referencia de 2026; no equivale a la declaración anual. Asume salario todo el año, no incluye otras rentas, ascendientes, tributación conjunta, situaciones especiales ni todas las regularizaciones de nómina. El IRPF final varía según la comunidad autónoma y las circunstancias personales; confirma el resultado con el simulador de retenciones de la AEAT.</p>
+          </div>
+        }
+      </section>
+    } @else if (selectedCalculator() === 'mortgage') {
+      <section class="calculator-workspace" aria-labelledby="mortgage-title">
+        <div class="workspace-heading">
+          <div>
+            <p class="eyebrow">CALCULADORA 02 <span class="heading-divider">/</span> HIPOTECA</p>
+            <h2 id="mortgage-title">Calcula tu cuota mensual</h2>
+            <p class="workspace-copy">Ajusta precio, entrada, interés y plazo para ver el coste estimado.</p>
+          </div>
+          <span class="workspace-number">02<span> / 05</span></span>
+        </div>
+
+        <form class="salary-form" (ngSubmit)="calculateMortgage()" (input)="clearMortgageError()" (change)="clearMortgageError()">
+          <label class="field" for="property-price"><span class="field-label">Precio de la vivienda</span><span class="input-with-suffix"><input id="property-price" name="propertyPrice" type="number" min="0.01" step="any" required [(ngModel)]="mortgageData.propertyPrice" /><span>€</span></span></label>
+          <label class="field" for="down-payment"><span class="field-label">Aportación inicial</span><span class="input-with-suffix"><input id="down-payment" name="downPaymentPercent" type="number" min="0" max="100" step="1" required [(ngModel)]="mortgageData.downPaymentPercent" [attr.aria-invalid]="mortgageError() ? 'true' : null" [attr.aria-describedby]="mortgageError() ? 'down-payment-error' : null" /><span>%</span></span>@if (mortgageError()) { <span class="field-error" id="down-payment-error" role="alert">Con esta aportación no queda capital por financiar, así que no hay una hipoteca que calcular.</span> }</label>
+          <label class="field" for="interest-rate"><span class="field-label">Interés anual</span><span class="input-with-suffix"><input id="interest-rate" name="annualInterestRate" type="number" min="0" max="30" step="0.01" required [(ngModel)]="mortgageData.annualInterestRate" /><span>% TIN</span></span></label>
+          <label class="field" for="mortgage-term"><span class="field-label">Plazo</span><span class="input-with-suffix"><input id="mortgage-term" name="termYears" type="number" min="1" max="50" step="1" required [(ngModel)]="mortgageData.termYears" /><span>años</span></span></label>
+          <div class="form-footer">
+            <p><span class="privacy-mark" aria-hidden="true">●</span> Sistema de amortización francés · cuota fija</p>
+            <button class="submit-button" type="submit">Calcular hipoteca <span aria-hidden="true">→</span></button>
+          </div>
+        </form>
+
+        @if (mortgageResult(); as result) {
+          <div class="result-panel" role="status" aria-live="polite">
+            <div class="result-lead"><span class="result-kicker">TU CUOTA MENSUAL ESTIMADA</span><strong>{{ formatMoney(result.monthlyPayment) }}<small> / mes</small></strong><span>Financias {{ formatMoney(result.principal) }} durante {{ result.paymentCount / 12 }} años</span></div>
+            <div class="result-metrics">
+              <div><span>Capital solicitado</span><strong>{{ formatMoney(result.principal) }}</strong></div>
+              <div><span>Intereses totales</span><strong>{{ formatMoney(result.totalInterest) }}</strong></div>
+              <div><span>Total pagado</span><strong>{{ formatMoney(result.totalPaid) }}</strong></div>
+            </div>
+            <p class="result-caveat">Estimación con interés constante y cuotas mensuales. No incluye seguros, comisiones, impuestos ni otros gastos de compra.</p>
+          </div>
+        }
+      </section>
+    } @else if (selectedCalculator() === 'pension') {
+      <section class="calculator-workspace" aria-labelledby="pension-title">
+        <div class="workspace-heading">
+          <div>
+            <p class="eyebrow">CALCULADORA 03 <span class="heading-divider">/</span> JUBILACIÓN</p>
+            <h2 id="pension-title">Proyecta tu pensión</h2>
+            <p class="workspace-copy">Estimamos la cuantía bruta según tu base y los años cotizados previstos.</p>
+          </div>
+          <span class="workspace-number">03<span> / 05</span></span>
+        </div>
+
+        <form #pensionForm class="salary-form" (ngSubmit)="calculatePension()" (input)="refreshPensionResult(pensionForm)" (change)="refreshPensionResult(pensionForm)">
+          <p class="form-section-title field-wide">Edad y cotización</p>
+          <label class="field" for="current-age"><span class="field-label">Edad actual</span><span class="input-with-suffix"><input id="current-age" name="currentAge" type="number" min="16" max="75" step="1" required [(ngModel)]="pensionData.currentAge" /><span>años</span></span></label>
+          <label class="field" for="retirement-age"><span class="field-label">Edad prevista de jubilación</span><span class="input-with-suffix"><input id="retirement-age" name="retirementAge" type="number" [min]="pensionData.currentAge" max="75" step="0.1" required [(ngModel)]="pensionData.retirementAge" /><span>años</span></span></label>
+          <label class="field" for="contribution-years"><span class="field-label">Años cotizados hasta hoy</span><span class="input-with-suffix"><input id="contribution-years" name="currentContributionYears" type="number" min="0" [max]="pensionContributionYearsMax()" step="0.1" required [(ngModel)]="pensionData.currentContributionYears" [attr.aria-invalid]="pensionContributionYearsInvalid() ? 'true' : null" [attr.aria-describedby]="pensionContributionYearsInvalid() ? 'contribution-years-error' : null" /><span>años</span></span>@if (pensionContributionYearsInvalid()) { <span class="field-error" id="contribution-years-error" role="alert">Los años cotizados no pueden superar los años transcurridos desde los 16. Con tu edad actual, el máximo es {{ pensionContributionYearsMax() }}.</span> }</label>
+          <label class="field" for="contribution-base"><span class="field-label">Base media mensual de cotización</span><span class="input-with-suffix"><input id="contribution-base" name="averageMonthlyContributionBase" type="number" min="0.01" step="any" required [(ngModel)]="pensionData.averageMonthlyContributionBase" /><span>€ / mes</span></span><span class="field-hint">No es la cuota que pagas: es la base mensual de tu informe de cotización. Usa una media representativa del período que se calculará.</span></label>
+          <p class="form-section-title field-wide">Complementos opcionales</p>
+          <label class="field" for="pension-children">
+            <span class="field-label">Hijos para simular el complemento por brecha de género (0–4)</span>
+            <span class="input-with-suffix"><input id="pension-children" name="children" type="number" min="0" max="4" step="1" required [(ngModel)]="pensionData.children" (ngModelChange)="updatePensionChildren($event, pensionForm)" /><span>hijos</span></span>
+            <span class="field-hint">Pon 0 si no quieres incluirlo. Con uno o más hijos se muestra un escenario orientativo; el complemento requiere cumplir condiciones legales y no se concede automáticamente.</span>
+          </label>
+          <label class="check-control" for="include-minimum-supplement">
+            <input id="include-minimum-supplement" name="includeMinimumSupplement" type="checkbox" [(ngModel)]="pensionData.includeMinimumSupplement" />
+            <span class="check-copy"><strong>Simular posible complemento a mínimos</strong><small>Depende de rentas, residencia y situación familiar</small></span>
+          </label>
+          @if (pensionData.includeMinimumSupplement) {
+            <label class="field" for="family-status">
+              <span class="field-label">Situación familiar</span>
+              <select id="family-status" name="familyStatus" required [(ngModel)]="pensionData.familyStatus" (ngModelChange)="updatePensionFamilyStatus($event, pensionForm)">
+                <option value="unknown" disabled>Selecciona una opción</option>
+                <option value="single">Soltero/a</option>
+                <option value="married">Casado/a</option>
+                <option value="widowed">Viudo/a</option>
+                <option value="divorced-separated">Divorciado/a o separado/a</option>
+              </select>
+            </label>
+            @if (pensionData.familyStatus === 'married') {
+              <label class="field" for="spouse-income-status">
+                <span class="field-label">¿Tu cónyuge tiene ingresos propios?</span>
+                <select id="spouse-income-status" name="spouseIncomeStatus" required [(ngModel)]="pensionData.spouseIncomeStatus" (ngModelChange)="updateSpouseIncomeStatus($event, pensionForm)">
+                  <option value="unknown" disabled>Selecciona una opción</option>
+                  <option value="no">No</option>
+                  <option value="yes">Sí</option>
+                </select>
+              </label>
+              @if (pensionData.spouseIncomeStatus === 'yes') {
+                <label class="field" for="spouse-annual-income">
+                  <span class="field-label">Ingresos anuales aproximados del cónyuge</span>
+                  <span class="input-with-suffix"><input id="spouse-annual-income" name="spouseAnnualIncome" type="number" min="0" step="any" required [(ngModel)]="pensionData.spouseAnnualIncome" /><span>€ / año</span></span>
+                </label>
+              }
+            }
+            <label class="field" for="other-income-status">
+              <span class="field-label">¿Tienes otros ingresos anuales además de la pensión?</span>
+              <select id="other-income-status" name="otherIncomeStatus" required [(ngModel)]="pensionData.otherIncomeStatus" (ngModelChange)="updateOtherIncomeStatus($event, pensionForm)">
+                <option value="unknown" disabled>Selecciona una opción</option>
+                <option value="no">No</option>
+                <option value="yes">Sí</option>
+              </select>
+            </label>
+            @if (pensionData.otherIncomeStatus === 'yes') {
+              <label class="field" for="other-annual-income">
+                <span class="field-label">Otros ingresos anuales aproximados</span>
+                <span class="input-with-suffix"><input id="other-annual-income" name="otherAnnualIncome" type="number" min="0" step="any" required [(ngModel)]="pensionData.otherAnnualIncome" /><span>€ / año</span></span>
+              </label>
+            }
+            <label class="check-control" for="resides-in-spain">
+              <input id="resides-in-spain" name="residesInSpain" type="checkbox" [(ngModel)]="pensionData.residesInSpain" />
+              <span class="check-copy"><strong>Resido en España</strong><small>Requisito para este escenario de complemento</small></span>
+            </label>
+            <span class="field-hint field-wide">No se presupone que estar casado/a implique tener cónyuge a cargo. Para jubilaciones futuras no se proyectan cuantías mínimas ni límites de ingresos de 2026.</span>
+          }
+          <div class="form-footer">
+            <p><span class="privacy-mark" aria-hidden="true">●</span> Supone que cotizas de forma continua hasta jubilarte.</p>
+            <button class="submit-button" type="submit">Estimar pensión <span aria-hidden="true">→</span></button>
+          </div>
+        </form>
+
+        @if (pensionResult(); as result) {
+          <div class="result-panel" role="status" aria-live="polite">
+            @if (result.eligible) {
+              <div class="result-lead"><span class="result-kicker">{{ pensionData.children > 0 || pensionData.includeMinimumSupplement ? 'ESTIMACIÓN MENSUAL TOTAL' : 'PENSIÓN BRUTA CONTRIBUTIVA ORIENTATIVA' }}</span><strong>{{ formatMoney(pensionMonthlyTotal(result)) }}<small> / mes</small></strong><span>{{ formatMoney(pensionAnnualTotal(result)) }} brutos al año en 14 pagas@if (pensionData.includeMinimumSupplement && result.monthlyMinimumSupplement === 0) { · sin complemento a mínimos calculado }</span></div>
+              <div class="result-metrics">
+                <div><span>Años cotizados previstos</span><strong>{{ result.projectedContributionYears | number:'1.0-1' }} años</strong></div>
+                <div><span>Edad ordinaria</span><strong>{{ result.ordinaryRetirementAge | number:'1.0-1' }} años</strong></div>
+                <div><span>Edad prevista</span><strong>{{ pensionData.retirementAge | number:'1.0-1' }} años</strong></div>
+                <div><span>Jubilación demorada</span><strong>{{ result.retirementDelayYears | number:'1.0-1' }} años</strong></div>
+                <div><span>Incentivo por demora</span><strong>+{{ result.delayIncentivePercent | number:'1.0-1' }}%</strong></div>
+                <div><span>Porcentaje por años cotizados</span><strong>{{ (result.replacementPercentage * 100) | number:'1.1-1' }}%</strong></div>
+                <div><span>Base reguladora estimada mediante escenario simplificado</span><strong>{{ formatMoney(result.regulatoryBase) }} / mes</strong></div>
+                <div><span>Pensión contributiva estimada</span><strong>{{ formatMoney(result.monthlyGross) }} / mes</strong></div>
+                @if (pensionChildSupplement(result) > 0) {
+                  <div><span>Complemento por hijos (escenario)</span><strong>+{{ formatMoney(pensionChildSupplement(result)) }} / mes</strong></div>
+                }
+                @if (pensionMinimumSupplement(result) > 0) {
+                  <div><span>Complemento a mínimos estimado</span><strong>+{{ formatMoney(pensionMinimumSupplement(result)) }} / mes</strong></div>
+                }
+              </div>
+            } @else {
+              <div class="result-lead result-ineligible"><span class="result-kicker">NO CUMPLE LOS REQUISITOS ORDINARIOS ESTIMADOS</span><strong>{{ result.projectedContributionYears | number:'1.0-1' }} años cotizados</strong><span>{{ result.meetsMinimumContribution ? 'La edad prevista es anterior a la edad ordinaria estimada; no se modela jubilación anticipada.' : 'La estimación no alcanza los 15 años mínimos de cotización para una pensión contributiva.' }}</span></div>
+            }
+            @if (pensionData.includeMinimumSupplement) {
+              <p class="result-caveat">{{ result.minimumSupplementMessage }}</p>
+            }
+            <p class="result-caveat">Proyección con reglas de referencia de 2026 y cotización continua hasta la edad indicada. Estimación basada en la base media mensual introducida. El cálculo oficial de la Seguridad Social utiliza las bases de cotización históricas reales y puede producir un resultado diferente; esta estimación no reconstruye las bases mes a mes ni permite seleccionar las más favorables. Para jubilaciones futuras no se proyectan las cuantías de 2026 del complemento a mínimos; estar casado/a no confirma la dependencia económica y el resultado depende de requisitos, ingresos y cuantías del año de jubilación. El complemento de brecha de género (36,90 € por hijo/mes en 2026, máximo cuatro) es solo un escenario, requiere cumplir sus condiciones —incluida la fecha de reconocimiento de la pensión— y solo se reconoce a un progenitor. No se calculan fiscalidad ni revalorizaciones futuras.</p>
+          </div>
+        }
+      </section>
+    } @else if (selectedCalculator() === 'compound-interest') {
+      <section class="calculator-workspace" aria-labelledby="compound-interest-title">
+        <div class="workspace-heading">
+          <div>
+            <p class="eyebrow">CALCULADORA 04 <span class="heading-divider">/</span> INTERÉS COMPUESTO</p>
+            <h2 id="compound-interest-title">Proyecta el crecimiento de tu inversión</h2>
+            <p class="workspace-copy">Aportaciones al final de cada mes con capitalización mensual.</p>
+          </div>
+          <span class="workspace-number">04<span> / 05</span></span>
+        </div>
+
+        <form class="salary-form" (ngSubmit)="calculateCompoundInterest()" (input)="clearCompoundInterestError()" (change)="clearCompoundInterestError()">
+          <label class="field" for="initial-capital">
+            <span class="field-label">Capital inicial</span>
+            <span class="input-with-suffix"><input id="initial-capital" name="initialCapital" type="number" min="0" max="1000000000" step="any" required [(ngModel)]="compoundInterestData.initialCapital" [attr.aria-invalid]="compoundInterestError() ? 'true' : null" [attr.aria-describedby]="compoundInterestError() ? 'compound-interest-error' : null" /><span>€</span></span>
+          </label>
+          <label class="field" for="monthly-contribution">
+            <span class="field-label">Aportación al final de cada mes</span>
+            <span class="input-with-suffix"><input id="monthly-contribution" name="monthlyContribution" type="number" min="0" max="1000000000" step="any" required [(ngModel)]="compoundInterestData.monthlyContribution" [attr.aria-invalid]="compoundInterestError() ? 'true' : null" [attr.aria-describedby]="compoundInterestError() ? 'compound-interest-error' : null" /><span>€ / mes</span></span>
+          </label>
+          <label class="field" for="annual-nominal-rate">
+            <span class="field-label">Rentabilidad anual nominal hipotética</span>
+            <span class="input-with-suffix"><input id="annual-nominal-rate" name="annualNominalRate" type="number" min="0" max="100" step="0.01" required [(ngModel)]="compoundInterestData.annualNominalRate" /><span>%</span></span>
+          </label>
+          <label class="field" for="compound-term">
+            <span class="field-label">Plazo</span>
+            <span class="input-with-suffix"><input id="compound-term" name="termYears" type="number" min="1" max="100" step="1" required [(ngModel)]="compoundInterestData.termYears" /><span>años</span></span>
+          </label>
+          @if (compoundInterestError()) {
+            <p class="field-error field-wide" id="compound-interest-error" role="alert">Introduce un capital inicial o una aportación mensual superior a cero.</p>
+          }
+          <div class="form-footer">
+            <p><span class="privacy-mark" aria-hidden="true">●</span> Tasa nominal anual dividida entre 12 · sin impuestos ni inflación.</p>
+            <button class="submit-button" type="submit">Calcular proyección <span aria-hidden="true">→</span></button>
+          </div>
+        </form>
+
+        @if (compoundInterestResult(); as result) {
+          <div class="result-panel" role="status" aria-live="polite">
+            <div class="result-lead"><span class="result-kicker">CAPITAL PROYECTADO AL FINAL DEL PLAZO</span><strong>{{ formatMoney(result.futureValue) }}</strong><span>Escenario hipotético a {{ compoundInterestData.termYears }} años</span></div>
+            <div class="result-metrics">
+              <div><span>Total aportado</span><strong>{{ formatMoney(result.totalContributions) }}</strong></div>
+              <div><span>Intereses estimados</span><strong>{{ formatMoney(result.interestEarned) }}</strong></div>
+            </div>
+            <figure class="growth-figure">
+              <figcaption>Evolución estimada del saldo por año</figcaption>
+              <ol class="growth-chart" aria-label="Saldo estimado desde el año cero hasta el final del plazo">
+                @for (balance of result.yearlyBalances; track $index; let year = $index) {
+                  <li [attr.aria-label]="'Año ' + year + ': ' + formatMoney(balance)">
+                    <span class="chart-column" aria-hidden="true"><span class="chart-bar" [style.height.%]="compoundInterestBarHeight(balance, result)"></span></span>
+                    <span class="chart-year">{{ year }}</span>
+                  </li>
+                }
+              </ol>
+            </figure>
+            <p class="result-caveat">Rentabilidad constante usada solo como supuesto matemático. El resultado no garantiza rendimientos reales y no descuenta inflación, impuestos, comisiones ni pérdidas.</p>
+          </div>
+        }
+      </section>
+    } @else if (selectedCalculator() === 'severance') {
+      <section class="calculator-workspace" aria-labelledby="severance-title">
+        <div class="workspace-heading">
+          <div>
+            <p class="eyebrow">CALCULADORA 05 <span class="heading-divider">/</span> FINIQUITO E INDEMNIZACIÓN</p>
+            <h2 id="severance-title">Separa liquidación e indemnización</h2>
+            <p class="workspace-copy">Introduce las cantidades pendientes y los datos de antigüedad del contrato.</p>
+          </div>
+          <span class="workspace-number">05<span> / 05</span></span>
+        </div>
+
+        <form class="salary-form" (ngSubmit)="calculateSeverance()" (input)="clearSeveranceDateError()" (change)="clearSeveranceDateError()">
+          <label class="field" for="severance-annual-salary">
+            <span class="field-label">Salario bruto anual con pagas extra</span>
+            <span class="input-with-suffix"><input id="severance-annual-salary" name="annualSalary" type="number" min="0.01" max="1000000000" step="any" required [(ngModel)]="severanceData.annualSalary" /><span>€ / año</span></span>
+          </label>
+          <label class="field" for="pending-salary-days">
+            <span class="field-label">Días trabajados pendientes de cobrar</span>
+            <span class="input-with-suffix"><input id="pending-salary-days" name="pendingSalaryDays" type="number" min="0" max="31" step="any" required [(ngModel)]="severanceData.pendingSalaryDays" /><span>días</span></span>
+          </label>
+          <label class="field" for="unused-vacation-days">
+            <span class="field-label">Vacaciones pendientes de disfrutar</span>
+            <span class="input-with-suffix"><input id="unused-vacation-days" name="unusedVacationDays" type="number" min="0" step="any" required [(ngModel)]="severanceData.unusedVacationDays" /><span>días</span></span>
+          </label>
+          <label class="field" for="accrued-extra-pay">
+            <span class="field-label">Pagas extra devengadas pendientes</span>
+            <span class="input-with-suffix"><input id="accrued-extra-pay" name="accruedExtraPay" type="number" min="0" max="1000000000" step="any" required [(ngModel)]="severanceData.accruedExtraPay" /><span>€</span></span>
+            <span class="field-hint">Introduce el importe bruto pendiente según tu nómina o convenio; no se vuelve a prorratear.</span>
+          </label>
+          <label class="field" for="contract-start-date">
+            <span class="field-label">Fecha de inicio del contrato</span>
+            <input id="contract-start-date" name="contractStartDate" type="date" [max]="severanceData.terminationDate" required [(ngModel)]="severanceData.contractStartDate" [attr.aria-invalid]="severanceDateError() ? 'true' : null" [attr.aria-describedby]="severanceDateError() ? 'severance-date-error' : null" />
+          </label>
+          <label class="field" for="termination-date">
+            <span class="field-label">Fecha de fin del contrato</span>
+            <input id="termination-date" name="terminationDate" type="date" [min]="severanceData.contractStartDate" required [(ngModel)]="severanceData.terminationDate" [attr.aria-invalid]="severanceDateError() ? 'true' : null" [attr.aria-describedby]="severanceDateError() ? 'severance-date-error' : null" />
+          </label>
+          <label class="field" for="dismissal-type">
+            <span class="field-label">Tipo de despido para estimar la indemnización</span>
+            <select id="dismissal-type" name="dismissalType" required [(ngModel)]="severanceData.dismissalType">
+              <option value="objective">Objetivo (20 días por año)</option>
+              <option value="unfair">Improcedente (tramos 45/33 días)</option>
+            </select>
+          </label>
+          @if (severanceDateError()) {
+            <p class="field-error field-wide" id="severance-date-error" role="alert">La fecha de inicio no puede ser posterior a la fecha de fin.</p>
+          }
+          <div class="form-footer">
+            <p><span class="privacy-mark" aria-hidden="true">●</span> Importes brutos orientativos · finiquito e indemnización por separado.</p>
+            <button class="submit-button" type="submit">Estimar cantidades <span aria-hidden="true">→</span></button>
+          </div>
+        </form>
+
+        @if (severanceResult(); as result) {
+          <div class="result-panel" role="status" aria-live="polite">
+            <div class="result-lead"><span class="result-kicker">TOTAL BRUTO ORIENTATIVO</span><strong>{{ formatMoney(result.totalGross) }}</strong><span>Finiquito e indemnización estimados antes de impuestos</span></div>
+            <div class="result-metrics">
+              <div><span>Salario pendiente</span><strong>{{ formatMoney(result.pendingSalary) }}</strong></div>
+              <div><span>Vacaciones no disfrutadas</span><strong>{{ formatMoney(result.unusedVacationPay) }}</strong></div>
+              <div><span>Pagas extra pendientes</span><strong>{{ formatMoney(result.accruedExtraPay) }}</strong></div>
+              <div><span>Finiquito estimado</span><strong>{{ formatMoney(result.settlementTotal) }}</strong></div>
+              <div><span>Antigüedad calculada</span><strong>{{ result.serviceYears | number:'1.0-2' }} años</strong></div>
+              <div><span>Días de indemnización estimados</span><strong>{{ result.severanceDays | number:'1.0-2' }}</strong></div>
+              <div><span>Indemnización estimada</span><strong>{{ formatMoney(result.severanceAmount) }}</strong></div>
+            </div>
+            <p class="result-caveat">La indemnización objetiva se limita a 12 mensualidades. Para el despido improcedente se aplican 45 días por año antes del 12/02/2012 y 33 después, con los topes legales de 720 o 1.260 días cuando corresponde el régimen transitorio anterior. El cálculo supone salario fijo y no confirma la causa ni la calificación judicial del despido.</p>
+          </div>
+        }
+      </section>
+    }
+
+    <footer class="page-footer"><span>CUENTA CLARA</span><span>Estimaciones orientativas · España</span></footer>
+  </main>
+</div>

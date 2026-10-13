@@ -1,6 +1,6 @@
 # Calculadora financiera
 
-Plataforma para calcular sueldo neto, hipotecas, finiquitos y pensiones.
+Plataforma de calculadoras financieras: sueldo neto, hipoteca, pensión, interés compuesto y finiquito e indemnización.
 
 ## Estructura
 
@@ -21,4 +21,15 @@ npm run start:web
 npm run build:web
 ```
 
-Las calculadoras previstas son sueldo neto, hipoteca, finiquito y pension. Las reglas fiscales y laborales deberan versionarse por pais, territorio y ejercicio antes de usarse en produccion.
+Las estimaciones no sustituyen cálculos oficiales ni asesoramiento financiero, fiscal o laboral. Las reglas fiscales y laborales deben versionarse por territorio y ejercicio. La calculadora de IRPF queda pendiente hasta verificar las escalas autonómicas oficiales para 2026.
+
+## Rutas de la aplicacion web
+
+- `/`: portada con enlaces a las calculadoras disponibles.
+- `/sueldo-neto`: estimacion de sueldo neto.
+- `/calculadora-hipoteca`: estimacion de cuota y coste de hipoteca.
+- `/calculadora-pension`: proyeccion orientativa de pension de jubilacion.
+- `/calculadora-interes-compuesto`: proyección con aportaciones mensuales e interés nominal.
+- `/calculadora-finiquito-indemnizacion`: estimación separada del finiquito y de la indemnización por despido.
+
+Los titulos y las descripciones se configuran por ruta en Angular. La etiqueta canonical y el sitemap deben añadirse cuando se defina el dominio publico y las URLs definitivas; el alojamiento futuro tambien debe servir la aplicacion Angular para rutas directas.

@@ -47,6 +47,20 @@ El complemento para la reducción de la brecha de género se incorpora como esce
 
 El complemento a mínimos es otro concepto distinto. La interfaz recoge situación familiar, si el cónyuge tiene ingresos y otros ingresos propios, pero estar casado/a o declarar que el cónyuge no tiene ingresos no confirma por sí solo la dependencia económica legal. Para el año de referencia 2026, las cuantías anuales son 17.592,40 EUR con cónyuge a cargo, 13.106,80 EUR sin cónyuge y 12.441,80 EUR con cónyuge no a cargo; los límites de ingresos de referencia son 11.013 EUR con cónyuge a cargo y 9.442 EUR en los otros casos. Solo se estima una cuantía cuando el año proyectado es 2026. Para jubilaciones futuras no se reutilizan ni proyectan los importes de 2026: se informa que el complemento podría corresponder, sujeto a los requisitos, ingresos y cuantías vigentes en el año de jubilación. La estimación no verifica la convivencia/dependencia económica, el cómputo legal de rentas ni el resto de requisitos personales.
 
+## Interés compuesto
+
+La proyección usa una rentabilidad nominal anual constante dividida entre doce para obtener el tipo mensual. Cada mes se aplica el interés y después se añade la aportación mensual, por lo que las aportaciones se realizan al final del mes. El saldo final es la suma del capital inicial capitalizado y de las aportaciones capitalizadas; a tipo cero equivale al capital inicial más todas las aportaciones.
+
+No se modelan impuestos, inflación, comisiones, variaciones de rentabilidad ni pérdidas. La tasa es un supuesto del usuario, no una previsión ni garantía de rendimiento.
+
+## Finiquito e indemnización por despido
+
+El salario diario orientativo se calcula como salario bruto anual dividido entre 365. El finiquito suma los días de salario pendientes, las vacaciones no disfrutadas y el importe de pagas extra devengado que introduce el usuario. Las vacaciones y pagas extra no se vuelven a inferir de las fechas porque dependen del calendario de devengo, de los días disfrutados y del convenio.
+
+La indemnización se presenta aparte. Para el despido objetivo se estiman 20 días de salario por año de servicio, con límite de 12 mensualidades. Para el despido improcedente se aplican 45 días por año al período anterior al 12 de febrero de 2012 y 33 días por año al período posterior; se aplican los límites de 720 días y, cuando la cuantía generada antes de esa fecha supera ese tope, el límite transitorio de 1.260 días. Los períodos inferiores a un año se prorratean por meses de antigüedad y se convierten a días de salario. El resultado es orientativo y puede diferir de la liquidación legal según fechas, salario regulador y circunstancias del caso.
+
+No se decide si el despido está justificado o debe calificarse como improcedente. No se incluyen salarios variables, complementos, salarios en especie, convenios, indemnizaciones pactadas ni el tratamiento fiscal de las cantidades.
+
 Fuentes oficiales:
 
 - [Seguridad Social: cálculo de la base reguladora y transición desde 2026](https://www.seg-social.es/wps/portal/wss/internet/Trabajadores/PrestacionesPensionesTrabajadores/10963/28393/28396/28475)
@@ -55,5 +69,6 @@ Fuentes oficiales:
 - [Ley del IRPF, artículo 20: reducción por rendimientos del trabajo](https://www.boe.es/buscar/act.php?id=BOE-A-2006-20764#a20)
 - [Seguridad Social: cotizaciones y bases de 2026](https://www.seg-social.es/wps/portal/wss/internet/Trabajadores/CotizacionRecaudacionTrabajadores/36537)
 - [Real Decreto-ley 3/2026: revalorización, máximos y mínimos de pensiones (BOE)](https://www.boe.es/buscar/act.php?id=BOE-A-2026-2548)
+- [Estatuto de los Trabajadores: texto consolidado (artículos 53 y 56)](https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430)
 
 Las reglas y cuantías deberán revisarse y versionarse con las publicaciones oficiales de cada ejercicio antes de emplearse para decisiones fiscales o de jubilación.

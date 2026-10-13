@@ -43,6 +43,132 @@ button, input, select { font: inherit; }
 .check-copy strong { font-size: 12px; }
 .check-copy small { color: #68766f; font-size: 10px; }
 
+.topbar-nav {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+.topbar-nav a {
+	padding-block: 8px;
+	border-bottom: 1px solid transparent;
+	color: #d2ddd3;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+.topbar-nav a:hover,
+.topbar-nav a[aria-current="page"] {
+	border-color: #d6ef84;
+	color: #ffffff;
+}
+
+.topbar-nav a:focus-visible {
+	outline: 3px solid #e77e4e88;
+	outline-offset: 3px;
+}
+
+.calculator-intro {
+	margin-top: 34px;
+	padding: 23px 26px;
+	border-left: 2px solid #1f6a4f;
+	background: #ffffff;
+	color: #68766f;
+	line-height: 1.65;
+}
+
+.calculator-intro h2 {
+	margin: 0 0 12px;
+	color: #18352f;
+	font-family: 'DM Serif Display', Georgia, serif;
+	font-size: 23px;
+	font-weight: 400;
+}
+
+.calculator-intro p {
+	margin: 9px 0 0;
+	font-size: 13px;
+}
+
+.growth-figure {
+	margin: 24px 0 0;
+	padding: 18px 18px 12px;
+	border: 1px solid #dce5df;
+	background: #fbfcfa;
+}
+
+.growth-figure figcaption {
+	margin-bottom: 14px;
+	color: #18352f;
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.growth-chart {
+	min-height: 190px;
+	margin: 0;
+	padding: 0 0 5px;
+	display: flex;
+	align-items: end;
+	gap: 4px;
+	overflow-x: auto;
+	list-style: none;
+	border-bottom: 1px solid #dce5df;
+}
+
+.growth-chart li {
+	min-width: 22px;
+	height: 180px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: end;
+	gap: 5px;
+	color: #68766f;
+	font-size: 9px;
+}
+
+.chart-column {
+	width: 14px;
+	height: 150px;
+	display: flex;
+	align-items: end;
+}
+
+.chart-bar {
+	width: 100%;
+	min-height: 4px;
+	display: block;
+	background: #1f6a4f;
+	border-radius: 2px 2px 0 0;
+}
+
+.chart-year { line-height: 1; }
+
+.field-error { color: #a85431; font-size: 12px; line-height: 1.4; }
+
+.calculator-card { text-decoration: none; }
+
+.calculator-card:focus-visible,
+.brand:focus-visible,
+.submit-button:focus-visible,
+.text-button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+	outline: 3px solid #e77e4e88;
+	outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+	.topbar-nav { order: 3; flex: 1 0 100%; flex-wrap: wrap; justify-content: center; }
+}
+
+@media (max-width: 520px) {
+	.topbar-nav { gap: 12px 16px; justify-content: flex-start; }
+	.topbar-nav a { font-size: 11px; }
+	.calculator-intro { margin-top: 25px; padding: 19px 17px; }
+}
+
 .input-mode { display: flex; gap: 6px; }
 .input-mode button {
 	padding: 7px 13px;

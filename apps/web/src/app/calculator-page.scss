@@ -168,15 +168,6 @@ main {
 	transform: translateY(-2px);
 }
 
-.calculator-card:focus-visible,
-.submit-button:focus-visible,
-.text-button:focus-visible,
-input:focus-visible,
-select:focus-visible {
-	outline: 3px solid #e77e4e88;
-	outline-offset: 3px;
-}
-
 .card-topline {
 	display: flex;
 	align-items: center;
@@ -304,7 +295,6 @@ select:focus-visible {
 }
 
 .field-hint { color: #819087; font-size: 11px; }
-
 .form-footer {
 	grid-column: 1 / -1;
 	display: flex;
@@ -418,6 +408,8 @@ select:focus-visible {
 .page-footer span:first-child { color: var(--green); font-weight: 700; letter-spacing: 1px; }
 
 @media (max-width: 760px) {
+	.topbar { flex-wrap: wrap; gap: 12px; padding-block: 14px; }
+	.topbar-meta { margin-left: auto; }
 	.intro { padding-top: 56px; }
 	.calculator-grid { grid-template-columns: 1fr; }
 	.calculator-card { min-height: 184px; }
