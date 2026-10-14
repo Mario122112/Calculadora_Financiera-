@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -11,15 +11,26 @@ import {
   calculateSalaryNet,
   calculateCompoundInterest,
   calculateSeverance,
+  calculatePersonalLoan,
+  comparePersonalLoanScenarios,
   type CompoundInterestEstimate,
   type DismissalType,
   type MortgageEstimate,
+  type PersonalLoanEstimate,
+  type PersonalLoanInput,
+  type PersonalLoanScenario,
   type PensionEstimate,
   type SalaryEstimate,
   type SeveranceEstimate
 } from '@calculadora-financiera/calculation-engine';
 
-export type Calculator = 'salary' | 'mortgage' | 'pension' | 'compound-interest' | 'severance';
+export type Calculator = 'salary' | 'mortgage' | 'pension' | 'compound-interest' | 'severance' | 'personal-loan';
+
+interface PersonalLoanPageResult {
+  estimate: PersonalLoanEstimate;
+  scenarios: PersonalLoanScenario[];
+  comparisonReferenceIndex: number;
+}
 
 interface CalculatorContent {
   title: string;
@@ -39,9 +50,9 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
   },
   mortgage: {
     title: 'Calculadora de hipoteca',
-    summary: 'Calcula una cuota mensual estimada y el coste total de un préstamo con pagos mensuales constantes.',
+    summary: 'Calcula la primera cuota mensual estimada y el coste total de un préstamo con amortización constante de capital.',
     detail: 'Indica el precio de la vivienda, el porcentaje de entrada, el interés nominal anual y el plazo. La entrada se resta del precio para estimar el capital financiado.',
-    interpretation: 'La cuota se calcula con el sistema francés y un tipo constante. El total pagado suma las cuotas del plazo y permite ver el coste de intereses estimado.',
+    interpretation: 'Se amortiza la misma cantidad de capital cada mes, por lo que la cuota disminuye a medida que bajan los intereses. El total pagado permite ver el coste de intereses estimado.',
     limitations: 'No incluye comisiones, seguros, impuestos, tasación ni gastos de compraventa. Una oferta real puede usar tipos, condiciones o calendarios diferentes.'
   },
   pension: {
@@ -64,6 +75,13 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
     detail: 'Introduce el salario bruto anual, los días de salario y vacaciones pendientes, la paga extra acumulada no cobrada, las fechas del contrato y el tipo de despido.',
     interpretation: 'El finiquito agrupa cantidades devengadas pendientes de pago; la indemnización se calcula aparte según el tipo de despido y la antigüedad.',
     limitations: 'Es un cálculo bruto simplificado. No determina si el despido es procedente, no interpreta convenios, salarios variables ni exenciones fiscales; contrasta los datos con asesoramiento laboral.'
+  },
+  'personal-loan': {
+    title: 'Calculadora de préstamo personal',
+    summary: 'Estima la primera cuota, los intereses y el coste total de un préstamo personal con comisión y gastos desglosados.',
+    detail: 'Indica el importe, el TIN anual, el plazo y los posibles costes iniciales o periódicos. La comisión se calcula sobre el importe solicitado y se paga aparte.',
+    interpretation: 'La estimación amortiza la misma cantidad de capital cada mes; al bajar los intereses sobre el saldo pendiente, las cuotas disminuyen. El último pago se ajusta al céntimo para cancelar el saldo.',
+    limitations: 'Es una simulación matemática, no una oferta bancaria ni la TAE real. No convierte TAE a TIN ni incorpora costes automáticamente al capital financiado.'
   }
 };
 
@@ -87,9 +105,11 @@ export class CalculatorPage {
   protected readonly pensionResult = signal<PensionEstimate | null>(null);
   protected readonly compoundInterestResult = signal<CompoundInterestEstimate | null>(null);
   protected readonly severanceResult = signal<SeveranceEstimate | null>(null);
+  protected readonly personalLoanResult = signal<PersonalLoanPageResult | null>(null);
   protected readonly mortgageError = signal(false);
   protected readonly compoundInterestError = signal(false);
   protected readonly severanceDateError = signal(false);
+  protected readonly personalLoanError = signal<string | null>(null);
   protected salaryInputMode: 'annual' | 'monthly' = 'annual';
 
   protected salaryData = {
@@ -145,10 +165,28 @@ export class CalculatorPage {
     dismissalType: 'objective' as DismissalType
   };
 
+  protected personalLoanData = {
+    principal: 10000,
+    annualInterestRate: 8.5,
+    termYears: 5,
+    additionalMonths: 0,
+    openingFeePercent: 1.5,
+    upfrontExpenses: 0,
+    monthlyAdditionalCost: 0
+  };
+
+  private readonly defaultPersonalLoanData = { ...this.personalLoanData };
+
   private readonly euroFormatter = new Intl.NumberFormat('es-ES', {
     style: 'currency',
     currency: 'EUR',
     maximumFractionDigits: 0
+  });
+
+  private readonly loanEuroFormatter = new Intl.NumberFormat('es-ES', {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: 2
   });
 
   constructor() {
@@ -171,7 +209,8 @@ export class CalculatorPage {
       routeCalculator === 'mortgage' ||
       routeCalculator === 'pension' ||
       routeCalculator === 'compound-interest' ||
-      routeCalculator === 'severance'
+      routeCalculator === 'severance' ||
+      routeCalculator === 'personal-loan'
       ? routeCalculator
       : null;
     this.selectedCalculator.set(calculator);
@@ -180,9 +219,11 @@ export class CalculatorPage {
     this.pensionResult.set(null);
     this.compoundInterestResult.set(null);
     this.severanceResult.set(null);
+    this.personalLoanResult.set(null);
     this.mortgageError.set(false);
     this.compoundInterestError.set(false);
     this.severanceDateError.set(false);
+    this.personalLoanError.set(null);
 
     const description = routeData?.['description'];
     if (typeof description === 'string') {
@@ -333,6 +374,54 @@ export class CalculatorPage {
     this.severanceResult.set(calculateSeverance(this.severanceData));
   }
 
+  protected calculatePersonalLoan(): void {
+    this.personalLoanError.set(null);
+    try {
+      const input = this.personalLoanInput();
+      const estimate = calculatePersonalLoan(input);
+      const rate = this.personalLoanData.annualInterestRate;
+      const scenarioRates = rate === 0
+        ? [0, 1, 2]
+        : rate === 100
+          ? [98, 99, 100]
+          : [Math.max(0, rate - 1), rate, Math.min(100, rate + 1)];
+      const comparisonReferenceIndex = rate === 0 ? 0 : rate === 100 ? 2 : 1;
+      this.personalLoanResult.set({
+        estimate,
+        scenarios: comparePersonalLoanScenarios(input, scenarioRates),
+        comparisonReferenceIndex
+      });
+    } catch (error) {
+      if (!(error instanceof RangeError)) {
+        throw error;
+      }
+      this.personalLoanResult.set(null);
+      this.personalLoanError.set(error.message);
+    }
+  }
+
+  protected resetPersonalLoan(form: NgForm): void {
+    Object.assign(this.personalLoanData, this.defaultPersonalLoanData);
+    form.resetForm(this.defaultPersonalLoanData);
+    this.personalLoanResult.set(null);
+    this.personalLoanError.set(null);
+  }
+
+  protected clearPersonalLoanError(): void {
+    this.personalLoanError.set(null);
+  }
+
+  private personalLoanInput(): PersonalLoanInput {
+    return {
+      principal: this.personalLoanData.principal,
+      annualInterestRate: this.personalLoanData.annualInterestRate,
+      termMonths: this.personalLoanData.termYears * 12 + this.personalLoanData.additionalMonths,
+      openingFeePercent: this.personalLoanData.openingFeePercent,
+      upfrontExpenses: this.personalLoanData.upfrontExpenses,
+      monthlyAdditionalCost: this.personalLoanData.monthlyAdditionalCost
+    };
+  }
+
   protected clearSeveranceDateError(): void {
     this.severanceDateError.set(false);
   }
@@ -381,5 +470,9 @@ export class CalculatorPage {
 
   protected formatMoney(amount: number): string {
     return this.euroFormatter.format(amount);
+  }
+
+  protected formatLoanMoney(amount: number): string {
+    return this.loanEuroFormatter.format(amount);
   }
 }

@@ -419,6 +419,11 @@ main {
 	.text-button { margin-left: 59px; }
 }
 
+@media (min-width: 761px) and (max-width: 980px) {
+	.topbar { flex-wrap: wrap; gap: 12px; padding-block: 14px; }
+	.topbar-nav { order: 3; flex: 1 0 100%; flex-wrap: wrap; justify-content: center; }
+}
+
 @media (max-width: 520px) {
 	.topbar { min-height: 64px; padding-inline: 20px; }
 	.topbar-meta { font-size: 10px; }

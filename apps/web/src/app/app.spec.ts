@@ -7,6 +7,8 @@ import { routes } from './app.routes';
 import {
   calculateCompoundInterest,
   calculateMortgage,
+  calculatePersonalLoan,
+  comparePersonalLoanScenarios,
   calculatePensionEstimate,
   calculateSalaryNet,
   calculateSeverance
@@ -31,7 +33,7 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain('Decisiones claras');
-    expect(compiled.querySelectorAll('.calculator-card')).toHaveLength(5);
+    expect(compiled.querySelectorAll('.calculator-card')).toHaveLength(6);
   });
 
   it('should open the salary questionnaire when selected', async () => {
@@ -65,6 +67,13 @@ describe('App', () => {
         heading: 'Calculadora de hipoteca',
         title: 'Calculadora de hipoteca: cuota y coste total | Cuenta Clara',
         description: 'Calcula una cuota hipotecaria orientativa'
+      },
+      {
+        path: '/calculadora-prestamo-personal',
+        calculator: 'personal-loan',
+        heading: 'Calculadora de préstamo personal',
+        title: 'Calculadora de préstamo personal: cuota y coste total | Cuenta Clara',
+        description: 'Calcula la cuota, intereses, comisiones y coste total'
       },
       {
         path: '/calculadora-pension',
@@ -114,6 +123,11 @@ describe('App', () => {
         formId: '#mortgage-title'
       },
       {
+        path: '/calculadora-prestamo-personal',
+        heading: 'Calculadora de préstamo personal',
+        formId: '#personal-loan-title'
+      },
+      {
         path: '/calculadora-pension',
         heading: 'Calculadora de pensión de jubilación',
         formId: '#pension-title'
@@ -143,15 +157,18 @@ describe('App', () => {
     const element = fixture.nativeElement as HTMLElement;
 
     expect(element.querySelector('.brand')?.getAttribute('href')).toBe('/');
-    expect(element.querySelectorAll('.topbar-nav a')).toHaveLength(5);
+    expect(element.querySelectorAll('.topbar-nav a')).toHaveLength(6);
     expect(Array.from(element.querySelectorAll('.calculator-card')).map(link => link.getAttribute('href')))
       .toEqual([
         '/sueldo-neto',
         '/calculadora-hipoteca',
         '/calculadora-pension',
         '/calculadora-interes-compuesto',
-        '/calculadora-finiquito-indemnizacion'
+        '/calculadora-finiquito-indemnizacion',
+        '/calculadora-prestamo-personal'
       ]);
+    expect(Array.from(element.querySelectorAll('.page-footer nav a')).map(link => link.getAttribute('href')))
+      .toEqual(['/aviso-legal', '/politica-de-privacidad', '/politica-de-cookies']);
   });
 
   it('should keep the salary, mortgage, and pension forms valid with their default values', async () => {
@@ -188,6 +205,12 @@ describe('App', () => {
     fixture.detectChanges();
     expect((element.querySelector('.salary-form') as HTMLFormElement).checkValidity()).toBe(true);
     expect(element.querySelector('#severance-title')).not.toBeNull();
+
+    calculatorButtons[5].click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect((element.querySelector('.salary-form') as HTMLFormElement).checkValidity()).toBe(true);
+    expect(element.querySelector('#personal-loan-title')).not.toBeNull();
   });
 
   it('should show a salary estimate for a standard annual salary', () => {
@@ -324,7 +347,7 @@ describe('App', () => {
     expect(thirdBand.employmentIncomeReduction).toBeCloseTo(2364.34 - 1.14 * (17822 - 17673.52), 2);
   });
 
-  it('should calculate a mortgage with zero interest', () => {
+  it('should calculate a mortgage with constant principal amortization and zero interest', () => {
     const result = calculateMortgage({
       principal: 100000,
       annualInterestRate: 0,
@@ -332,9 +355,242 @@ describe('App', () => {
     });
 
     expect(result.paymentCount).toBe(120);
-    expect(result.monthlyPayment).toBeCloseTo(833.33, 2);
+    expect(result.firstMonthlyPayment).toBeCloseTo(833.33, 2);
+    expect(result.lastMonthlyPayment).toBeCloseTo(833.33, 2);
     expect(result.totalPaid).toBeCloseTo(100000, 2);
     expect(result.totalInterest).toBeCloseTo(0, 2);
+  });
+
+  it('should decrease mortgage installments while keeping principal amortization constant', () => {
+    const result = calculateMortgage({
+      principal: 100000,
+      annualInterestRate: 12,
+      termYears: 1
+    });
+
+    expect(result.paymentCount).toBe(12);
+    expect(result.firstMonthlyPayment).toBeCloseTo(9333.33, 2);
+    expect(result.lastMonthlyPayment).toBeCloseTo(8416.67, 2);
+    expect(result.totalInterest).toBeCloseTo(6500, 2);
+    expect(result.totalPaid).toBeCloseTo(106500, 2);
+  });
+
+  it('should calculate a standard personal loan using Spanish constant-principal amortization', () => {
+    const result = calculatePersonalLoan({
+      principal: 10000,
+      annualInterestRate: 12,
+      termMonths: 12,
+      openingFeePercent: 1,
+      upfrontExpenses: 50,
+      monthlyAdditionalCost: 2
+    });
+
+    expect(result.firstMonthlyPayment).toBe(933.33);
+    expect(result.lastMonthlyPayment).toBe(841.7);
+    expect(result.totalPrincipalRepaid).toBe(10000);
+    expect(result.totalInterest).toBe(650);
+    expect(result.openingFee).toBe(100);
+    expect(result.upfrontExpenses).toBe(50);
+    expect(result.totalAdditionalCosts).toBe(174);
+    expect(result.totalCostOfCredit).toBe(824);
+    expect(result.totalOutOfPocket).toBe(result.totalInstallments + 174);
+    expect(result.amountReceived).toBe(10000);
+  });
+
+  it('should handle a zero-interest personal loan without division by zero', () => {
+    const result = calculatePersonalLoan({
+      principal: 1200,
+      annualInterestRate: 0,
+      termMonths: 12,
+      openingFeePercent: 0,
+      upfrontExpenses: 0,
+      monthlyAdditionalCost: 0
+    });
+
+    expect(result.firstMonthlyPayment).toBe(100);
+    expect(result.lastMonthlyPayment).toBe(100);
+    expect(result.totalInterest).toBe(0);
+    expect(result.totalInstallments).toBe(1200);
+    expect(result.totalOutOfPocket).toBe(1200);
+  });
+
+  it('should support short and long personal-loan terms with finite results', () => {
+    const baseInput = {
+      principal: 15000,
+      annualInterestRate: 8.5,
+      openingFeePercent: 0,
+      upfrontExpenses: 0,
+      monthlyAdditionalCost: 0
+    };
+    const shortTerm = calculatePersonalLoan({ ...baseInput, termMonths: 1 });
+    const longTerm = calculatePersonalLoan({ ...baseInput, termMonths: 600 });
+
+    expect(shortTerm.paymentCount).toBe(1);
+    expect(shortTerm.totalInterest).toBe(106.25);
+    expect(longTerm.paymentCount).toBe(600);
+    expect(Number.isFinite(longTerm.firstMonthlyPayment)).toBe(true);
+    expect(longTerm.amortizationSchedule.at(-1)?.remainingPrincipal).toBe(0);
+    expect(longTerm.totalInterest).toBeGreaterThan(shortTerm.totalInterest);
+  });
+
+  it('should keep all results finite at the documented upper input limits', () => {
+    const result = calculatePersonalLoan({
+      principal: 1000000,
+      annualInterestRate: 100,
+      termMonths: 600,
+      openingFeePercent: 100,
+      upfrontExpenses: 1000000,
+      monthlyAdditionalCost: 1000000
+    });
+
+    expect(result.paymentCount).toBe(600);
+    expect(result.amortizationSchedule.at(-1)?.remainingPrincipal).toBe(0);
+    expect([
+      result.firstMonthlyPayment,
+      result.lastMonthlyPayment,
+      result.totalInterest,
+      result.totalInstallments,
+      result.totalCostOfCredit,
+      result.totalOutOfPocket
+    ].every(Number.isFinite)).toBe(true);
+  });
+
+  it('should keep a zero opening fee at zero and calculate positive fees from requested principal', () => {
+    const baseInput = {
+      principal: 20000,
+      annualInterestRate: 0,
+      termMonths: 24,
+      upfrontExpenses: 0,
+      monthlyAdditionalCost: 0
+    };
+
+    expect(calculatePersonalLoan({ ...baseInput, openingFeePercent: 0 }).openingFee).toBe(0);
+    expect(calculatePersonalLoan({ ...baseInput, openingFeePercent: 2.5 }).openingFee).toBe(500);
+  });
+
+  it('should count initial and recurring costs separately from the loan installments', () => {
+    const result = calculatePersonalLoan({
+      principal: 5000,
+      annualInterestRate: 0,
+      termMonths: 10,
+      openingFeePercent: 2,
+      upfrontExpenses: 35.75,
+      monthlyAdditionalCost: 3.234
+    });
+
+    expect(result.totalInstallments).toBe(5000);
+    expect(result.openingFee).toBe(100);
+    expect(result.upfrontExpenses).toBe(35.75);
+    expect(result.monthlyAdditionalCost).toBe(3.23);
+    expect(result.totalAdditionalCosts).toBe(168.05);
+    expect(result.totalCostOfCredit).toBe(168.05);
+    expect(result.totalOutOfPocket).toBe(5168.05);
+  });
+
+  it('should compare three hypothetical rates with all other loan assumptions unchanged', () => {
+    const scenarios = comparePersonalLoanScenarios({
+      principal: 10000,
+      annualInterestRate: 5,
+      termMonths: 36,
+      openingFeePercent: 1,
+      upfrontExpenses: 20,
+      monthlyAdditionalCost: 1
+    }, [4, 5, 6]);
+
+    expect(scenarios).toHaveLength(3);
+    expect(scenarios.map(scenario => scenario.annualInterestRate)).toEqual([4, 5, 6]);
+    expect(scenarios[0].firstMonthlyPayment).toBeLessThan(scenarios[1].firstMonthlyPayment);
+    expect(scenarios[1].firstMonthlyPayment).toBeLessThan(scenarios[2].firstMonthlyPayment);
+    expect(scenarios[0].lastMonthlyPayment).toBeLessThan(scenarios[1].lastMonthlyPayment);
+    expect(scenarios[1].lastMonthlyPayment).toBeLessThan(scenarios[2].lastMonthlyPayment);
+    expect(scenarios[0].totalInterest).toBeLessThan(scenarios[1].totalInterest);
+    expect(scenarios[0].totalCostOfCredit).toBeLessThan(scenarios[1].totalCostOfCredit);
+    expect(scenarios[1].totalCostOfCredit).toBeLessThan(scenarios[2].totalCostOfCredit);
+  });
+
+  it('should generate an amortization schedule whose principal parts reconcile and whose final balance is zero', () => {
+    const result = calculatePersonalLoan({
+      principal: 12345.67,
+      annualInterestRate: 7.25,
+      termMonths: 37,
+      openingFeePercent: 0,
+      upfrontExpenses: 0,
+      monthlyAdditionalCost: 0
+    });
+
+    expect(result.amortizationSchedule).toHaveLength(37);
+    expect(result.amortizationSchedule[0].period).toBe(1);
+    expect(result.amortizationSchedule.at(-1)?.period).toBe(37);
+    expect(result.amortizationSchedule[0].principalAmortized)
+      .toBe(result.amortizationSchedule[1].principalAmortized);
+    expect(result.amortizationSchedule[0].payment).toBeGreaterThan(result.amortizationSchedule[1].payment);
+    expect(result.amortizationSchedule.at(-1)?.remainingPrincipal).toBe(0);
+    expect(result.amortizationSchedule.reduce((sum, row) => sum + row.principalAmortized, 0))
+      .toBeCloseTo(result.principal, 2);
+    expect(result.amortizationSchedule.reduce((sum, row) => sum + row.interest, 0))
+      .toBeCloseTo(result.totalInterest, 2);
+  });
+
+  it('should adjust the final installment consistently after cent rounding', () => {
+    const result = calculatePersonalLoan({
+      principal: 10000.01,
+      annualInterestRate: 7.3,
+      termMonths: 37,
+      openingFeePercent: 0,
+      upfrontExpenses: 0,
+      monthlyAdditionalCost: 0
+    });
+    const finalInstallment = result.amortizationSchedule.at(-1);
+
+    expect(finalInstallment?.payment).toBeCloseTo(
+      (finalInstallment?.principalAmortized ?? 0) + (finalInstallment?.interest ?? 0),
+      2
+    );
+    expect(finalInstallment?.remainingPrincipal).toBe(0);
+    expect(result.totalPrincipalRepaid).toBe(result.principal);
+  });
+
+  it('should reject invalid personal-loan amounts, rates, fees and terms', () => {
+    const validInput = {
+      principal: 10000,
+      annualInterestRate: 5,
+      termMonths: 12,
+      openingFeePercent: 0,
+      upfrontExpenses: 0,
+      monthlyAdditionalCost: 0
+    };
+
+    for (const principal of [-1, 0, Number.NaN, Number.POSITIVE_INFINITY]) {
+      expect(() => calculatePersonalLoan({ ...validInput, principal })).toThrow(RangeError);
+    }
+    for (const annualInterestRate of [-0.01, 100.01, Number.NaN, Number.POSITIVE_INFINITY]) {
+      expect(() => calculatePersonalLoan({ ...validInput, annualInterestRate })).toThrow(RangeError);
+    }
+    for (const openingFeePercent of [-1, 100.01, Number.NaN]) {
+      expect(() => calculatePersonalLoan({ ...validInput, openingFeePercent })).toThrow(RangeError);
+    }
+    for (const termMonths of [0, -1, 1.5, 601, Number.NaN]) {
+      expect(() => calculatePersonalLoan({ ...validInput, termMonths })).toThrow(RangeError);
+    }
+  });
+
+  it('should reject negative or non-finite additional costs and invalid comparison scenarios', () => {
+    const validInput = {
+      principal: 10000,
+      annualInterestRate: 5,
+      termMonths: 12,
+      openingFeePercent: 0,
+      upfrontExpenses: 0,
+      monthlyAdditionalCost: 0
+    };
+
+    expect(() => calculatePersonalLoan({ ...validInput, upfrontExpenses: -1 })).toThrow(RangeError);
+    expect(() => calculatePersonalLoan({ ...validInput, upfrontExpenses: Number.NaN })).toThrow(RangeError);
+    expect(() => calculatePersonalLoan({ ...validInput, upfrontExpenses: Number.POSITIVE_INFINITY })).toThrow(RangeError);
+    expect(() => calculatePersonalLoan({ ...validInput, monthlyAdditionalCost: -1 })).toThrow(RangeError);
+    expect(() => calculatePersonalLoan({ ...validInput, monthlyAdditionalCost: Number.POSITIVE_INFINITY })).toThrow(RangeError);
+    expect(() => comparePersonalLoanScenarios(validInput, [1, 2])).toThrow(RangeError);
+    expect(() => comparePersonalLoanScenarios(validInput, [1, 2, 101])).toThrow(RangeError);
   });
 
   it('should project pension eligibility and cap the contribution percentage', () => {
@@ -565,7 +821,10 @@ describe('App', () => {
     fixture.detectChanges();
 
     const result = element.querySelector('.result-lead > strong')?.textContent?.replace(/\u00a0/g, ' ');
-    expect(result).toContain('931 € / mes');
+    expect(result).toContain('1152 € / mes');
+    const resultSummary = element.querySelector('.result-lead')?.textContent?.replace(/\u00a0/g, ' ');
+    expect(resultSummary).toContain('La última cuota será de 642 €');
+    expect(element.querySelector('.form-footer')?.textContent).toContain('Sistema español');
   });
 
   it('should explain that no mortgage can be calculated when the down payment covers the full price', async () => {
@@ -587,6 +846,50 @@ describe('App', () => {
     expect(element.querySelector('#down-payment-error')?.textContent)
       .toContain('no queda capital por financiar');
     expect(fixture.componentInstance['mortgageResult']()).toBeNull();
+  });
+
+  it('should render the personal-loan result, scenario comparison and amortization table', async () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    (element.querySelectorAll('.calculator-card')[5] as HTMLAnchorElement).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    (element.querySelector('.salary-form') as HTMLFormElement).dispatchEvent(
+      new Event('submit', { bubbles: true, cancelable: true })
+    );
+    fixture.detectChanges();
+
+    expect(element.querySelector('.result-lead > strong')?.textContent?.replace(/\u00a0/g, ' '))
+      .toMatch(/237,\d{2} € \/ mes/);
+    expect(element.querySelector('.result-lead')?.textContent).toContain('PRIMERA CUOTA');
+    expect(element.querySelectorAll('.loan-scenarios tbody tr')).toHaveLength(3);
+    expect(element.querySelector('.loan-amortization summary')?.textContent).toContain('60 periodos');
+    expect(element.querySelectorAll('.loan-amortization tbody tr')).toHaveLength(60);
+  });
+
+  it('should reset personal-loan input values and clear the displayed result', async () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    fixture.componentInstance['personalLoanData'].principal = 20000;
+    fixture.detectChanges();
+    (element.querySelectorAll('.calculator-card')[5] as HTMLAnchorElement).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    fixture.componentInstance['personalLoanData'].principal = 20000;
+    fixture.componentInstance['calculatePersonalLoan']();
+    fixture.componentInstance['personalLoanError'].set('error de prueba');
+    fixture.detectChanges();
+
+    (element.querySelector('.loan-form-actions .text-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance['personalLoanData'].principal).toBe(10000);
+    expect(fixture.componentInstance['personalLoanError']()).toBeNull();
+    expect(fixture.componentInstance['personalLoanResult']()).toBeNull();
+    expect((element.querySelector('#personal-loan-principal') as HTMLInputElement).value).toBe('10000');
   });
 
   it('should render a pension result after submitting its form', async () => {

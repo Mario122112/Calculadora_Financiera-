@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "build:engine": "npm --workspace packages/calculation-engine run build",
-    "start:web": "npm run build:engine && npm --workspace apps/web start",
-    "build:web": "npm run build:engine && npm --workspace apps/web run build",
-    "test:web": "npm run build:engine && npm --workspace apps/web run test -- --watch=false"
+    "start:web": "npm --workspace apps/web start",
+    "build:web": "npm run build:engine && npm --workspace apps/web exec -- ng cache clean && npm --workspace apps/web run build",
+    "test:web": "npm run build:engine && npm --workspace apps/web exec -- ng cache clean && npm --workspace apps/web run test -- --watch=false"
   },
   "engines": {
     "node": ">=24.15.0",

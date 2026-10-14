@@ -10,6 +10,7 @@
       <a routerLink="/calculadora-pension" [attr.aria-current]="selectedCalculator() === 'pension' ? 'page' : null">Pensión</a>
       <a routerLink="/calculadora-interes-compuesto" [attr.aria-current]="selectedCalculator() === 'compound-interest' ? 'page' : null">Interés compuesto</a>
       <a routerLink="/calculadora-finiquito-indemnizacion" [attr.aria-current]="selectedCalculator() === 'severance' ? 'page' : null">Finiquito</a>
+      <a routerLink="/calculadora-prestamo-personal" [attr.aria-current]="selectedCalculator() === 'personal-loan' ? 'page' : null">Préstamo personal</a>
     </nav>
     <div class="topbar-meta">
       <span class="status-dot" aria-hidden="true"></span>
@@ -36,7 +37,7 @@
           <p class="eyebrow">ELIGE UNA CALCULADORA</p>
           <h2 id="calculator-title">¿Por dónde empezamos?</h2>
         </div>
-        <span class="section-count">05 OPCIONES</span>
+        <span class="section-count">06 OPCIONES</span>
       </div>
 
       <div class="calculator-grid">
@@ -97,6 +98,18 @@
           <span class="card-topline"><span class="card-icon mortgage-icon" aria-hidden="true">€</span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Finiquito e indemnización</span>
           <span class="card-description">Separa cantidades pendientes de cobro e indemnización estimada por despido.</span>
+          <span class="card-action">Ver calculadora <span aria-hidden="true">↗</span></span>
+        </a>
+
+        <a
+          class="calculator-card"
+          [class.is-selected]="selectedCalculator() === 'personal-loan'"
+          [attr.aria-current]="selectedCalculator() === 'personal-loan' ? 'page' : null"
+          routerLink="/calculadora-prestamo-personal"
+        >
+          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true">€</span><span class="availability available">DISPONIBLE</span></span>
+          <span class="card-title">Préstamo personal</span>
+          <span class="card-description">Compara cuotas, intereses, comisiones y coste total con distintos TIN.</span>
           <span class="card-action">Ver calculadora <span aria-hidden="true">↗</span></span>
         </a>
       </div>
@@ -258,20 +271,20 @@
           <label class="field" for="interest-rate"><span class="field-label">Interés anual</span><span class="input-with-suffix"><input id="interest-rate" name="annualInterestRate" type="number" min="0" max="30" step="0.01" required [(ngModel)]="mortgageData.annualInterestRate" /><span>% TIN</span></span></label>
           <label class="field" for="mortgage-term"><span class="field-label">Plazo</span><span class="input-with-suffix"><input id="mortgage-term" name="termYears" type="number" min="1" max="50" step="1" required [(ngModel)]="mortgageData.termYears" /><span>años</span></span></label>
           <div class="form-footer">
-            <p><span class="privacy-mark" aria-hidden="true">●</span> Sistema de amortización francés · cuota fija</p>
+            <p><span class="privacy-mark" aria-hidden="true">●</span> Sistema español · amortización de capital constante</p>
             <button class="submit-button" type="submit">Calcular hipoteca <span aria-hidden="true">→</span></button>
           </div>
         </form>
 
         @if (mortgageResult(); as result) {
           <div class="result-panel" role="status" aria-live="polite">
-            <div class="result-lead"><span class="result-kicker">TU CUOTA MENSUAL ESTIMADA</span><strong>{{ formatMoney(result.monthlyPayment) }}<small> / mes</small></strong><span>Financias {{ formatMoney(result.principal) }} durante {{ result.paymentCount / 12 }} años</span></div>
+            <div class="result-lead"><span class="result-kicker">TU PRIMERA CUOTA MENSUAL</span><strong>{{ formatMoney(result.firstMonthlyPayment) }}<small> / mes</small></strong><span>La última cuota será de {{ formatMoney(result.lastMonthlyPayment) }} · financias {{ formatMoney(result.principal) }} durante {{ result.paymentCount / 12 }} años</span></div>
             <div class="result-metrics">
               <div><span>Capital solicitado</span><strong>{{ formatMoney(result.principal) }}</strong></div>
               <div><span>Intereses totales</span><strong>{{ formatMoney(result.totalInterest) }}</strong></div>
               <div><span>Total pagado</span><strong>{{ formatMoney(result.totalPaid) }}</strong></div>
             </div>
-            <p class="result-caveat">Estimación con interés constante y cuotas mensuales. No incluye seguros, comisiones, impuestos ni otros gastos de compra.</p>
+            <p class="result-caveat">Estimación con interés constante, amortización de capital constante y cuotas mensuales decrecientes. No incluye seguros, comisiones, impuestos ni otros gastos de compra.</p>
           </div>
         }
       </section>
@@ -513,8 +526,134 @@
           </div>
         }
       </section>
+    } @else if (selectedCalculator() === 'personal-loan') {
+      <section class="calculator-workspace" aria-labelledby="personal-loan-title">
+        <div class="workspace-heading">
+          <div>
+            <p class="eyebrow">CALCULADORA 06 <span class="heading-divider">/</span> PRÉSTAMO PERSONAL</p>
+            <h2 id="personal-loan-title">Calcula cuánto te costará el préstamo</h2>
+            <p class="workspace-copy">Desglosa cuota, intereses y costes adicionales sin sumarlos al capital financiado.</p>
+          </div>
+          <span class="workspace-number">06<span> / 06</span></span>
+        </div>
+
+        <form #personalLoanForm="ngForm" class="salary-form" (ngSubmit)="calculatePersonalLoan()" (input)="clearPersonalLoanError()" (change)="clearPersonalLoanError()">
+          <label class="field" for="personal-loan-principal">
+            <span class="field-label">Importe solicitado</span>
+            <span class="input-with-suffix"><input id="personal-loan-principal" name="principal" type="number" min="1" max="1000000" step="0.01" required [(ngModel)]="personalLoanData.principal" /><span>€</span></span>
+            <span class="field-hint">Entre 1 € y 1.000.000 €.</span>
+          </label>
+          <label class="field" for="personal-loan-rate">
+            <span class="field-label">Tipo de interés nominal anual (TIN)</span>
+            <span class="input-with-suffix"><input id="personal-loan-rate" name="annualInterestRate" type="number" min="0" max="100" step="0.01" required [(ngModel)]="personalLoanData.annualInterestRate" /><span>% TIN</span></span>
+            <span class="field-hint">Se divide entre 12 para obtener el tipo mensual. Se admite TIN del 0 %.</span>
+          </label>
+          <label class="field" for="personal-loan-years">
+            <span class="field-label">Plazo en años</span>
+            <span class="input-with-suffix"><input id="personal-loan-years" name="termYears" type="number" min="0" max="50" step="1" required [(ngModel)]="personalLoanData.termYears" /><span>años</span></span>
+          </label>
+          <label class="field" for="personal-loan-additional-months">
+            <span class="field-label">Meses adicionales</span>
+            <span class="input-with-suffix"><input id="personal-loan-additional-months" name="additionalMonths" type="number" min="0" max="11" step="1" required [(ngModel)]="personalLoanData.additionalMonths" /><span>meses</span></span>
+            <span class="field-hint">El plazo total debe estar entre 1 y 600 meses.</span>
+          </label>
+          <label class="field" for="personal-loan-opening-fee">
+            <span class="field-label">Comisión de apertura</span>
+            <span class="input-with-suffix"><input id="personal-loan-opening-fee" name="openingFeePercent" type="number" min="0" max="100" step="0.01" required [(ngModel)]="personalLoanData.openingFeePercent" /><span>%</span></span>
+            <span class="field-hint">Se aplica sobre el importe solicitado y se paga aparte, no se financia.</span>
+          </label>
+          <label class="field" for="personal-loan-expenses">
+            <span class="field-label">Otros gastos iniciales (opcional)</span>
+            <span class="input-with-suffix"><input id="personal-loan-expenses" name="upfrontExpenses" type="number" min="0" max="1000000" step="0.01" required [(ngModel)]="personalLoanData.upfrontExpenses" /><span>€</span></span>
+          </label>
+          <label class="field field-wide" for="personal-loan-monthly-cost">
+            <span class="field-label">Coste adicional periódico opcional</span>
+            <span class="input-with-suffix"><input id="personal-loan-monthly-cost" name="monthlyAdditionalCost" type="number" min="0" max="1000000" step="0.01" required [(ngModel)]="personalLoanData.monthlyAdditionalCost" /><span>€ / mes</span></span>
+            <span class="field-hint">Coste mensual adicional pagado aparte; no lo dupliques en los gastos iniciales ni se incorpora a la cuota del préstamo.</span>
+          </label>
+          @if (personalLoanError(); as error) {
+            <p class="field-error field-wide" id="personal-loan-error" role="alert">{{ error }}</p>
+          }
+          <div class="form-footer">
+            <p><span class="privacy-mark" aria-hidden="true">●</span> Sistema español · capital constante · (TIN anual / 100) / 12.</p>
+            <div class="loan-form-actions">
+              <button class="text-button" type="button" (click)="resetPersonalLoan(personalLoanForm)">Restablecer valores</button>
+              <button class="submit-button" type="submit">Calcular préstamo <span aria-hidden="true">→</span></button>
+            </div>
+          </div>
+        </form>
+
+        @if (personalLoanResult(); as result) {
+          <div class="result-panel" role="status" aria-live="polite">
+            <div class="result-lead"><span class="result-kicker">PRIMERA CUOTA MENSUAL ESTIMADA</span><strong>{{ formatLoanMoney(result.estimate.firstMonthlyPayment) }}<small> / mes</small></strong><span>La última cuota será de {{ formatLoanMoney(result.estimate.lastMonthlyPayment) }} · {{ result.estimate.paymentCount }} cuotas · recibes {{ formatLoanMoney(result.estimate.principal) }}</span></div>
+            <div class="result-metrics">
+              <div><span>Importe solicitado y recibido</span><strong>{{ formatLoanMoney(result.estimate.amountReceived) }}</strong></div>
+              <div><span>Capital devuelto en cuotas</span><strong>{{ formatLoanMoney(result.estimate.totalPrincipalRepaid) }}</strong></div>
+              <div><span>Intereses totales</span><strong>{{ formatLoanMoney(result.estimate.totalInterest) }}</strong></div>
+              <div><span>Comisión de apertura</span><strong>{{ formatLoanMoney(result.estimate.openingFee) }}</strong></div>
+              <div><span>Otros gastos iniciales</span><strong>{{ formatLoanMoney(result.estimate.upfrontExpenses) }}</strong></div>
+              <div><span>Costes periódicos adicionales</span><strong>{{ formatLoanMoney(result.estimate.monthlyAdditionalCost * result.estimate.paymentCount) }}</strong></div>
+              <div><span>Total devuelto mediante cuotas</span><strong>{{ formatLoanMoney(result.estimate.totalInstallments) }}</strong></div>
+              <div><span>Coste total estimado de la financiación</span><strong>{{ formatLoanMoney(result.estimate.totalCostOfCredit) }}</strong></div>
+              <div class="monthly-net"><span>Total que sale de tu bolsillo</span><strong>{{ formatLoanMoney(result.estimate.totalOutOfPocket) }}</strong></div>
+            </div>
+            <p class="result-caveat">Recibes {{ formatLoanMoney(result.estimate.amountReceived) }} y devuelves {{ formatLoanMoney(result.estimate.totalOutOfPocket) }} en cuotas y costes. Los gastos iniciales y la comisión se muestran por separado; el coste periódico no se incorpora a la cuota ni al capital.</p>
+
+            <section class="loan-scenarios" aria-labelledby="loan-scenarios-title">
+              <h3 id="loan-scenarios-title">Comparador de tipos hipotéticos</h3>
+              <p class="field-hint">Se mantiene el importe, plazo y resto de costes. Los tipos son escenarios matemáticos, no ofertas bancarias.</p>
+              <div class="loan-table-scroll" tabindex="0" role="region" aria-label="Comparación de tres escenarios de TIN">
+                <table class="loan-table">
+                  <thead><tr><th scope="col">TIN</th><th scope="col">Primera cuota</th><th scope="col">Última cuota</th><th scope="col">Intereses</th><th scope="col">Coste financiación</th><th scope="col">Diferencia vs. TIN elegido</th></tr></thead>
+                  <tbody>
+                    @for (scenario of result.scenarios; track $index) {
+                      <tr>
+                        <th scope="row">{{ scenario.annualInterestRate | number:'1.0-2' }} %</th>
+                        <td>{{ formatLoanMoney(scenario.firstMonthlyPayment) }}</td>
+                        <td>{{ formatLoanMoney(scenario.lastMonthlyPayment) }}</td>
+                        <td>{{ formatLoanMoney(scenario.totalInterest) }}</td>
+                        <td>{{ formatLoanMoney(scenario.totalCostOfCredit) }}</td>
+                        <td>{{ formatLoanMoney(scenario.totalCostOfCredit - result.scenarios[result.comparisonReferenceIndex].totalCostOfCredit) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <details class="loan-amortization">
+              <summary>Ver tabla de amortización ({{ result.estimate.paymentCount }} periodos)</summary>
+              <div class="loan-table-scroll" tabindex="0" role="region" aria-label="Tabla de amortización del préstamo personal">
+                <table class="loan-table">
+                  <thead><tr><th scope="col">Periodo</th><th scope="col">Cuota</th><th scope="col">Capital amortizado</th><th scope="col">Intereses</th><th scope="col">Capital pendiente</th></tr></thead>
+                  <tbody>
+                    @for (installment of result.estimate.amortizationSchedule; track installment.period) {
+                      <tr>
+                        <th scope="row">{{ installment.period }}</th>
+                        <td>{{ formatLoanMoney(installment.payment) }}</td>
+                        <td>{{ formatLoanMoney(installment.principalAmortized) }}</td>
+                        <td>{{ formatLoanMoney(installment.interest) }}</td>
+                        <td>{{ formatLoanMoney(installment.remainingPrincipal) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </details>
+            <p class="result-caveat">Sistema español de amortización de capital constante: el TIN anual se convierte a tanto por uno y se divide entre 12. Los intereses se calculan sobre el saldo pendiente; las cuotas disminuyen y la última se ajusta para cancelar el saldo. No convierte ni estima la TAE; esta puede incorporar gastos y comisiones según el producto. No constituye una oferta bancaria.</p>
+          </div>
+        }
+      </section>
     }
 
-    <footer class="page-footer"><span>CUENTA CLARA</span><span>Estimaciones orientativas · España</span></footer>
+    <footer class="page-footer">
+      <span>CUENTA CLARA</span>
+      <span>Estimaciones orientativas · España</span>
+      <nav aria-label="Información legal">
+        <a routerLink="/aviso-legal">Aviso legal</a>
+        <a routerLink="/politica-de-privacidad">Privacidad</a>
+        <a routerLink="/politica-de-cookies">Cookies</a>
+      </nav>
+    </footer>
   </main>
 </div>

@@ -6,7 +6,8 @@ export interface MortgageEstimateInput {
 
 export interface MortgageEstimate {
   principal: number;
-  monthlyPayment: number;
+  firstMonthlyPayment: number;
+  lastMonthlyPayment: number;
   totalPaid: number;
   totalInterest: number;
   paymentCount: number;
@@ -25,16 +26,18 @@ export function calculateMortgage(input: MortgageEstimateInput): MortgageEstimat
 
   const paymentCount = Math.round(input.termYears * 12);
   const monthlyRate = input.annualInterestRate / 100 / 12;
-  const monthlyPayment = monthlyRate === 0
-    ? input.principal / paymentCount
-    : input.principal * monthlyRate / (1 - Math.pow(1 + monthlyRate, -paymentCount));
-  const totalPaid = monthlyPayment * paymentCount;
+  const monthlyPrincipal = input.principal / paymentCount;
+  const firstMonthlyPayment = monthlyPrincipal + input.principal * monthlyRate;
+  const lastMonthlyPayment = monthlyPrincipal + monthlyPrincipal * monthlyRate;
+  const totalInterest = input.principal * monthlyRate * (paymentCount + 1) / 2;
+  const totalPaid = input.principal + totalInterest;
 
   return {
     principal: input.principal,
-    monthlyPayment,
+    firstMonthlyPayment,
+    lastMonthlyPayment,
     totalPaid,
-    totalInterest: totalPaid - input.principal,
+    totalInterest,
     paymentCount
   };
 }

@@ -29,11 +29,33 @@ La retención mostrada es una aproximación, no el impuesto anual definitivo ni 
 
 ## Hipoteca
 
-Se aplica el sistema de amortización francés, con interés nominal anual constante, pagos mensuales y sin gastos:
+Se aplica un sistema de amortización de capital constante (también conocido como sistema alemán o sistema de amortización lineal), con interés nominal anual constante, pagos mensuales y sin gastos. Cada mes se devuelve la misma parte del capital, por lo que los intereses y la cuota total disminuyen:
 
-`cuota = capital × interés_mensual / (1 - (1 + interés_mensual)^(-número_de_pagos))`
+`amortización_mensual = capital / número_de_pagos`
 
-Para un interés del 0 %, la cuota es el capital dividido entre el número de pagos. La entrada se resta del precio para obtener el capital financiado. No se convierten TAE a TIN ni se incluyen comisiones, seguros, impuestos, tasación o gastos de compraventa; en una oferta real también pueden cambiar el tipo y la cuota.
+`cuota_mes = amortización_mensual + capital_pendiente × interés_mensual`
+
+La primera cuota se calcula sobre el capital inicial; la última, sobre el capital pendiente antes del último pago. Los intereses totales equivalen a `capital × interés_mensual × (número_de_pagos + 1) / 2`. Para un interés del 0 %, todas las cuotas coinciden con el capital dividido entre el número de pagos. La entrada se resta del precio para obtener el capital financiado. No se convierten TAE a TIN ni se incluyen comisiones, seguros, impuestos, tasación o gastos de compraventa; en una oferta real también pueden cambiar el tipo y el calendario.
+
+## Préstamo personal
+
+Se simula un préstamo con amortización de capital constante (sistema español o lineal). El TIN nominal anual se convierte a tanto por uno y se divide entre 12, sin conversión a TAE:
+
+`tipo_mensual = (TIN_anual_en_porcentaje / 100) / 12`
+
+`amortización_mensual = capital / número_de_cuotas`
+
+`interés_mes = saldo_anterior × tipo_mensual`
+
+`cuota_mes = amortización_mensual + interés_mes`
+
+La amortización mensual se redondea a céntimos; la cuota se reduce conforme disminuye el saldo y, por tanto, los intereses. La amortización de la última cuota se ajusta al saldo pendiente para que el saldo final sea cero. Con TIN del 0 %, todas las cuotas son iguales a la amortización mensual. El capital amortizado acumulado coincide con el importe solicitado, con una tolerancia máxima de un céntimo.
+
+La comisión de apertura se aplica al importe solicitado y, junto con los gastos iniciales, se paga aparte: no se suma al capital financiado ni se resta del importe recibido. El coste periódico opcional se trata como un coste adicional mensual independiente, no se incorpora a la cuota ni se vuelve a contar como gasto inicial. `coste_total_financiación = intereses + comisión + gastos_iniciales + costes_periódicos`; `total_bolsillo = cuotas + comisión + gastos_iniciales + costes_periódicos`. El usuario recibe el importe solicitado y devuelve el capital mediante las cuotas.
+
+Los escenarios hipotéticos usan el mismo capital, plazo y costes, variando el TIN en torno al valor elegido (hasta un punto porcentual por debajo y por encima, dentro de 0–100 %). La diferencia de coste se compara con el escenario al TIN elegido. No son ofertas bancarias. No se solicita ni calcula una TAE: esta puede incorporar gastos y comisiones según las condiciones del producto y no se debe mezclar automáticamente con el TIN.
+
+Los límites de entrada son: importe de 1 a 1.000.000 EUR; TIN y comisión de apertura de 0 % a 100 %; plazo entero de 1 a 600 meses; gastos iniciales y coste periódico de 0 a 1.000.000 EUR. No se permiten valores no finitos o negativos en los importes opcionales.
 
 ## Pensión contributiva de jubilación
 

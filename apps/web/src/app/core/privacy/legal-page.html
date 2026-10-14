@@ -1,0 +1,31 @@
+<main class="legal-shell">
+  <nav class="legal-breadcrumb" aria-label="Navegación">
+    <a routerLink="/">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <span>{{ content.title }}</span>
+  </nav>
+
+  <header class="legal-heading">
+    <p class="eyebrow">{{ content.eyebrow }}</p>
+    <h1>{{ content.title }}</h1>
+    <p>{{ content.introduction }}</p>
+  </header>
+
+  <article class="legal-content">
+    @for (section of content.sections; track section.heading) {
+      <section>
+        <h2>{{ section.heading }}</h2>
+        @for (paragraph of section.paragraphs; track paragraph) {
+          <p>{{ paragraph }}</p>
+        }
+      </section>
+    }
+  </article>
+
+  <nav class="legal-related" aria-label="Información legal">
+    <a routerLink="/aviso-legal">Aviso legal</a>
+    <a routerLink="/politica-de-privacidad">Privacidad</a>
+    <a routerLink="/politica-de-cookies">Cookies</a>
+    <a routerLink="/">Volver a las calculadoras</a>
+  </nav>
+</main>

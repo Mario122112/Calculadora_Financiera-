@@ -8,3 +8,10 @@ export { calculateCompoundInterest } from './compound-interest/index.js';
 export type { CompoundInterestEstimate, CompoundInterestInput } from './compound-interest/index.js';
 export { calculateSeverance } from './severance/index.js';
 export type { DismissalType, SeveranceEstimate, SeveranceEstimateInput } from './severance/index.js';
+export { calculatePersonalLoan, comparePersonalLoanScenarios } from './personal-loan/index.js';
+export type {
+  PersonalLoanEstimate,
+  PersonalLoanInput,
+  PersonalLoanInstallment,
+  PersonalLoanScenario
+} from './personal-loan/index.js';

@@ -8,7 +8,7 @@ export const routes: Routes = [
     component: CalculatorPage,
     title: 'Cuenta Clara | Calculadoras financieras',
     data: {
-      description: 'Calculadoras financieras gratuitas para España: estima sueldo neto, hipoteca, pensión, interés compuesto y finiquito.'
+      description: 'Calculadoras financieras gratuitas para España: estima sueldo neto, hipoteca, préstamo personal, pensión, interés compuesto y finiquito.'
     }
   },
   {
@@ -27,6 +27,15 @@ export const routes: Routes = [
     data: {
       calculator: 'mortgage',
       description: 'Calcula una cuota hipotecaria orientativa con el precio, la entrada, el interés nominal y el plazo. No incluye gastos ni comisiones.'
+    }
+  },
+  {
+    path: 'calculadora-prestamo-personal',
+    component: CalculatorPage,
+    title: 'Calculadora de préstamo personal: cuota y coste total | Cuenta Clara',
+    data: {
+      calculator: 'personal-loan',
+      description: 'Calcula la cuota, intereses, comisiones y coste total de un préstamo personal con TIN nominal y escenarios hipotéticos.'
     }
   },
   {
@@ -54,6 +63,33 @@ export const routes: Routes = [
     data: {
       calculator: 'severance',
       description: 'Estima por separado el finiquito y la indemnización por despido objetivo o improcedente, con un cálculo orientativo de antigüedad.'
+    }
+  },
+  {
+    path: 'aviso-legal',
+    loadComponent: () => import('./core/privacy/legal-page').then(module => module.LegalPage),
+    title: 'Aviso legal | Cuenta Clara',
+    data: {
+      legalPage: 'legal',
+      description: 'Información sobre la titularidad, el uso y las condiciones de Cuenta Clara.'
+    }
+  },
+  {
+    path: 'politica-de-privacidad',
+    loadComponent: () => import('./core/privacy/legal-page').then(module => module.LegalPage),
+    title: 'Política de privacidad | Cuenta Clara',
+    data: {
+      legalPage: 'privacy',
+      description: 'Consulta qué datos trata Cuenta Clara, para qué los utiliza y cómo ejercer tus derechos.'
+    }
+  },
+  {
+    path: 'politica-de-cookies',
+    loadComponent: () => import('./core/privacy/legal-page').then(module => module.LegalPage),
+    title: 'Política de cookies | Cuenta Clara',
+    data: {
+      legalPage: 'cookies',
+      description: 'Información sobre el almacenamiento local y las preferencias de privacidad de Cuenta Clara.'
     }
   },
   { path: '**', redirectTo: '' }
