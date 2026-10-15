@@ -58,42 +58,42 @@ describe('App', () => {
         path: '/sueldo-neto',
         calculator: 'salary',
         heading: 'Calculadora de sueldo neto',
-        title: 'Calculadora de sueldo neto en España | Cuenta Clara',
+        title: 'Calculadora de sueldo neto en España | CuentaClara',
         description: 'Estima tu sueldo neto en España'
       },
       {
         path: '/calculadora-hipoteca',
         calculator: 'mortgage',
         heading: 'Calculadora de hipoteca',
-        title: 'Calculadora de hipoteca: cuota y coste total | Cuenta Clara',
+        title: 'Calculadora de hipoteca: cuota y coste total | CuentaClara',
         description: 'Calcula una cuota hipotecaria orientativa'
       },
       {
         path: '/calculadora-prestamo-personal',
         calculator: 'personal-loan',
         heading: 'Calculadora de préstamo personal',
-        title: 'Calculadora de préstamo personal: cuota y coste total | Cuenta Clara',
+        title: 'Calculadora de préstamo personal: cuota y coste total | CuentaClara',
         description: 'Calcula la cuota, intereses, comisiones y coste total'
       },
       {
         path: '/calculadora-pension',
         calculator: 'pension',
         heading: 'Calculadora de pensión de jubilación',
-        title: 'Calculadora de pensión de jubilación | Cuenta Clara',
+        title: 'Calculadora de pensión de jubilación | CuentaClara',
         description: 'Proyecta una pensión contributiva orientativa'
       },
       {
         path: '/calculadora-interes-compuesto',
         calculator: 'compound-interest',
         heading: 'Calculadora de interés compuesto',
-        title: 'Calculadora de interés compuesto | Cuenta Clara',
+        title: 'Calculadora de interés compuesto | CuentaClara',
         description: 'Proyecta el crecimiento hipotético de un capital'
       },
       {
         path: '/calculadora-finiquito-indemnizacion',
         calculator: 'severance',
         heading: 'Calculadora de finiquito e indemnización',
-        title: 'Calculadora de finiquito e indemnización | Cuenta Clara',
+        title: 'Calculadora de finiquito e indemnización | CuentaClara',
         description: 'Estima por separado el finiquito y la indemnización'
       }
     ] as const;
@@ -156,6 +156,7 @@ describe('App', () => {
     fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
 
+    expect(element.querySelector('app-cookie-consent')).toBeNull();
     expect(element.querySelector('.brand')?.getAttribute('href')).toBe('/');
     expect(element.querySelectorAll('.topbar-nav a')).toHaveLength(6);
     expect(Array.from(element.querySelectorAll('.calculator-card')).map(link => link.getAttribute('href')))
@@ -168,7 +169,7 @@ describe('App', () => {
         '/calculadora-prestamo-personal'
       ]);
     expect(Array.from(element.querySelectorAll('.page-footer nav a')).map(link => link.getAttribute('href')))
-      .toEqual(['/aviso-legal', '/politica-de-privacidad', '/politica-de-cookies']);
+      .toEqual(['/aviso-legal', '/politica-de-privacidad', '/politica-de-cookies', '/contacto']);
   });
 
   it('should keep the salary, mortgage, and pension forms valid with their default values', async () => {

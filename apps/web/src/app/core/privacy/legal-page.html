@@ -12,6 +12,16 @@
   </header>
 
   <article class="legal-content">
+    @if (content.isContact) {
+      <section class="contact-details" aria-labelledby="contact-details-title">
+        <h2 id="contact-details-title">Datos de contacto</h2>
+        <dl>
+          <div><dt>Responsable</dt><dd>Mario Galindo</dd></div>
+          <div><dt>Ubicación</dt><dd>Murcia, España</dd></div>
+          <div><dt>Correo</dt><dd><a href="mailto:cuentaclaracalc@gmail.com">cuentaclaracalc@gmail.com</a></dd></div>
+        </dl>
+      </section>
+    }
     @for (section of content.sections; track section.heading) {
       <section>
         <h2>{{ section.heading }}</h2>
@@ -26,6 +36,7 @@
     <a routerLink="/aviso-legal">Aviso legal</a>
     <a routerLink="/politica-de-privacidad">Privacidad</a>
     <a routerLink="/politica-de-cookies">Cookies</a>
+    <a routerLink="/contacto">Contacto y sugerencias</a>
     <a routerLink="/">Volver a las calculadoras</a>
   </nav>
 </main>
