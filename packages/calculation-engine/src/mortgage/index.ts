@@ -1,7 +1,11 @@
+export type MortgageAmortizationSystem = 'french' | 'spanish';
+
 export interface MortgageEstimateInput {
   principal: number;
   annualInterestRate: number;
   termYears: number;
+  /** Por defecto 'french' (cuota constante). */
+  amortizationSystem?: MortgageAmortizationSystem;
 }
 
 export interface MortgageEstimate {
@@ -11,6 +15,7 @@ export interface MortgageEstimate {
   totalPaid: number;
   totalInterest: number;
   paymentCount: number;
+  amortizationSystem: MortgageAmortizationSystem;
 }
 
 export function calculateMortgage(input: MortgageEstimateInput): MortgageEstimate {
@@ -24,20 +29,45 @@ export function calculateMortgage(input: MortgageEstimateInput): MortgageEstimat
     throw new RangeError('El plazo debe ser mayor que cero.');
   }
 
+  const amortizationSystem = input.amortizationSystem ?? 'french';
   const paymentCount = Math.round(input.termYears * 12);
   const monthlyRate = input.annualInterestRate / 100 / 12;
-  const monthlyPrincipal = input.principal / paymentCount;
-  const firstMonthlyPayment = monthlyPrincipal + input.principal * monthlyRate;
-  const lastMonthlyPayment = monthlyPrincipal + monthlyPrincipal * monthlyRate;
-  const totalInterest = input.principal * monthlyRate * (paymentCount + 1) / 2;
-  const totalPaid = input.principal + totalInterest;
+
+  if (amortizationSystem === 'spanish') {
+    // Sistema español: capital constante, cuota decreciente.
+    const monthlyPrincipal = input.principal / paymentCount;
+    const firstMonthlyPayment = monthlyPrincipal + input.principal * monthlyRate;
+    const lastMonthlyPayment = monthlyPrincipal + monthlyPrincipal * monthlyRate;
+    const totalInterest = (input.principal * monthlyRate * (paymentCount + 1)) / 2;
+
+    return {
+      principal: input.principal,
+      firstMonthlyPayment,
+      lastMonthlyPayment,
+      totalPaid: input.principal + totalInterest,
+      totalInterest,
+      paymentCount,
+      amortizationSystem
+    };
+  }
+
+  // Sistema francés: cuota constante.
+  // Con interés 0 la fórmula daría 0/0, así que se divide el capital a partes iguales.
+  const monthlyPayment =
+    monthlyRate === 0
+      ? input.principal / paymentCount
+      : (input.principal * monthlyRate) /
+        (1 - Math.pow(1 + monthlyRate, -paymentCount));
+
+  const totalPaid = monthlyPayment * paymentCount;
 
   return {
     principal: input.principal,
-    firstMonthlyPayment,
-    lastMonthlyPayment,
+    firstMonthlyPayment: monthlyPayment,
+    lastMonthlyPayment: monthlyPayment,
     totalPaid,
-    totalInterest,
-    paymentCount
+    totalInterest: totalPaid - input.principal,
+    paymentCount,
+    amortizationSystem
   };
 }

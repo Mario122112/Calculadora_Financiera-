@@ -16,6 +16,7 @@ import {
   type CompoundInterestEstimate,
   type DismissalType,
   type MortgageEstimate,
+  type MortgageAmortizationSystem,
   type PersonalLoanEstimate,
   type PersonalLoanInput,
   type PersonalLoanScenario,
@@ -108,6 +109,7 @@ export class CalculatorPage {
   protected readonly personalLoanResult = signal<PersonalLoanPageResult | null>(null);
   protected readonly mortgageError = signal(false);
   protected readonly compoundInterestError = signal(false);
+  protected readonly compoundInterestTermError = signal(false); 
   protected readonly severanceDateError = signal(false);
   protected readonly personalLoanError = signal<string | null>(null);
   protected salaryInputMode: 'annual' | 'monthly' = 'annual';
@@ -130,7 +132,8 @@ export class CalculatorPage {
     propertyPrice: 240000,
     downPaymentPercent: 20,
     annualInterestRate: 3.2,
-    termYears: 25
+    termYears: 25,
+    amortizationSystem: 'french' as MortgageAmortizationSystem
   };
 
   protected pensionData = {
@@ -236,7 +239,7 @@ export class CalculatorPage {
       ...this.salaryData,
       annualGross: this.salaryInputMode === 'annual'
         ? this.salaryData.annualGross
-        : this.salaryData.monthlyGross * this.salaryData.payments
+        : this.roundMoney(this.salaryData.monthlyGross * this.salaryData.payments)
     }));
   }
 
@@ -295,10 +298,25 @@ export class CalculatorPage {
       return;
     }
 
+    const { annualGross, monthlyGross, payments } = this.salaryData;
+
     if (mode === 'monthly') {
-      this.salaryData.monthlyGross = this.salaryData.annualGross / this.salaryData.payments;
+      const monthly = this.roundMoney(annualGross / payments);
+      // Guardamos el original para poder restaurarlo sin pérdida al volver.
+      this.salarySwitchSnapshot = { annual: annualGross, monthly, payments };
+      this.salaryData.monthlyGross = monthly;
     } else {
-      this.salaryData.annualGross = this.salaryData.monthlyGross * this.salaryData.payments;
+      const snapshot = this.salarySwitchSnapshot;
+      const untouched =
+        snapshot !== null &&
+        snapshot.monthly === monthlyGross &&
+        snapshot.payments === payments;
+
+      // Si no ha cambiado nada, se recupera el anual exacto; si no, se recalcula.
+      this.salaryData.annualGross = untouched
+        ? snapshot.annual
+        : this.roundMoney(monthlyGross * payments);
+      this.salarySwitchSnapshot = null;
     }
 
     const hadResult = this.salaryResult() !== null;
@@ -306,6 +324,12 @@ export class CalculatorPage {
     if (hadResult) {
       this.calculateSalary();
     }
+  }
+
+  private salarySwitchSnapshot: { annual: number; monthly: number; payments: number } | null = null;
+
+  private roundMoney(value: number): number {
+    return Math.round((value + Number.EPSILON) * 100) / 100;
   }
 
   protected calculateMortgage(): void {
@@ -320,10 +344,21 @@ export class CalculatorPage {
     this.mortgageResult.set(calculateMortgage({
       principal,
       annualInterestRate: this.mortgageData.annualInterestRate,
-      termYears: this.mortgageData.termYears
+      termYears: this.mortgageData.termYears,
+      amortizationSystem: this.mortgageData.amortizationSystem
     }));
   }
 
+  protected setMortgageSystem(system: MortgageAmortizationSystem): void {
+    if (system === this.mortgageData.amortizationSystem) {
+      return;
+    }
+    this.mortgageData.amortizationSystem = system;
+    // Si ya había un resultado, se recalcula al momento con el nuevo sistema.
+    if (this.mortgageResult()) {
+      this.calculateMortgage();
+    }
+  }
   protected clearMortgageError(): void {
     this.mortgageError.set(false);
   }
@@ -349,7 +384,18 @@ export class CalculatorPage {
   }
 
   protected calculateCompoundInterest(): void {
-    if (this.compoundInterestData.initialCapital === 0 && this.compoundInterestData.monthlyContribution === 0) {
+    const { initialCapital, monthlyContribution, termYears } = this.compoundInterestData;
+
+    if (!Number.isFinite(termYears) || termYears < 1 || termYears > 100) {
+      this.compoundInterestResult.set(null);
+      this.compoundInterestError.set(false);
+      this.compoundInterestTermError.set(true);
+      return;
+    }
+
+    this.compoundInterestTermError.set(false);
+
+    if (initialCapital === 0 && monthlyContribution === 0) {
       this.compoundInterestResult.set(null);
       this.compoundInterestError.set(true);
       return;
@@ -361,6 +407,7 @@ export class CalculatorPage {
 
   protected clearCompoundInterestError(): void {
     this.compoundInterestError.set(false);
+    this.compoundInterestTermError.set(false);
   }
 
   protected calculateSeverance(): void {
