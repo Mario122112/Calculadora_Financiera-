@@ -114,3 +114,55 @@
 	.legal-heading { padding-top: 38px; }
 	.legal-content { padding: 18px 16px; }
 }
+
+.contact-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 560px;
+
+  label {
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+  }
+
+  input[type='text'],
+  input[type='email'],
+  textarea {
+    font: inherit;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid #c9d1cc;
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  .contact-consent {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  button {
+    justify-self: start;
+    font: inherit;
+    padding: 0.7rem 1.4rem;
+    border: 0;
+    border-radius: 6px;
+    background: #1a3a2e;
+    color: #fff;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+  }
+
+  .contact-trap {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .contact-error { color: #b3261e; }
+  .contact-ok { color: #1a3a2e; }
+}

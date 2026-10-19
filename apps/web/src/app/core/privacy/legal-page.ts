@@ -1,8 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
-type LegalPageId = 'legal' | 'privacy' | 'cookies' | 'contact';
+type LegalPageId = 'legal' | 'privacy' | 'contact';
 
 interface LegalSection {
   heading: string;
@@ -31,10 +33,23 @@ const legalPages: Record<LegalPageId, LegalPageContent> = {
         ]
       },
       {
-        heading: 'Identificación de quien presta el servicio',
+        heading: 'Exclusión de responsabilidad',
         paragraphs: [
-          'La aplicación de la Ley 34/2002 (LSSI-CE) depende, entre otros aspectos, de si la actividad constituye un servicio de la sociedad de la información prestado en el marco de una actividad económica. Si el artículo 10 resulta aplicable, puede exigir nombre, residencia o domicilio (o, en su defecto, la dirección de un establecimiento permanente en España), contacto directo y efectivo, NIF y otros datos según corresponda.',
-          'La ubicación indicada en Contacto (Murcia) no es una dirección postal completa. Antes de publicar el sitio debe revisarse con asesoramiento jurídico si la ley aplica y qué dirección corresponde. Para reducir la exposición del domicilio particular, puede estudiarse una dirección profesional o de un establecimiento permanente real, si satisface el requisito legal.'
+          'Las normas fiscales, laborales y de Seguridad Social cambian con frecuencia y dependen de circunstancias personales que las calculadoras no recogen. No se garantiza que los resultados sean exactos o estén actualizados.',
+          'El titular no se hace responsable de las decisiones tomadas a partir de los resultados, ni de interrupciones o errores en el funcionamiento del sitio.'
+        ]
+      },
+      {
+        heading: 'Propiedad intelectual',
+        paragraphs: [
+          'El diseño, el código y los textos de este sitio pertenecen a su titular, salvo indicación contraria. No se permite su reproducción o distribución sin autorización.'
+        ]
+      },
+      {
+        heading: 'Legislación aplicable y modificaciones',
+        paragraphs: [
+          'Este aviso se rige por la legislación española. Si eres consumidor, te corresponde el fuero que establezca la normativa vigente.',
+          'Este aviso puede modificarse para adaptarlo a cambios legales o del sitio.'
         ]
       }
     ]
@@ -42,57 +57,62 @@ const legalPages: Record<LegalPageId, LegalPageContent> = {
   privacy: {
     eyebrow: 'DATOS Y PRIVACIDAD',
     title: 'Política de privacidad',
-    introduction: 'Qué ocurre con los datos al usar las calculadoras o contactar por correo.',
+    introduction: 'Información sobre cómo se tratan los datos al usar las calculadoras o al contactar por correo.',
     sections: [
       {
-        heading: 'Datos introducidos en las calculadoras',
+        heading: 'Responsable del tratamiento',
         paragraphs: [
-          'Los cálculos se realizan en tu navegador. CuentaClara no envía ni guarda los valores introducidos en las calculadoras.'
+          'Responsable: Mario Galindo, particular.',
+          'Correo de contacto: cuentaclaracalc@gmail.com'
         ]
       },
       {
-        heading: 'Contacto por correo',
+        heading: 'Datos introducidos en las calculadoras',
         paragraphs: [
-          'El enlace de Contacto abre tu programa de correo; la web no envía ni recibe el mensaje. Si decides enviarlo, el correo se dirige a una cuenta de Gmail de Google y Mario Galindo podrá tratar el contenido y tu dirección para responder. Tu proveedor de correo también puede procesar el mensaje. No incluyas información financiera sensible.'
+          'Los cálculos se realizan en tu navegador. CuentaClara no envía, recibe ni guarda los valores que introduces en las calculadoras.'
+        ]
+      },
+      {
+        heading: 'Cookies y almacenamiento local',
+        paragraphs: [
+          'Este sitio no utiliza cookies propias ni de terceros, ni guarda información en el almacenamiento local de tu navegador.'
+        ]
+      },
+      {
+        heading: 'Formulario de contacto',
+        paragraphs: [
+          'Si usas el formulario, se envían tu nombre, tu correo y el contenido del mensaje al servicio Formspree, que los reenvía a mi correo. Solo recibiré esos datos si decides enviarlos.',
+          'Finalidad: responder a tu consulta o sugerencia. Base jurídica: tu consentimiento, que das al marcar la casilla de la política de privacidad y enviar el formulario (art. 6.1.a RGPD).',
+          'No incluyas información financiera, fiscal o personal sensible en tu mensaje.'
+        ]
+      },
+      {
+        heading: 'Conservación y destinatarios',
+        paragraphs: [
+          'Conservaré el mensaje el tiempo necesario para atender tu consulta y, después, hasta un máximo de 30 dias, salvo que tenga que conservarlo por una obligación legal.',
+          'No cedo tus datos a terceros. El correo se recibe en una cuenta de Gmail, por lo que Google actúa como proveedor del servicio de correo y puede tratar el mensaje conforme a su propia política de privacidad.'
         ]
       },
       {
         heading: 'Alojamiento',
         paragraphs: [
-          'Al cargar el sitio, el servicio de alojamiento puede recibir datos técnicos de conexión. El proveedor y sus plazos de conservación no se pueden especificar hasta que se elija el alojamiento.'
-        ]
-      },
-      {
-        heading: 'Información pendiente',
-        paragraphs: [
-          'Antes de recibir mensajes debe confirmarse la base jurídica, el plazo de conservación y la información sobre derechos aplicable al correo de contacto. Esta página no sustituye una revisión legal de esos detalles.'
+          'Al cargar el sitio, el servicio de alojamiento puede recibir datos técnicos de conexión, como la dirección IP o el navegador utilizado, necesarios para ofrecerte la web. Este tratamiento lo realiza el proveedor de alojamiento conforme a su propia política de privacidad.'
         ]
       }
-    ]
-  },
-  cookies: {
-    eyebrow: 'COOKIES Y ALMACENAMIENTO',
-    title: 'Política de cookies',
-    introduction: 'La versión actual de CuentaClara no instala cookies ni usa almacenamiento local.',
-    sections: [
-      {
-        heading: 'Almacenamiento',
-        paragraphs: [
-          'La aplicación no guarda preferencias ni datos de las calculadoras en el navegador y no utiliza cookies propias. Una preferencia guardada en una versión anterior puede seguir en el almacenamiento del navegador hasta que se borren los datos del sitio. El servicio de alojamiento puede usar registros técnicos al entregar las páginas; consulta la Política de privacidad.'
-        ]
-      }
+
     ]
   },
   contact: {
     eyebrow: 'CONTACTO',
     title: 'Contacto y sugerencias',
-    introduction: 'Para consultas y sugerencias, puedes escribir a CuentaClara.',
+    introduction: 'Para consultas y sugerencias, puedes escribir a CuentaClara con este formulario.',
     isContact: true,
     sections: [
       {
         heading: 'Antes de escribir',
         paragraphs: [
-          'El enlace abre tu programa de correo con la dirección de destino. La web no envía el mensaje: solo se transmite si lo revisas y pulsas Enviar en tu programa. El correo se recibe en una cuenta de Gmail de Google; no incluyas información financiera sensible.'
+          'Al enviar el formulario, tu nombre, correo y mensaje se transmiten a un servicio de formularios (Formspree) que los reenvía a mi correo. Solo los uso para responderte. No incluyas información financiera sensible.',
+          'Más información en la política de privacidad.'
         ]
       }
     ]
@@ -101,14 +121,20 @@ const legalPages: Record<LegalPageId, LegalPageContent> = {
 
 @Component({
   selector: 'app-legal-page',
-  imports: [RouterLink],
+  imports: [RouterLink, FormsModule],
   templateUrl: './legal-page.html',
   styleUrl: './legal-page.scss'
 })
 export class LegalPage {
   private readonly route = inject(ActivatedRoute);
   private readonly meta = inject(Meta);
+  private readonly http = inject(HttpClient);
   protected readonly content: LegalPageContent;
+
+  protected readonly submitted = signal(false);
+  protected readonly sendStatus = signal<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  protected form = { name: '', email: '', message: '', consent: false, website: '' };
+
 
   constructor() {
     const pageId = this.route.snapshot.data['legalPage'] as LegalPageId;
@@ -118,4 +144,32 @@ export class LegalPage {
       this.meta.updateTag({ name: 'description', content: description });
     }
   }
+
+  protected sendMessage(contactForm: NgForm): void {
+    this.submitted.set(true);
+
+    if (contactForm.invalid) {
+      return; // falta algún campo o la casilla de la política
+    }
+    if (this.form.website) {
+      return; // campo trampa para bots
+    }
+
+    this.sendStatus.set('sending');
+    this.http.post('https://formspree.io/f/mgaobnra', {
+      name: this.form.name,
+      email: this.form.email,
+      message: this.form.message
+    }, { headers: { Accept: 'application/json' } }).subscribe({
+      next: () => {
+        this.sendStatus.set('sent');
+        this.submitted.set(false);
+        this.form = { name: '', email: '', message: '', consent: false, website: '' };
+        contactForm.resetForm(this.form);
+      },
+      error: () => this.sendStatus.set('error')
+    });
+  }
 }
+
+

@@ -13,29 +13,92 @@
 
   <article class="legal-content">
     @if (content.isContact) {
-      <section class="contact-details" aria-labelledby="contact-details-title">
-        <h2 id="contact-details-title">Datos de contacto</h2>
-        <dl>
-          <div><dt>Responsable</dt><dd>Mario Galindo</dd></div>
-          <div><dt>Ubicación</dt><dd>Murcia, España</dd></div>
-          <div><dt>Correo</dt><dd><a href="mailto:cuentaclaracalc@gmail.com">cuentaclaracalc@gmail.com</a></dd></div>
-        </dl>
-      </section>
+    <section class="contact-details" aria-labelledby="contact-details-title">
+      <h2 id="contact-details-title">Datos de contacto</h2>
+      <dl>
+        <div>
+          <dt>Responsable</dt>
+          <dd>Mario Galindo</dd>
+        </div>
+        <div>
+          <dt>Ubicación</dt>
+          <dd>Murcia, España</dd>
+        </div>
+        <div>
+          <dt>Correo</dt>
+          <dd><a href="mailto:cuentaclaracalc@gmail.com">cuentaclaracalc@gmail.com</a></dd>
+        </div>
+      </dl>
+    </section>
     }
+
     @for (section of content.sections; track section.heading) {
-      <section>
-        <h2>{{ section.heading }}</h2>
-        @for (paragraph of section.paragraphs; track paragraph) {
-          <p>{{ paragraph }}</p>
+    <section>
+      <h2>{{ section.heading }}</h2>
+      @for (paragraph of section.paragraphs; track paragraph) {
+      <p>{{ paragraph }}</p>
+      }
+    </section>
+    }
+
+    @if (content.isContact) {
+    <section aria-labelledby="contact-form-title">
+      <h2 id="contact-form-title">Envíanos un mensaje</h2>
+      <form class="contact-form" #contactForm="ngForm" (ngSubmit)="sendMessage(contactForm)">
+        <label for="contact-name">
+          <span>Nombre</span>
+          <input id="contact-name" name="name" type="text" required maxlength="100" [(ngModel)]="form.name" />
+        </label>
+
+        <label for="contact-email">
+          <span>Correo</span>
+          <input id="contact-email" name="email" type="email" required maxlength="150" [(ngModel)]="form.email" />
+        </label>
+
+        <label for="contact-message">
+          <span>Mensaje</span>
+          <textarea id="contact-message" name="message" rows="6" required maxlength="2000"
+            [(ngModel)]="form.message"></textarea>
+        </label>
+
+        <input class="contact-trap" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true"
+          [(ngModel)]="form.website" />
+
+        <label class="contact-consent" for="contact-consent">
+          <input id="contact-consent" name="consent" type="checkbox" required [(ngModel)]="form.consent"
+            [attr.aria-invalid]="submitted() && !form.consent ? 'true' : null"
+            [attr.aria-describedby]="submitted() && !form.consent ? 'contact-consent-error' : null" />
+          <span>He leído la <a routerLink="/politica-de-privacidad">política de privacidad</a></span>
+        </label>
+        @if (submitted() && !form.consent) {
+        <p class="contact-error" id="contact-consent-error" role="alert">
+          Debes aceptar la política de privacidad para enviar el mensaje.
+        </p>
         }
-      </section>
+
+        <button type="submit" [disabled]="sendStatus() === 'sending'">
+          {{ sendStatus() === 'sending' ? 'Enviando…' : 'Enviar mensaje' }}
+        </button>
+
+        @if (submitted() && contactForm.invalid && form.consent) {
+        <p class="contact-error" role="alert">Completa todos los campos con un correo válido.</p>
+        }
+
+        @if (sendStatus() === 'sent') {
+        <p class="contact-ok" role="status">Mensaje enviado. Gracias.</p>
+        }
+        @if (sendStatus() === 'error') {
+        <p class="contact-error" role="alert">No se pudo enviar. Inténtalo más tarde o escribe al correo indicado
+          arriba.</p>
+        }
+      </form>
+    </section>
     }
   </article>
 
   <nav class="legal-related" aria-label="Información legal">
     <a routerLink="/aviso-legal">Aviso legal</a>
     <a routerLink="/politica-de-privacidad">Privacidad</a>
-    <a routerLink="/politica-de-cookies">Cookies</a>
     <a routerLink="/contacto">Contacto y sugerencias</a>
     <a routerLink="/">Volver a las calculadoras</a>
   </nav>
