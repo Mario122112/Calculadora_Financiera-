@@ -1,5 +1,7 @@
 export type MortgageAmortizationSystem = 'french' | 'spanish';
 
+const MAX_TERM_MONTHS = 600;
+
 export interface MortgageEstimateInput {
   principal: number;
   annualInterestRate: number;
@@ -68,11 +70,15 @@ export function calculateMortgage(input: MortgageEstimateInput): MortgageEstimat
     throw new RangeError('El plazo debe ser mayor que cero.');
   }
 
+  
   const amortizationSystem = input.amortizationSystem ?? 'french';
   const paymentCount = Math.round(input.termYears * 12);
   if (paymentCount < 1) {
     throw new RangeError('El plazo debe ser de al menos un mes.');
   }
+  if (paymentCount > MAX_TERM_MONTHS) {
+  throw new RangeError('El plazo no puede superar los 50 años.');
+}
   const monthlyRate = input.annualInterestRate / 100 / 12;
 
   if (amortizationSystem === 'spanish') {
