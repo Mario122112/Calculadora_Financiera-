@@ -443,3 +443,53 @@ main {
 	.submit-button { justify-content: center; }
 	.page-footer { gap: 12px; font-size: 9px; }
 }
+.card-icon img {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.amortization-chart .chart-column {
+  display: flex;
+  align-items: flex-end;
+}
+
+.stack-bar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 3px;
+}
+
+.stack-interest,
+.stack-capital {
+  flex-basis: 0;
+  min-height: 0;
+}
+
+.stack-capital,
+.legend-capital {
+  background: #2f6f4f;
+}
+
+.stack-interest,
+.legend-interest {
+  background: #c9a227;
+}
+
+.amortization-legend {
+  display: flex;
+  gap: 1rem;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.375rem;
+  border-radius: 2px;
+}

@@ -17,6 +17,7 @@ import {
   type DismissalType,
   type MortgageEstimate,
   type MortgageAmortizationSystem,
+  type PersonalLoanAmortizationSystem,
   type PersonalLoanEstimate,
   type PersonalLoanInput,
   type PersonalLoanScenario,
@@ -31,6 +32,14 @@ interface PersonalLoanPageResult {
   estimate: PersonalLoanEstimate;
   scenarios: PersonalLoanScenario[];
   comparisonReferenceIndex: number;
+}
+
+interface MortgageYearSummary {
+  year: number;
+  principal: number;
+  interest: number;
+  total: number;
+  remaining: number;
 }
 
 interface CalculatorContent {
@@ -51,10 +60,10 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
   },
   mortgage: {
     title: 'Calculadora de hipoteca',
-    summary: 'Calcula la primera cuota mensual estimada y el coste total de un préstamo con amortización constante de capital.',
-    detail: 'Indica el precio de la vivienda, el porcentaje de entrada, el interés nominal anual y el plazo. La entrada se resta del precio para estimar el capital financiado.',
-    interpretation: 'Se amortiza la misma cantidad de capital cada mes, por lo que la cuota disminuye a medida que bajan los intereses. El total pagado permite ver el coste de intereses estimado.',
-    limitations: 'No incluye comisiones, seguros, impuestos, tasación ni gastos de compraventa. Una oferta real puede usar tipos, condiciones o calendarios diferentes.'
+    summary: 'Calcula la cuota mensual estimada y el coste total de una hipoteca con sistema de amortización francés o español.',
+    detail: 'Indica el precio de la vivienda, el porcentaje de entrada, el interés nominal anual, el plazo y el sistema de amortización. La entrada se resta del precio para estimar el capital financiado.',
+    interpretation: 'En el sistema francés, el más habitual, la cuota es constante: al principio pesan más los intereses y con el tiempo más el capital. En el español se amortiza el mismo capital cada mes y la cuota disminuye. El total pagado permite ver el coste de intereses estimado.',
+    limitations: 'Supone un tipo de interés constante: en una hipoteca variable la cuota cambiaría con el Euríbor. No incluye comisiones, seguros, impuestos, tasación ni gastos de compraventa. Una oferta real puede usar tipos, condiciones o calendarios diferentes.'
   },
   pension: {
     title: 'Calculadora de pensión de jubilación',
@@ -79,9 +88,9 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
   },
   'personal-loan': {
     title: 'Calculadora de préstamo personal',
-    summary: 'Estima la primera cuota, los intereses y el coste total de un préstamo personal con comisión y gastos desglosados.',
-    detail: 'Indica el importe, el TIN anual, el plazo y los posibles costes iniciales o periódicos. La comisión se calcula sobre el importe solicitado y se paga aparte.',
-    interpretation: 'La estimación amortiza la misma cantidad de capital cada mes; al bajar los intereses sobre el saldo pendiente, las cuotas disminuyen. El último pago se ajusta al céntimo para cancelar el saldo.',
+    summary: 'Estima la cuota, los intereses y el coste total de un préstamo personal con comisión y gastos desglosados, con sistema francés o español.',
+    detail: 'Indica el importe, el TIN anual, el plazo, el sistema de amortización y los posibles costes iniciales o periódicos. La comisión se calcula sobre el importe solicitado y se paga aparte.',
+    interpretation: 'En el sistema francés, el más habitual, la cuota es constante: al principio pesan más los intereses y con el tiempo más el capital. En el español se amortiza el mismo capital cada mes y las cuotas van bajando. En ambos casos el último pago se ajusta al céntimo para cancelar el saldo.',
     limitations: 'Es una simulación matemática, no una oferta bancaria ni la TAE real. No convierte TAE a TIN ni incorpora costes automáticamente al capital financiado.'
   }
 };
@@ -109,7 +118,7 @@ export class CalculatorPage {
   protected readonly personalLoanResult = signal<PersonalLoanPageResult | null>(null);
   protected readonly mortgageError = signal(false);
   protected readonly compoundInterestError = signal(false);
-  protected readonly compoundInterestTermError = signal(false); 
+  protected readonly compoundInterestTermError = signal(false);
   protected readonly severanceDateError = signal(false);
   protected readonly personalLoanError = signal<string | null>(null);
   protected salaryInputMode: 'annual' | 'monthly' = 'annual';
@@ -175,7 +184,8 @@ export class CalculatorPage {
     additionalMonths: 0,
     openingFeePercent: 1.5,
     upfrontExpenses: 0,
-    monthlyAdditionalCost: 0
+    monthlyAdditionalCost: 0,
+    amortizationSystem: 'french' as PersonalLoanAmortizationSystem
   };
 
   private readonly defaultPersonalLoanData = { ...this.personalLoanData };
@@ -465,8 +475,21 @@ export class CalculatorPage {
       termMonths: this.personalLoanData.termYears * 12 + this.personalLoanData.additionalMonths,
       openingFeePercent: this.personalLoanData.openingFeePercent,
       upfrontExpenses: this.personalLoanData.upfrontExpenses,
-      monthlyAdditionalCost: this.personalLoanData.monthlyAdditionalCost
+      monthlyAdditionalCost: this.personalLoanData.monthlyAdditionalCost,
+      amortizationSystem: this.personalLoanData.amortizationSystem
     };
+  }
+
+  protected setPersonalLoanSystem(system: PersonalLoanAmortizationSystem): void {
+    if (system === this.personalLoanData.amortizationSystem) {
+      return;
+    }
+    this.personalLoanData.amortizationSystem = system;
+    this.personalLoanError.set(null);
+    // Si ya había un resultado, se recalcula al momento con el nuevo sistema.
+    if (this.personalLoanResult()) {
+      this.calculatePersonalLoan();
+    }
   }
 
   protected clearSeveranceDateError(): void {
@@ -521,5 +544,35 @@ export class CalculatorPage {
 
   protected formatLoanMoney(amount: number): string {
     return this.loanEuroFormatter.format(amount);
+  }
+
+  protected readonly mortgageYears = computed<MortgageYearSummary[]>(() => {
+    const result = this.mortgageResult();
+    if (!result) {
+      return [];
+    }
+
+    const years: MortgageYearSummary[] = [];
+    for (const row of result.amortizationSchedule) {
+      const index = Math.ceil(row.period / 12) - 1;
+      const entry = years[index] ??= { year: index + 1, principal: 0, interest: 0, total: 0, remaining: 0 };
+      entry.principal += row.principalAmortized;
+      entry.interest += row.interest;
+      entry.total += row.payment;
+      entry.remaining = row.remainingPrincipal;
+    }
+
+    return years.map(entry => ({
+      year: entry.year,
+      principal: this.roundMoney(entry.principal),
+      interest: this.roundMoney(entry.interest),
+      total: this.roundMoney(entry.total),
+      remaining: this.roundMoney(entry.remaining)
+    }));
+  });
+
+  protected mortgageBarHeight(value: number): number {
+    const maxTotal = Math.max(...this.mortgageYears().map(entry => entry.total), 1);
+    return (value / maxTotal) * 100;
   }
 }

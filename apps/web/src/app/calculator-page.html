@@ -1,7 +1,8 @@
 <div class="app-shell">
   <header class="topbar">
     <a class="brand" routerLink="/" aria-label="CuentaClara, inicio">
-      <span class="brand-mark" aria-hidden="true">€</span>
+      <span class="brand-mark" aria-hidden="true"><img src="/euro.png" alt="" width="20"
+                height="20" /></span>
       <span>CuentaClara</span>
     </a>
     <nav class="topbar-nav" aria-label="Calculadoras">
@@ -33,7 +34,7 @@
       } @else {
       <p class="eyebrow"><span>01</span> TU ESPACIO FINANCIERO</p>
       <h1 class="page-title" id="page-title">Decisiones claras,<br /><em>números bajo control.</em></h1>
-      <p class="intro-copy">Elige qué quieres calcular. Empezamos por lo importante: saber cuánto llega realmente a tu
+      <p class="intro-copy">Elige qué quieres calcular. Empezamos por lo importante, saber cuánto llega realmente a tu
         cuenta.</p>
       }
     </section>
@@ -44,67 +45,72 @@
           <p class="eyebrow">ELIGE UNA CALCULADORA</p>
           <h2 id="calculator-title">¿Por dónde empezamos?</h2>
         </div>
-        <span class="section-count">06 OPCIONES</span>
+        <span class="section-count">6 OPCIONES</span>
       </div>
 
       <div class="calculator-grid">
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'salary'"
           [attr.aria-current]="selectedCalculator() === 'salary' ? 'page' : null" routerLink="/sueldo-neto">
-          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true">€</span><span
-              class="availability available">DISPONIBLE</span></span>
+          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true"><img src="/euro.png" alt=""
+                width="25" height="20" /></span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Sueldo neto</span>
           <span class="card-description">Descubre cuánto cobrarás después de impuestos y cotizaciones.</span>
-          <span class="card-action">Empezar <span aria-hidden="true">↗</span></span>
+          <span class="card-action">Ver calculadora</span>
         </a>
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'mortgage'"
           [attr.aria-current]="selectedCalculator() === 'mortgage' ? 'page' : null" routerLink="/calculadora-hipoteca">
-          <span class="card-topline"><span class="card-icon mortgage-icon" aria-hidden="true">⌂</span><span
-              class="availability available">DISPONIBLE</span></span>
+          <span class="card-topline">
+            <span class="card-icon mortgage-icon" aria-hidden="true"><img src="/boton-de-inicio.png" alt="" width="25"
+                height="20" /></span>
+            <span class="availability available">DISPONIBLE</span>
+          </span>
           <span class="card-title">Hipoteca</span>
           <span class="card-description">Calcula tu cuota mensual, intereses y coste total.</span>
-          <span class="card-action">Ver calculadora <span aria-hidden="true">↗</span></span>
+          <span class="card-action">Ver calculadora</span>
         </a>
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'pension'"
           [attr.aria-current]="selectedCalculator() === 'pension' ? 'page' : null" routerLink="/calculadora-pension">
-          <span class="card-topline"><span class="card-icon pension-icon" aria-hidden="true">◷</span><span
-              class="availability available">DISPONIBLE</span></span>
+          <span class="card-topline">
+            <span class="card-icon pension-icon" aria-hidden="true"><img src="/reloj.png" alt="" width="25"
+                height="20" /></span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Pensión</span>
           <span class="card-description">Proyecta una pensión pública orientativa según tus cotizaciones.</span>
-          <span class="card-action">Ver calculadora <span aria-hidden="true">↗</span></span>
+          <span class="card-action">Ver calculadora</span>
         </a>
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'compound-interest'"
           [attr.aria-current]="selectedCalculator() === 'compound-interest' ? 'page' : null"
           routerLink="/calculadora-interes-compuesto">
-          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true">↗</span><span
+          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true"><img
+                src="/flecha-diagonal.png" alt="" width="25" height="2" /></span><span
               class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Interés compuesto</span>
           <span class="card-description">Proyecta capital y aportaciones mensuales con una rentabilidad
             hipotética.</span>
-          <span class="card-action">Ver calculadora <span aria-hidden="true">↗</span></span>
+          <span class="card-action">Ver calculadora</span>
         </a>
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'severance'"
           [attr.aria-current]="selectedCalculator() === 'severance' ? 'page' : null"
           routerLink="/calculadora-finiquito-indemnizacion">
-          <span class="card-topline"><span class="card-icon mortgage-icon" aria-hidden="true">€</span><span
-              class="availability available">DISPONIBLE</span></span>
+          <span class="card-topline"><span class="card-icon mortgage-icon" aria-hidden="true"><img src="/briefcase.png"
+                alt="" width="25" height="20" /></span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Finiquito e indemnización</span>
           <span class="card-description">Separa cantidades pendientes de cobro e indemnización estimada por
             despido.</span>
-          <span class="card-action">Ver calculadora <span aria-hidden="true">↗</span></span>
+          <span class="card-action">Ver calculadora</span>
         </a>
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'personal-loan'"
           [attr.aria-current]="selectedCalculator() === 'personal-loan' ? 'page' : null"
           routerLink="/calculadora-prestamo-personal">
-          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true">€</span><span
-              class="availability available">DISPONIBLE</span></span>
+          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true"><img src="/landmark.png"
+                alt="" width="25" height="20" /></span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Préstamo personal</span>
           <span class="card-description">Compara cuotas, intereses, comisiones y coste total con distintos TIN.</span>
-          <span class="card-action">Ver calculadora <span aria-hidden="true">↗</span></span>
+          <span class="card-action">Ver calculadora</span>
         </a>
       </div>
     </section>
@@ -126,7 +132,7 @@
           <h2 id="salary-title">Cuéntanos un poco sobre ti</h2>
           <p class="workspace-copy">Completa tus datos para estimar el neto anual y el promedio por paga.</p>
         </div>
-        <span class="workspace-number">01<span> / 05</span></span>
+        <span class="workspace-number">1<span> / 6</span></span>
       </div>
 
       <form #salaryForm class="salary-form" (ngSubmit)="calculateSalary()" (input)="refreshSalaryResult(salaryForm)"
@@ -287,7 +293,7 @@
           <h2 id="mortgage-title">Calcula tu cuota mensual</h2>
           <p class="workspace-copy">Ajusta precio, entrada, interés y plazo para ver el coste estimado.</p>
         </div>
-        <span class="workspace-number">02<span> / 05</span></span>
+        <span class="workspace-number">2<span> / 6</span></span>
       </div>
 
       <form class="salary-form" (ngSubmit)="calculateMortgage()" (input)="clearMortgageError()"
@@ -336,17 +342,77 @@
 
       @if (mortgageResult(); as result) {
       <div class="result-panel" role="status" aria-live="polite">
-        <div class="result-lead"><span class="result-kicker">TU PRIMERA CUOTA MENSUAL</span><strong>{{
-            formatMoney(result.firstMonthlyPayment) }}<small> / mes</small></strong><span>La última cuota será de {{
-            formatMoney(result.lastMonthlyPayment) }} · financias {{ formatMoney(result.principal) }} durante {{
+        <div class="result-lead"><span class="result-kicker">{{ mortgageData.amortizationSystem === 'french' ? 'TU CUOTA
+            MENSUAL' : 'TU PRIMERA CUOTA MENSUAL' }}</span><strong>{{
+            formatMoney(result.firstMonthlyPayment) }}<small> / mes</small></strong><span>@if
+            (mortgageData.amortizationSystem === 'spanish') { La última cuota será de {{
+            formatMoney(result.lastMonthlyPayment) }} · }financias {{ formatMoney(result.principal) }} durante {{
             result.paymentCount / 12 }} años</span></div>
         <div class="result-metrics">
           <div><span>Capital solicitado</span><strong>{{ formatMoney(result.principal) }}</strong></div>
           <div><span>Intereses totales</span><strong>{{ formatMoney(result.totalInterest) }}</strong></div>
           <div><span>Total pagado</span><strong>{{ formatMoney(result.totalPaid) }}</strong></div>
         </div>
-        <p class="result-caveat">Estimación con interés constante, amortización de capital constante y cuotas mensuales
-          decrecientes. No incluye seguros, comisiones, impuestos ni otros gastos de compra.</p>
+
+        <figure class="growth-figure">
+          <figcaption>Capital e intereses pagados cada año</figcaption>
+          <ul class="amortization-legend" aria-hidden="true">
+            <li><span class="legend-swatch legend-capital"></span>Capital</li>
+            <li><span class="legend-swatch legend-interest"></span>Intereses</li>
+          </ul>
+          <ol class="growth-chart amortization-chart" aria-label="Capital e intereses pagados por año">
+            @for (entry of mortgageYears(); track entry.year) {
+            <li
+              [attr.aria-label]="'Año ' + entry.year + ': capital ' + formatMoney(entry.principal) + ', intereses ' + formatMoney(entry.interest)">
+              <span class="chart-column" aria-hidden="true">
+                <span class="stack-bar" [style.height.%]="mortgageBarHeight(entry.total)">
+                  <span class="stack-interest" [style.flex-grow]="entry.interest"></span>
+                  <span class="stack-capital" [style.flex-grow]="entry.principal"></span>
+                </span>
+              </span>
+              <span class="chart-year">{{ entry.year }}</span>
+            </li>
+            }
+          </ol>
+        </figure>
+
+        <details class="loan-amortization">
+          <summary>Ver tabla de amortización por años ({{ mortgageYears().length }} años)</summary>
+          <div class="loan-table-scroll" tabindex="0" role="region"
+            aria-label="Tabla de amortización de la hipoteca por años">
+            <table class="loan-table">
+              <thead>
+                <tr>
+                  <th scope="col">Año</th>
+                  <th scope="col">Cuotas del año</th>
+                  <th scope="col">Capital amortizado</th>
+                  <th scope="col">Intereses</th>
+                  <th scope="col">Capital pendiente</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (entry of mortgageYears(); track entry.year) {
+                <tr>
+                  <th scope="row">{{ entry.year }}</th>
+                  <td>{{ formatMoney(entry.total) }}</td>
+                  <td>{{ formatMoney(entry.principal) }}</td>
+                  <td>{{ formatMoney(entry.interest) }}</td>
+                  <td>{{ formatMoney(entry.remaining) }}</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </details>
+
+        <p class="result-caveat">
+          @if (mortgageData.amortizationSystem === 'french') {
+          Estimación con interés constante y cuota mensual constante.
+          } @else {
+          Estimación con interés constante, amortización de capital constante y cuotas mensuales decrecientes.
+          }
+          No incluye seguros, comisiones, impuestos ni otros gastos de compra.
+        </p>
       </div>
       }
     </section>
@@ -358,7 +424,7 @@
           <h2 id="pension-title">Proyecta tu pensión</h2>
           <p class="workspace-copy">Estimamos la cuantía bruta según tu base y los años cotizados previstos.</p>
         </div>
-        <span class="workspace-number">03<span> / 05</span></span>
+        <span class="workspace-number">3<span> / 6</span></span>
       </div>
 
       <form #pensionForm class="salary-form" (ngSubmit)="calculatePension()" (input)="refreshPensionResult(pensionForm)"
@@ -527,7 +593,7 @@
           <h2 id="compound-interest-title">Proyecta el crecimiento de tu inversión</h2>
           <p class="workspace-copy">Aportaciones al final de cada mes con capitalización mensual.</p>
         </div>
-        <span class="workspace-number">04<span> / 05</span></span>
+        <span class="workspace-number">4<span> / 6</span></span>
       </div>
 
       <form class="salary-form" (ngSubmit)="calculateCompoundInterest()" (input)="clearCompoundInterestError()"
@@ -608,7 +674,7 @@
           <h2 id="severance-title">Separa liquidación e indemnización</h2>
           <p class="workspace-copy">Introduce las cantidades pendientes y los datos de antigüedad del contrato.</p>
         </div>
-        <span class="workspace-number">05<span> / 05</span></span>
+        <span class="workspace-number">5<span> / 6</span></span>
       </div>
 
       <form class="salary-form" (ngSubmit)="calculateSeverance()" (input)="clearSeveranceDateError()"
@@ -699,7 +765,7 @@
           <p class="workspace-copy">Desglosa cuota, intereses y costes adicionales sin sumarlos al capital financiado.
           </p>
         </div>
-        <span class="workspace-number">06<span> / 06</span></span>
+        <span class="workspace-number">6<span> / 6</span></span>
       </div>
 
       <form #personalLoanForm="ngForm" class="salary-form" (ngSubmit)="calculatePersonalLoan()"
@@ -729,6 +795,26 @@
               [(ngModel)]="personalLoanData.additionalMonths" /><span>meses</span></span>
           <span class="field-hint">El plazo total debe estar entre 1 y 600 meses.</span>
         </label>
+
+        <div class="field field-wide">
+          <span class="field-label" id="personal-loan-system-label">Sistema de amortización</span>
+          <div class="input-mode" role="group" aria-labelledby="personal-loan-system-label">
+            <button type="button" [class.is-active]="personalLoanData.amortizationSystem === 'french'"
+              [attr.aria-pressed]="personalLoanData.amortizationSystem === 'french'"
+              (click)="setPersonalLoanSystem('french')">Francés</button>
+            <button type="button" [class.is-active]="personalLoanData.amortizationSystem === 'spanish'"
+              [attr.aria-pressed]="personalLoanData.amortizationSystem === 'spanish'"
+              (click)="setPersonalLoanSystem('spanish')">Español</button>
+          </div>
+          <span class="field-hint">
+            @if (personalLoanData.amortizationSystem === 'french') {
+            Cuota mensual constante durante todo el préstamo. Es el sistema más habitual.
+            } @else {
+            Se amortiza el mismo capital cada mes: la primera cuota es la más alta y va bajando.
+            }
+          </span>
+        </div>
+
         <label class="field" for="personal-loan-opening-fee">
           <span class="field-label">Comisión de apertura</span>
           <span class="input-with-suffix"><input id="personal-loan-opening-fee" name="openingFeePercent" type="number"
@@ -754,8 +840,10 @@
         <p class="field-error field-wide" id="personal-loan-error" role="alert">{{ error }}</p>
         }
         <div class="form-footer">
-          <p><span class="privacy-mark" aria-hidden="true">●</span> Sistema español · capital constante · (TIN anual /
-            100) / 12.</p>
+          <p><span class="privacy-mark" aria-hidden="true">●</span>
+            {{ personalLoanData.amortizationSystem === 'french' ? 'Sistema francés · cuota constante' : 'Sistema español
+            · capital constante' }}
+            · (TIN anual / 100) / 12.</p>
           <div class="loan-form-actions">
             <button class="text-button" type="button" (click)="resetPersonalLoan(personalLoanForm)">Restablecer
               valores</button>
@@ -766,9 +854,11 @@
 
       @if (personalLoanResult(); as result) {
       <div class="result-panel" role="status" aria-live="polite">
-        <div class="result-lead"><span class="result-kicker">PRIMERA CUOTA MENSUAL ESTIMADA</span><strong>{{
-            formatLoanMoney(result.estimate.firstMonthlyPayment) }}<small> / mes</small></strong><span>La última cuota
-            será de {{ formatLoanMoney(result.estimate.lastMonthlyPayment) }} · {{ result.estimate.paymentCount }}
+        <div class="result-lead"><span class="result-kicker">{{ result.estimate.amortizationSystem === 'french' ? 'CUOTA
+            MENSUAL ESTIMADA' : 'PRIMERA CUOTA MENSUAL ESTIMADA' }}</span><strong>{{
+            formatLoanMoney(result.estimate.firstMonthlyPayment) }}<small> / mes</small></strong><span>@if
+            (result.estimate.amortizationSystem === 'spanish') { La última cuota será de {{
+            formatLoanMoney(result.estimate.lastMonthlyPayment) }} · }{{ result.estimate.paymentCount }}
             cuotas · recibes {{ formatLoanMoney(result.estimate.principal) }}</span></div>
         <div class="result-metrics">
           <div><span>Importe solicitado y recibido</span><strong>{{ formatLoanMoney(result.estimate.amountReceived)
@@ -853,10 +943,18 @@
             </table>
           </div>
         </details>
-        <p class="result-caveat">Sistema español de amortización de capital constante: el TIN anual se convierte a tanto
-          por uno y se divide entre 12. Los intereses se calculan sobre el saldo pendiente; las cuotas disminuyen y la
-          última se ajusta para cancelar el saldo. No convierte ni estima la TAE; esta puede incorporar gastos y
-          comisiones según el producto. No constituye una oferta bancaria.</p>
+        <p class="result-caveat">
+          @if (result.estimate.amortizationSystem === 'french') {
+          Sistema francés: la cuota mensual es constante; al principio pesan más los intereses y con el tiempo más el
+          capital. La última cuota puede variar unos céntimos por el redondeo.
+          } @else {
+          Sistema español de amortización de capital constante: las cuotas disminuyen y la última se ajusta para
+          cancelar el saldo.
+          }
+          El TIN anual se convierte a tanto por uno y se divide entre 12, y los intereses se calculan sobre el saldo
+          pendiente. No convierte ni estima la TAE; esta puede incorporar gastos y comisiones según el producto. No
+          constituye una oferta bancaria.
+        </p>
       </div>
       }
     </section>

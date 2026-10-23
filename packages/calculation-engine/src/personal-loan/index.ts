@@ -1,3 +1,7 @@
+export type PersonalLoanAmortizationSystem = 'french' | 'spanish';
+
+export const DEFAULT_AMORTIZATION_SYSTEM: PersonalLoanAmortizationSystem = 'french';
+
 export interface PersonalLoanInput {
   principal: number;
   annualInterestRate: number;
@@ -5,6 +9,8 @@ export interface PersonalLoanInput {
   openingFeePercent: number;
   upfrontExpenses: number;
   monthlyAdditionalCost: number;
+  /** Sistema de amortización. Si no se indica, se usa el francés (cuota constante). */
+  amortizationSystem?: PersonalLoanAmortizationSystem;
 }
 
 export interface PersonalLoanInstallment {
@@ -16,6 +22,7 @@ export interface PersonalLoanInstallment {
 }
 
 export interface PersonalLoanEstimate {
+  amortizationSystem: PersonalLoanAmortizationSystem;
   principal: number;
   amountReceived: number;
   firstMonthlyPayment: number;
@@ -46,6 +53,7 @@ const MAX_PRINCIPAL = 1_000_000;
 const MAX_TERM_MONTHS = 600;
 const MAX_RATE_PERCENT = 100;
 const MAX_ADDITIONAL_COST = 1_000_000;
+const VALID_SYSTEMS: readonly PersonalLoanAmortizationSystem[] = ['french', 'spanish'];
 
 function roundMoney(amount: number): number {
   return Math.round((amount + Number.EPSILON) * 100) / 100;
@@ -90,14 +98,38 @@ function validateInput(input: PersonalLoanInput): void {
   ) {
     throw new RangeError('El coste periódico debe estar entre 0 € y 1.000.000 € al mes.');
   }
+  if (
+    input.amortizationSystem !== undefined &&
+    !VALID_SYSTEMS.includes(input.amortizationSystem)
+  ) {
+    throw new RangeError('El sistema de amortización debe ser "french" o "spanish".');
+  }
+}
+
+/** Cuota constante del sistema francés: P·i / (1 − (1 + i)^−n). */
+function calculateFrenchPayment(
+  principal: number,
+  monthlyRate: number,
+  termMonths: number
+): number {
+  if (monthlyRate === 0) {
+    return roundMoney(principal / termMonths);
+  }
+  const discountFactor = Math.pow(1 + monthlyRate, -termMonths);
+  return roundMoney((principal * monthlyRate) / (1 - discountFactor));
 }
 
 export function calculatePersonalLoan(input: PersonalLoanInput): PersonalLoanEstimate {
   validateInput(input);
 
+  const amortizationSystem = input.amortizationSystem ?? DEFAULT_AMORTIZATION_SYSTEM;
   const principal = roundMoney(input.principal);
   const monthlyRate = input.annualInterestRate / 100 / 12;
-  const regularPrincipal = roundMoney(principal / input.termMonths);
+
+  // Sistema español: capital constante. Sistema francés: cuota constante.
+  const spanishRegularPrincipal = roundMoney(principal / input.termMonths);
+  const frenchPayment = calculateFrenchPayment(principal, monthlyRate, input.termMonths);
+
   let remainingPrincipal = principal;
   let totalPrincipalRepaid = 0;
   let totalInterest = 0;
@@ -107,9 +139,17 @@ export function calculatePersonalLoan(input: PersonalLoanInput): PersonalLoanEst
   for (let period = 1; period <= input.termMonths; period++) {
     const interest = roundMoney(remainingPrincipal * monthlyRate);
     const isLastPayment = period === input.termMonths;
-    const principalAmortized = isLastPayment
-      ? remainingPrincipal
-      : Math.min(remainingPrincipal, regularPrincipal);
+
+    let principalAmortized: number;
+    if (isLastPayment) {
+      // La última cuota liquida el capital restante y absorbe los redondeos.
+      principalAmortized = remainingPrincipal;
+    } else if (amortizationSystem === 'spanish') {
+      principalAmortized = Math.min(remainingPrincipal, spanishRegularPrincipal);
+    } else {
+      principalAmortized = Math.min(remainingPrincipal, roundMoney(frenchPayment - interest));
+    }
+
     const payment = roundMoney(principalAmortized + interest);
 
     remainingPrincipal = roundMoney(remainingPrincipal - principalAmortized);
@@ -125,7 +165,7 @@ export function calculatePersonalLoan(input: PersonalLoanInput): PersonalLoanEst
     });
   }
 
-  const openingFee = roundMoney(principal * input.openingFeePercent / 100);
+  const openingFee = roundMoney((principal * input.openingFeePercent) / 100);
   const upfrontExpenses = roundMoney(input.upfrontExpenses);
   const monthlyAdditionalCost = roundMoney(input.monthlyAdditionalCost);
   const totalAdditionalCosts = roundMoney(
@@ -134,6 +174,7 @@ export function calculatePersonalLoan(input: PersonalLoanInput): PersonalLoanEst
   const totalCostOfCredit = roundMoney(totalInterest + totalAdditionalCosts);
 
   return {
+    amortizationSystem,
     principal,
     amountReceived: principal,
     firstMonthlyPayment: amortizationSchedule[0].payment,
@@ -160,6 +201,7 @@ export function comparePersonalLoanScenarios(
     throw new RangeError('Indica exactamente tres tipos para comparar los escenarios.');
   }
 
+  // Al propagar `...input`, los escenarios usan el mismo sistema que el selector.
   return annualInterestRates.map(annualInterestRate => {
     const estimate = calculatePersonalLoan({ ...input, annualInterestRate });
     return {

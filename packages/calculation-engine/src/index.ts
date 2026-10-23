@@ -10,6 +10,7 @@ export { calculateSeverance } from './severance/index.js';
 export type { DismissalType, SeveranceEstimate, SeveranceEstimateInput } from './severance/index.js';
 export { calculatePersonalLoan, comparePersonalLoanScenarios } from './personal-loan/index.js';
 export type {
+  PersonalLoanAmortizationSystem,
   PersonalLoanEstimate,
   PersonalLoanInput,
   PersonalLoanInstallment,

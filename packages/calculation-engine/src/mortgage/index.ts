@@ -8,6 +8,14 @@ export interface MortgageEstimateInput {
   amortizationSystem?: MortgageAmortizationSystem;
 }
 
+export interface MortgageInstallment {
+  period: number;
+  payment: number;
+  principalAmortized: number;
+  interest: number;
+  remainingPrincipal: number;
+}
+
 export interface MortgageEstimate {
   principal: number;
   firstMonthlyPayment: number;
@@ -16,6 +24,37 @@ export interface MortgageEstimate {
   totalInterest: number;
   paymentCount: number;
   amortizationSystem: MortgageAmortizationSystem;
+  amortizationSchedule: MortgageInstallment[];
+}
+
+/**
+ * Calendario mes a mes. No se redondea aquí para que la suma coincida con las
+ * fórmulas cerradas de totalPaid y totalInterest; el redondeo es solo de presentación.
+ */
+function buildAmortizationSchedule(
+  system: MortgageAmortizationSystem,
+  principal: number,
+  monthlyRate: number,
+  paymentCount: number,
+  frenchPayment: number
+): MortgageInstallment[] {
+  const schedule: MortgageInstallment[] = [];
+  const spanishPrincipal = principal / paymentCount;
+  let remaining = principal;
+
+  for (let period = 1; period <= paymentCount; period++) {
+    const interest = remaining * monthlyRate;
+    const principalAmortized = system === 'spanish' ? spanishPrincipal : frenchPayment - interest;
+    const payment = principalAmortized + interest;
+    const isLast = period === paymentCount;
+
+    // En la última cuota el saldo es exactamente 0 (evita restos tipo -0,00 por coma flotante).
+    remaining = isLast ? 0 : remaining - principalAmortized;
+
+    schedule.push({ period, payment, principalAmortized, interest, remainingPrincipal: remaining });
+  }
+
+  return schedule;
 }
 
 export function calculateMortgage(input: MortgageEstimateInput): MortgageEstimate {
@@ -31,6 +70,9 @@ export function calculateMortgage(input: MortgageEstimateInput): MortgageEstimat
 
   const amortizationSystem = input.amortizationSystem ?? 'french';
   const paymentCount = Math.round(input.termYears * 12);
+  if (paymentCount < 1) {
+    throw new RangeError('El plazo debe ser de al menos un mes.');
+  }
   const monthlyRate = input.annualInterestRate / 100 / 12;
 
   if (amortizationSystem === 'spanish') {
@@ -47,7 +89,14 @@ export function calculateMortgage(input: MortgageEstimateInput): MortgageEstimat
       totalPaid: input.principal + totalInterest,
       totalInterest,
       paymentCount,
-      amortizationSystem
+      amortizationSystem,
+      amortizationSchedule: buildAmortizationSchedule(
+        amortizationSystem,
+        input.principal,
+        monthlyRate,
+        paymentCount,
+        0
+      )
     };
   }
 
@@ -68,6 +117,13 @@ export function calculateMortgage(input: MortgageEstimateInput): MortgageEstimat
     totalPaid,
     totalInterest: totalPaid - input.principal,
     paymentCount,
-    amortizationSystem
+    amortizationSystem,
+    amortizationSchedule: buildAmortizationSchedule(
+      amortizationSystem,
+      input.principal,
+      monthlyRate,
+      paymentCount,
+      monthlyPayment
+    )
   };
 }
