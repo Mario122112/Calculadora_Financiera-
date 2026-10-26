@@ -1,8 +1,7 @@
 <div class="app-shell">
   <header class="topbar">
     <a class="brand" routerLink="/" aria-label="CuentaClara, inicio">
-      <span class="brand-mark" aria-hidden="true"><img src="/euro.png" alt="" width="20"
-                height="20" /></span>
+      <span class="brand-mark" aria-hidden="true"><img src="/euro.png" alt="" width="20" height="20" /></span>
       <span>CuentaClara</span>
     </a>
     <nav class="topbar-nav" aria-label="Calculadoras">
@@ -250,17 +249,20 @@
 
       @if (salaryResult(); as result) {
       <div class="result-panel" role="status" aria-live="polite">
-        <div class="result-lead"><span class="result-kicker">PROMEDIO NETO MENSUAL</span><strong>{{
-            formatMoney(result.netMonthlyAverage) }}<small> / mes</small></strong><span>{{ formatMoney(result.netAnnual)
-            }} netos al año · media orientativa de {{ formatMoney(result.netPerPayment) }} por paga en {{
-            salaryData.payments }} pagas</span></div>
+        <div class="result-lead">
+          <span class="result-kicker">NETO POR PAGA · {{ salaryData.payments }} PAGAS</span>
+          <strong>{{ formatMoney(result.netPerPayment) }}<small> / paga</small></strong>
+          <span>{{ formatMoney(result.netAnnual) }} netos al año</span>
+        </div>
         <div class="monthly-breakdown">
-          <div><span>Bruto promedio mensual</span><strong>{{ formatMoney(result.annualGross / 12) }}</strong></div>
-          <div><span>Seguridad Social mensual</span><strong>−{{ formatMoney(result.socialSecurity / 12) }}</strong>
+          <div><span>Bruto por paga</span><strong>{{ formatMoney(result.annualGross / salaryData.payments) }}</strong>
           </div>
-          <div><span>IRPF mensual estimado</span><strong>−{{ formatMoney(result.incomeTax / 12) }}</strong></div>
-          <div class="monthly-net"><span>Neto promedio mensual</span><strong>{{ formatMoney(result.netMonthlyAverage)
+          <div><span>Seguridad Social por paga</span><strong>−{{ formatMoney(result.socialSecurity /
+              salaryData.payments) }}</strong></div>
+          <div><span>IRPF estimado por paga</span><strong>−{{ formatMoney(result.incomeTax / salaryData.payments)
               }}</strong></div>
+          <div class="monthly-net"><span>Neto por paga</span><strong>{{ formatMoney(result.netPerPayment) }}</strong>
+          </div>
         </div>
         <div class="result-metrics">
           <div><span>Bruto anual</span><strong>{{ formatMoney(result.annualGross) }}</strong></div>
@@ -313,7 +315,11 @@
               step="0.01" required [(ngModel)]="mortgageData.annualInterestRate" /><span>% TIN</span></span></label>
         <label class="field" for="mortgage-term"><span class="field-label">Plazo</span><span
             class="input-with-suffix"><input id="mortgage-term" name="termYears" type="number" min="1" max="50" step="1"
-              required [(ngModel)]="mortgageData.termYears" /><span>años</span></span></label>
+              required [(ngModel)]="mortgageData.termYears" [attr.aria-invalid]="mortgageTermError() ? 'true' : null"
+              [attr.aria-describedby]="mortgageTermError() ? 'mortgage-term-error' : null" /><span>años</span></span>@if
+          (mortgageTermError()) { <span class="field-error" id="mortgage-term-error" role="alert">El plazo no puede
+            superar
+            los 50 años.</span> }</label>
         <div class="field field-wide">
           <span class="field-label" id="amortization-system-label">Sistema de amortización</span>
           <div class="input-mode" role="group" aria-labelledby="amortization-system-label">

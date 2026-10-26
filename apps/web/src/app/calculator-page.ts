@@ -117,6 +117,7 @@ export class CalculatorPage {
   protected readonly severanceResult = signal<SeveranceEstimate | null>(null);
   protected readonly personalLoanResult = signal<PersonalLoanPageResult | null>(null);
   protected readonly mortgageError = signal(false);
+  protected readonly mortgageTermError = signal(false);
   protected readonly compoundInterestError = signal(false);
   protected readonly compoundInterestTermError = signal(false);
   protected readonly severanceDateError = signal(false);
@@ -234,9 +235,11 @@ export class CalculatorPage {
     this.severanceResult.set(null);
     this.personalLoanResult.set(null);
     this.mortgageError.set(false);
+    this.mortgageTermError.set(false);
     this.compoundInterestError.set(false);
     this.severanceDateError.set(false);
     this.personalLoanError.set(null);
+
 
     const description = routeData?.['description'];
     if (typeof description === 'string') {
@@ -343,6 +346,16 @@ export class CalculatorPage {
   }
 
   protected calculateMortgage(): void {
+    const { termYears } = this.mortgageData;
+
+    if (!Number.isFinite(termYears) || termYears < 1 || termYears > 50) {
+      this.mortgageResult.set(null);
+      this.mortgageError.set(false);
+      this.mortgageTermError.set(true);
+      return;
+    }
+    this.mortgageTermError.set(false);
+
     const principal = this.mortgageData.propertyPrice * (1 - this.mortgageData.downPaymentPercent / 100);
     if (principal <= 0) {
       this.mortgageResult.set(null);
@@ -354,7 +367,7 @@ export class CalculatorPage {
     this.mortgageResult.set(calculateMortgage({
       principal,
       annualInterestRate: this.mortgageData.annualInterestRate,
-      termYears: this.mortgageData.termYears,
+      termYears,
       amortizationSystem: this.mortgageData.amortizationSystem
     }));
   }
@@ -371,6 +384,7 @@ export class CalculatorPage {
   }
   protected clearMortgageError(): void {
     this.mortgageError.set(false);
+    this.mortgageTermError.set(false);
   }
 
   protected pensionContributionYearsMax(): number {
