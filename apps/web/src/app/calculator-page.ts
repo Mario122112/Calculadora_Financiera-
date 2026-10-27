@@ -53,16 +53,16 @@ interface CalculatorContent {
 const calculatorContent: Record<Calculator, CalculatorContent> = {
   salary: {
     title: 'Calculadora de sueldo neto',
-    summary: 'Estima cuánto podrías recibir después de las cotizaciones a la Seguridad Social y una retención aproximada de IRPF en España.',
+    summary: 'Calcula tu salario neto en España: estima cuánto podrías recibir después de las cotizaciones a la Seguridad Social y una retención aproximada de IRPF.',
     detail: 'Necesitas el salario bruto anual o el importe bruto por paga, el número de pagas y datos como edad, contrato y circunstancias familiares que pueden afectar a la estimación.',
-    interpretation: 'El resultado separa el neto anual, el promedio mensual y una media por paga. La nómina real puede distribuir las pagas extra y las retenciones de otra manera.',
+    interpretation: 'El resultado muestra el neto medio por paga según el número de pagas elegido, el neto anual y el desglose de Seguridad Social e IRPF. La nómina real puede distribuir las pagas extra y las retenciones de otra manera.',
     limitations: 'Es una aproximación con reglas de referencia de 2026. No calcula la declaración definitiva ni todas las circunstancias fiscales, y no sustituye el simulador de retenciones de la AEAT.'
   },
   mortgage: {
     title: 'Calculadora de hipoteca',
     summary: 'Calcula la cuota mensual estimada y el coste total de una hipoteca con sistema de amortización francés o español.',
     detail: 'Indica el precio de la vivienda, el porcentaje de entrada, el interés nominal anual, el plazo y el sistema de amortización. La entrada se resta del precio para estimar el capital financiado.',
-    interpretation: 'En el sistema francés, el más habitual, la cuota es constante: al principio pesan más los intereses y con el tiempo más el capital. En el español se amortiza el mismo capital cada mes y la cuota disminuye. El total pagado permite ver el coste de intereses estimado.',
+    interpretation: 'En el sistema francés, el más habitual, la cuota es constante: al principio pesan más los intereses y con el tiempo más el capital. En el español se amortiza el mismo capital cada mes y la cuota disminuye. El total pagado permite ver el coste de intereses estimado. El gráfico y la tabla de amortización muestran cuánto capital e intereses pagas cada año.',
     limitations: 'Supone un tipo de interés constante: en una hipoteca variable la cuota cambiaría con el Euríbor. No incluye comisiones, seguros, impuestos, tasación ni gastos de compraventa. Una oferta real puede usar tipos, condiciones o calendarios diferentes.'
   },
   pension: {
