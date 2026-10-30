@@ -49,7 +49,7 @@
 
       <div class="calculator-grid">
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'salary'"
-          [attr.aria-current]="selectedCalculator() === 'salary' ? 'page' : null" routerLink="/sueldo-neto">
+          [attr.aria-current]="selectedCalculator() === 'salary' ? 'page' : null" routerLink="/sueldo-neto" (click)="openCalculator('salary')">
           <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true"><img src="/euro.png" alt=""
                 width="25" height="20" /></span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Sueldo neto</span>
@@ -58,7 +58,7 @@
         </a>
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'mortgage'"
-          [attr.aria-current]="selectedCalculator() === 'mortgage' ? 'page' : null" routerLink="/calculadora-hipoteca">
+          [attr.aria-current]="selectedCalculator() === 'mortgage' ? 'page' : null" routerLink="/calculadora-hipoteca" (click)="openCalculator('mortgage')">
           <span class="card-topline">
             <span class="card-icon mortgage-icon" aria-hidden="true"><img src="/boton-de-inicio.png" alt="" width="25"
                 height="20" /></span>
@@ -70,7 +70,7 @@
         </a>
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'pension'"
-          [attr.aria-current]="selectedCalculator() === 'pension' ? 'page' : null" routerLink="/calculadora-pension">
+          [attr.aria-current]="selectedCalculator() === 'pension' ? 'page' : null" routerLink="/calculadora-pension" (click)="openCalculator('pension')">
           <span class="card-topline">
             <span class="card-icon pension-icon" aria-hidden="true"><img src="/reloj.png" alt="" width="25"
                 height="20" /></span><span class="availability available">DISPONIBLE</span></span>
@@ -81,7 +81,7 @@
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'compound-interest'"
           [attr.aria-current]="selectedCalculator() === 'compound-interest' ? 'page' : null"
-          routerLink="/calculadora-interes-compuesto">
+          routerLink="/calculadora-interes-compuesto" (click)="openCalculator('compound-interest')">
           <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true"><img
                 src="/flecha-diagonal.png" alt="" width="25" height="" /></span><span
               class="availability available">DISPONIBLE</span></span>
@@ -93,7 +93,7 @@
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'severance'"
           [attr.aria-current]="selectedCalculator() === 'severance' ? 'page' : null"
-          routerLink="/calculadora-finiquito-indemnizacion">
+          routerLink="/calculadora-finiquito-indemnizacion" (click)="openCalculator('severance')">
           <span class="card-topline"><span class="card-icon mortgage-icon" aria-hidden="true"><img src="/briefcase.png"
                 alt="" width="25" height="20" /></span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Finiquito e indemnización</span>
@@ -104,7 +104,7 @@
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'personal-loan'"
           [attr.aria-current]="selectedCalculator() === 'personal-loan' ? 'page' : null"
-          routerLink="/calculadora-prestamo-personal">
+          routerLink="/calculadora-prestamo-personal" (click)="openCalculator('personal-loan')">
           <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true"><img src="/landmark.png"
                 alt="" width="25" height="20" /></span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Préstamo personal</span>
@@ -115,7 +115,7 @@
     </section>
 
     @if (calculatorPage(); as page) {
-    <section class="calculator-intro" aria-labelledby="calculator-intro-title">
+    <section class="calculator-intro" id="calculadora" aria-labelledby="calculator-intro-title">
       <h2 id="calculator-intro-title">Qué calcula y cómo interpretar el resultado</h2>
       <p>{{ page.detail }}</p>
       <p>{{ page.interpretation }}</p>

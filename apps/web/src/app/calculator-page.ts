@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, Injector, afterNextRender, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Meta } from '@angular/platform-browser';
@@ -27,6 +27,7 @@ import {
 } from '@calculadora-financiera/calculation-engine';
 
 export type Calculator = 'salary' | 'mortgage' | 'pension' | 'compound-interest' | 'severance' | 'personal-loan';
+let scrollToCalculatorOnNextView = false;
 
 interface PersonalLoanPageResult {
   estimate: PersonalLoanEstimate;
@@ -105,6 +106,7 @@ export class CalculatorPage {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly meta = inject(Meta);
+  private readonly injector = inject(Injector);
   protected readonly selectedCalculator = signal<Calculator | null>(null);
   protected readonly calculatorPage = computed(() => {
     const calculator = this.selectedCalculator();
@@ -212,7 +214,13 @@ export class CalculatorPage {
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed()
       )
-      .subscribe(() => this.updateRouteMetadata());
+      .subscribe(() => {
+        this.updateRouteMetadata();
+        if (scrollToCalculatorOnNextView) {
+          scrollToCalculatorOnNextView = false;
+          this.scrollToCalculator();
+        }
+      });
   }
 
   private updateRouteMetadata(
@@ -588,5 +596,25 @@ export class CalculatorPage {
   protected mortgageBarHeight(value: number): number {
     const maxTotal = Math.max(...this.mortgageYears().map(entry => entry.total), 1);
     return (value / maxTotal) * 100;
+  }
+  protected openCalculator(calculator: Calculator): void {
+    // Si ya estás en esa calculadora no hay navegación, así que se baja directamente.
+    if (this.selectedCalculator() === calculator) {
+      this.scrollToCalculator();
+      return;
+    }
+    scrollToCalculatorOnNextView = true;
+  }
+
+  private scrollToCalculator(): void {
+    // Se espera al siguiente renderizado para que la sección ya exista en el DOM.
+    afterNextRender(() => {
+      const target = document.getElementById('calculadora');
+      if (!target) {
+        return;
+      }
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    }, { injector: this.injector });
   }
 }
