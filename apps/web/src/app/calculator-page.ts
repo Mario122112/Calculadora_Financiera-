@@ -5,6 +5,7 @@ import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
+import { calculatorGuides } from './calculator-guides';
 import {
   calculateMortgage,
   calculatePensionEstimate,
@@ -82,10 +83,10 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
   },
   severance: {
     title: 'Calculadora de finiquito e indemnización',
-    summary: 'Estima por separado salarios pendientes, vacaciones no disfrutadas, pagas extra indicadas e indemnización por despido.',
-    detail: 'Introduce el salario bruto anual, los días de salario y vacaciones pendientes, la paga extra acumulada no cobrada, las fechas del contrato y el tipo de despido.',
-    interpretation: 'El finiquito agrupa cantidades devengadas pendientes de pago; la indemnización se calcula aparte según el tipo de despido y la antigüedad.',
-    limitations: 'Es un cálculo bruto simplificado. No determina si el despido es procedente, no interpreta convenios, salarios variables ni exenciones fiscales; contrasta los datos con asesoramiento laboral.'
+    summary: 'Estima por separado salarios pendientes, vacaciones no disfrutadas, pagas extra indicadas e indemnización por despido o fallecimiento del trabajador.',
+    detail: 'Introduce el salario bruto anual, los días de salario y vacaciones pendientes, la paga extra acumulada no cobrada, las fechas del contrato y la causa de extinción.',
+    interpretation: 'El finiquito agrupa cantidades devengadas pendientes de pago; la indemnización, cuando corresponde, se calcula aparte según la causa y la antigüedad. En caso de fallecimiento no se estima indemnización y las cantidades las cobran los herederos.',
+    limitations: 'Es un cálculo bruto simplificado. No determina si el despido es procedente, no interpreta convenios, salarios variables ni exenciones fiscales, y no analiza la fiscalidad ni el reparto de la herencia; contrasta los datos con asesoramiento laboral.'
   },
   'personal-loan': {
     title: 'Calculadora de préstamo personal',
@@ -125,6 +126,10 @@ export class CalculatorPage {
   protected readonly severanceDateError = signal(false);
   protected readonly personalLoanError = signal<string | null>(null);
   protected salaryInputMode: 'annual' | 'monthly' = 'annual';
+  protected readonly calculatorGuide = computed(() => {
+    const calculator = this.selectedCalculator();
+    return calculator ? calculatorGuides[calculator] : null;
+  });
 
   protected salaryData = {
     annualGross: 30000,
@@ -617,4 +622,5 @@ export class CalculatorPage {
       target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
     }, { injector: this.injector });
   }
+  
 }

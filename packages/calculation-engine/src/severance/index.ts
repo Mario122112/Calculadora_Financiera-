@@ -1,4 +1,11 @@
-export type DismissalType = 'objective' | 'unfair';
+/**
+ * Causa de extinción del contrato.
+ * - objective: despido objetivo (20 días por año).
+ * - unfair: despido improcedente (tramos 45/33 días).
+ * - death: fallecimiento del trabajador. No genera indemnización por despido;
+ *   solo se liquidan las cantidades ya devengadas.
+ */
+export type DismissalType = 'objective' | 'unfair' | 'death';
 
 export interface SeveranceEstimateInput {
   annualSalary: number;
@@ -6,11 +13,13 @@ export interface SeveranceEstimateInput {
   unusedVacationDays: number;
   accruedExtraPay: number;
   contractStartDate: string;
+  /** En caso de fallecimiento, la fecha del fallecimiento. */
   terminationDate: string;
   dismissalType: DismissalType;
 }
 
 export interface SeveranceEstimate {
+  dismissalType: DismissalType;
   dailySalary: number;
   pendingSalary: number;
   unusedVacationPay: number;
@@ -23,6 +32,7 @@ export interface SeveranceEstimate {
 }
 
 const unfairDismissalTransitionDate = '2012-02-12';
+const VALID_DISMISSAL_TYPES: readonly DismissalType[] = ['objective', 'unfair', 'death'];
 
 function parseDate(value: string, fieldName: string): number {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
@@ -84,8 +94,8 @@ export function calculateSeverance(input: SeveranceEstimateInput): SeveranceEsti
   if (!Number.isFinite(input.accruedExtraPay) || input.accruedExtraPay < 0) {
     throw new RangeError('Las pagas extra pendientes deben ser cero o mayores.');
   }
-  if (input.dismissalType !== 'objective' && input.dismissalType !== 'unfair') {
-    throw new RangeError('El tipo de despido no es válido.');
+  if (!VALID_DISMISSAL_TYPES.includes(input.dismissalType)) {
+    throw new RangeError('La causa de extinción no es válida.');
   }
 
   const start = parseDate(input.contractStartDate, 'La fecha de inicio');
@@ -102,7 +112,11 @@ export function calculateSeverance(input: SeveranceEstimateInput): SeveranceEsti
   let severanceDays = 0;
   let severanceAmount = 0;
 
-  if (input.dismissalType === 'objective') {
+  if (input.dismissalType === 'death') {
+    // Fallecimiento: no hay indemnización por despido. Solo se liquida lo devengado.
+    severanceDays = 0;
+    severanceAmount = 0;
+  } else if (input.dismissalType === 'objective') {
     severanceDays = Math.min(20 * serviceYears, 365);
     severanceAmount = Math.min(dailySalary * 20 * serviceYears, input.annualSalary);
   } else {
@@ -126,6 +140,7 @@ export function calculateSeverance(input: SeveranceEstimateInput): SeveranceEsti
   }
 
   return {
+    dismissalType: input.dismissalType,
     dailySalary,
     pendingSalary: dailySalary * input.pendingSalaryDays,
     unusedVacationPay: dailySalary * input.unusedVacationDays,

@@ -49,7 +49,8 @@
 
       <div class="calculator-grid">
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'salary'"
-          [attr.aria-current]="selectedCalculator() === 'salary' ? 'page' : null" routerLink="/sueldo-neto" (click)="openCalculator('salary')">
+          [attr.aria-current]="selectedCalculator() === 'salary' ? 'page' : null" routerLink="/sueldo-neto"
+          (click)="openCalculator('salary')">
           <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true"><img src="/euro.png" alt=""
                 width="25" height="20" /></span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Sueldo neto</span>
@@ -58,7 +59,8 @@
         </a>
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'mortgage'"
-          [attr.aria-current]="selectedCalculator() === 'mortgage' ? 'page' : null" routerLink="/calculadora-hipoteca" (click)="openCalculator('mortgage')">
+          [attr.aria-current]="selectedCalculator() === 'mortgage' ? 'page' : null" routerLink="/calculadora-hipoteca"
+          (click)="openCalculator('mortgage')">
           <span class="card-topline">
             <span class="card-icon mortgage-icon" aria-hidden="true"><img src="/boton-de-inicio.png" alt="" width="25"
                 height="20" /></span>
@@ -70,7 +72,8 @@
         </a>
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'pension'"
-          [attr.aria-current]="selectedCalculator() === 'pension' ? 'page' : null" routerLink="/calculadora-pension" (click)="openCalculator('pension')">
+          [attr.aria-current]="selectedCalculator() === 'pension' ? 'page' : null" routerLink="/calculadora-pension"
+          (click)="openCalculator('pension')">
           <span class="card-topline">
             <span class="card-icon pension-icon" aria-hidden="true"><img src="/reloj.png" alt="" width="25"
                 height="20" /></span><span class="availability available">DISPONIBLE</span></span>
@@ -716,19 +719,26 @@
             [attr.aria-describedby]="severanceDateError() ? 'severance-date-error' : null" />
         </label>
         <label class="field" for="termination-date">
-          <span class="field-label">Fecha de fin del contrato</span>
+          <span class="field-label">{{ severanceData.dismissalType === 'death' ? 'Fecha del fallecimiento' : 'Fecha de
+            fin del contrato' }}</span>
           <input id="termination-date" name="terminationDate" type="date" [min]="severanceData.contractStartDate"
             required [(ngModel)]="severanceData.terminationDate"
             [attr.aria-invalid]="severanceDateError() ? 'true' : null"
             [attr.aria-describedby]="severanceDateError() ? 'severance-date-error' : null" />
         </label>
         <label class="field" for="dismissal-type">
-          <span class="field-label">Tipo de despido para estimar la indemnización</span>
+          <span class="field-label">Causa de extinción del contrato</span>
           <select id="dismissal-type" name="dismissalType" required [(ngModel)]="severanceData.dismissalType">
-            <option value="objective">Objetivo (20 días por año)</option>
-            <option value="unfair">Improcedente (tramos 45/33 días)</option>
+            <option value="objective">Despido objetivo (20 días por año)</option>
+            <option value="unfair">Despido improcedente (tramos 45/33 días)</option>
+            <option value="death">Fallecimiento del trabajador (sin indemnización)</option>
           </select>
         </label>
+        @if (severanceData.dismissalType === 'death') {
+        <p class="field-hint field-wide">Al extinguirse el contrato por fallecimiento no corresponde indemnización por
+          despido. Las cantidades pendientes las cobran los herederos. Indica como fecha de fin la del fallecimiento.
+        </p>
+        }
         @if (severanceDateError()) {
         <p class="field-error field-wide" id="severance-date-error" role="alert">La fecha de inicio no puede ser
           posterior a la fecha de fin.</p>
@@ -743,22 +753,37 @@
       @if (severanceResult(); as result) {
       <div class="result-panel" role="status" aria-live="polite">
         <div class="result-lead"><span class="result-kicker">TOTAL BRUTO ORIENTATIVO</span><strong>{{
-            formatMoney(result.totalGross) }}</strong><span>Finiquito e indemnización estimados antes de
-            impuestos</span></div>
+            formatMoney(result.totalGross) }}</strong><span>{{ result.dismissalType === 'death' ? 'Finiquito estimado a
+            favor de los herederos, antes de impuestos' : 'Finiquito e indemnización estimados antes de impuestos'
+            }}</span></div>
         <div class="result-metrics">
           <div><span>Salario pendiente</span><strong>{{ formatMoney(result.pendingSalary) }}</strong></div>
           <div><span>Vacaciones no disfrutadas</span><strong>{{ formatMoney(result.unusedVacationPay) }}</strong></div>
           <div><span>Pagas extra pendientes</span><strong>{{ formatMoney(result.accruedExtraPay) }}</strong></div>
           <div><span>Finiquito estimado</span><strong>{{ formatMoney(result.settlementTotal) }}</strong></div>
           <div><span>Antigüedad calculada</span><strong>{{ result.serviceYears | number:'1.0-2' }} años</strong></div>
+          @if (result.dismissalType !== 'death') {
           <div><span>Días de indemnización estimados</span><strong>{{ result.severanceDays | number:'1.0-2' }}</strong>
           </div>
-          <div><span>Indemnización estimada</span><strong>{{ formatMoney(result.severanceAmount) }}</strong></div>
+          }
+          <div><span>Indemnización estimada</span><strong>{{ result.dismissalType === 'death' ? '0 € (extinción por
+              fallecimiento)' : formatMoney(result.severanceAmount) }}</strong></div>
         </div>
-        <p class="result-caveat">La indemnización objetiva se limita a 12 mensualidades. Para el despido improcedente se
-          aplican 45 días por año antes del 12/02/2012 y 33 después, con los topes legales de 720 o 1.260 días cuando
-          corresponde el régimen transitorio anterior. El cálculo supone salario fijo y no confirma la causa ni la
-          calificación judicial del despido.</p>
+        <p class="result-caveat">
+          @if (result.dismissalType === 'death') {
+          La extinción del contrato por fallecimiento no genera indemnización por despido: solo se liquidan las
+          cantidades ya
+          devengadas. Algunos convenios o seguros colectivos pueden prever una cuantía aparte, que esta calculadora no
+          incluye.
+          } @else {
+          La indemnización objetiva se limita a 12 mensualidades. Para el despido improcedente se aplican 45 días por
+          año antes
+          del 12/02/2012 y 33 después, con los topes legales de 720 o 1.260 días cuando corresponde el régimen
+          transitorio
+          anterior.
+          }
+          El cálculo supone salario fijo y no confirma la causa ni la calificación judicial de la extinción.
+        </p>
       </div>
       }
     </section>
@@ -966,6 +991,31 @@
     </section>
     }
 
+    @if (calculatorGuide(); as guide) {
+    <section class="calculator-intro calculator-guide" aria-labelledby="guide-title">
+      <h2 id="guide-title">Cómo usar esta calculadora</h2>
+      <ol>
+        @for (step of guide.howTo; track $index) {
+        <li>{{ step }}</li>
+        }
+      </ol>
+
+      @if (guide.example; as example) {
+      <h2>{{ example.title }}</h2>
+      @for (paragraph of example.paragraphs; track $index) {
+      <p>{{ paragraph }}</p>
+      }
+      }
+
+      @if (guide.faq.length > 0) {
+      <h2>Preguntas frecuentes</h2>
+      @for (item of guide.faq; track item.question) {
+      <h3>{{ item.question }}</h3>
+      <p>{{ item.answer }}</p>
+      }
+      }
+    </section>
+    }
     <footer class="page-footer">
       <span>CUENTACLARA</span>
       <span>Estimaciones orientativas · España</span>
