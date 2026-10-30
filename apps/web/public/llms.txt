@@ -1,0 +1,18 @@
+# CuentaClara
+
+> Calculadoras financieras gratuitas para España: sueldo neto, hipoteca, préstamo personal, pensión, interés compuesto y finiquito. Son estimaciones orientativas, no asesoramiento financiero ni legal.
+
+## Calculadoras
+
+- [Calculadora de sueldo neto](https://tucuentaclara.es/sueldo-neto): estima el neto por paga y anual tras Seguridad Social e IRPF.
+- [Calculadora de hipoteca](https://tucuentaclara.es/calculadora-hipoteca): cuota, intereses, coste total y tabla de amortización, con sistema francés o español.
+- [Calculadora de pensión](https://tucuentaclara.es/calculadora-pension): proyección orientativa de la pensión de jubilación.
+- [Calculadora de interés compuesto](https://tucuentaclara.es/calculadora-interes-compuesto): crecimiento de un capital con aportaciones mensuales.
+- [Calculadora de finiquito e indemnización](https://tucuentaclara.es/calculadora-finiquito-indemnizacion): liquidación pendiente e indemnización estimada por despido.
+- [Calculadora de préstamo personal](https://tucuentaclara.es/calculadora-prestamo-personal): cuota, intereses, comisiones y coste total, con sistema francés o español.
+
+## Información legal
+
+- [Aviso legal](https://tucuentaclara.es/aviso-legal)
+- [Política de privacidad](https://tucuentaclara.es/politica-de-privacidad)
+- [Contacto](https://tucuentaclara.es/contacto)
