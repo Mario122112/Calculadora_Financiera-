@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { CalculatorPage } from './calculator-page';
+import { LegalPage } from './core/privacy/legal-page';
 
 export const routes: Routes = [
   {
@@ -99,6 +100,15 @@ export const routes: Routes = [
     data: {
       legalPage: 'contact',
       description: 'Datos de contacto y correo electrónico de CuentaClara.'
+    }
+  },
+  {
+    path: 'como-se-calcula',
+    loadComponent: () => import('./core/privacy/legal-page').then(module => module.LegalPage),
+    title: 'Cómo se calculan los resultados | CuentaClara',
+    data: {
+      legalPage: 'methodology',
+      description: 'Cómo funcionan las calculadoras de CuentaClara: fórmulas, datos de referencia de 2026 y normas en las que se apoyan.'
     }
   },
   { path: '**', redirectTo: '' }

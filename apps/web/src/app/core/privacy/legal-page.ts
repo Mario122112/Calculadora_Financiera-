@@ -3,12 +3,24 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { methodologyPage } from './methodology-content';
 
-type LegalPageId = 'legal' | 'privacy' | 'contact';
+type LegalPageId = 'legal' | 'privacy' | 'contact' | 'methodology';
 
 interface LegalSection {
   heading: string;
   paragraphs: string[];
+}
+
+interface LegalLink {
+  label: string;
+  url: string;
+}
+
+interface LegalSection {
+  heading: string;
+  paragraphs: string[];
+  links?: LegalLink[];
 }
 
 interface LegalPageContent {
@@ -116,7 +128,8 @@ const legalPages: Record<LegalPageId, LegalPageContent> = {
         ]
       }
     ]
-  }
+  },
+  methodology: methodologyPage
 };
 
 @Component({
