@@ -12,7 +12,7 @@ export interface GuideFaq {
 
 export interface CalculatorGuide {
     howTo: string[];
-    example?: GuideExample;
+    examples: GuideExample[];
     faq: GuideFaq[];
 }
 
@@ -26,14 +26,23 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
             'Pulsa «Calcular sueldo neto». Verás el neto medio por paga, el neto anual y el desglose de Seguridad Social e IRPF.',
             'Si cambias algún dato después de calcular, el resultado se actualiza solo.'
         ],
-        example: {
-            title: 'Ejemplo: 30.000 € brutos anuales en 14 pagas',
-            paragraphs: [
-                'Imagina un trabajador de 35 años, con contrato indefinido, sin hijos ni discapacidad y con un salario bruto de 30.000 € al año repartido en 14 pagas.',
-                'La calculadora estima unos 1.950 € de Seguridad Social (un 6,5 % del bruto) y unos 4.926 € de IRPF. El neto anual sería de unos 23.124 €, lo que equivale a unos 1.651,71 € por paga en 14 pagas, o a unos 1.927 € de media al mes. En total se queda en impuestos y cotizaciones cerca del 22,9 % del bruto.',
-                'Si el mismo sueldo se cobrara en 12 pagas, el neto anual no cambiaría: serían unos 1.927 € netos en cada una. Cambiar el número de pagas solo modifica cómo se reparte el dinero a lo largo del año, no cuánto cobras.'
-            ]
-        },
+        examples: [
+            {
+                title: 'Ejemplo: 30.000 € brutos anuales en 14 pagas',
+                paragraphs: [
+                    'Imagina un trabajador de 35 años, con contrato indefinido, sin hijos ni discapacidad y con un salario bruto de 30.000 € al año repartido en 14 pagas.',
+                    'La calculadora estima unos 1.950 € de Seguridad Social (un 6,5 % del bruto) y unos 4.926 € de IRPF. El neto anual sería de unos 23.124 €, lo que equivale a unos 1.651,71 € por paga en 14 pagas, o a unos 1.927 € de media al mes. En total se queda en impuestos y cotizaciones cerca del 22,9 % del bruto.',
+                    'Si el mismo sueldo se cobrara en 12 pagas, el neto anual no cambiaría: serían unos 1.927 € netos en cada una. Cambiar el número de pagas solo modifica cómo se reparte el dinero a lo largo del año, no cuánto cobras.'
+                ]
+            },
+            {
+                title: 'Ejemplo: contrato temporal frente a indefinido',
+                paragraphs: [
+                    'Con los mismos datos del ejemplo anterior y un contrato temporal, la calculadora estima unos 23.113,50 € netos al año, frente a 23.124 € con contrato indefinido.',
+                    'La diferencia aproximada de 10,50 € al año se debe a la cotización por desempleo algo mayor del contrato temporal; el número de pagas no altera el neto anual.'
+                ]
+            }
+        ],
         faq: [
             {
                 question: '¿Qué diferencia hay entre cobrar en 12 o en 14 pagas?',
@@ -78,7 +87,7 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
             'Pulsa «Calcular hipoteca» y consulta la cuota mensual, los intereses totales y el total pagado.',
             'Mira el gráfico y despliega la tabla por años para ver cuánto de lo que pagas cada año es capital y cuánto son intereses.'
         ],
-        example: {
+        examples: [{
             title: 'Ejemplo: hipoteca de 192.000 € a 25 años',
             paragraphs: [
                 'Imagina un piso de 240.000 € con una entrada del 20 % (48.000 €). Financias 192.000 € a un TIN del 3,2 % durante 25 años.',
@@ -86,7 +95,7 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
                 'En el primer año pagas unos 11.167 €: 6.070 € son intereses y solo 5.097 € amortizan capital. En el último año ocurre lo contrario, con 10.976 € de capital y 191 € de intereses. Por eso al principio parece que la deuda baja muy despacio.',
                 'Con el sistema español la primera cuota sería de unos 1.152 € y la última de unos 642 €. Los intereses totales bajarían a unos 77.056 €, es decir, unos 10.119 € menos que en el francés, a cambio de empezar pagando bastante más cada mes.'
             ]
-        },
+        }],
         faq: [
             {
                 question: '¿Qué diferencia hay entre el sistema francés y el español?',
@@ -119,7 +128,7 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
             'Si quieres, añade los complementos opcionales: hijos para simular el complemento por brecha de género o el posible complemento a mínimos.',
             'Pulsa «Estimar pensión» para ver una cuantía bruta orientativa en 14 pagas.'
         ],
-        example: {
+        examples: [{
             title: 'Ejemplo: jubilación a los 65 años con 40 años cotizados',
             paragraphs: [
                 'Imagina una persona de 40 años que lleva 15 años cotizados, piensa jubilarse a los 65, tiene una base media de cotización de 2.200 € al mes y 2 hijos.',
@@ -127,7 +136,7 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
                 'Si además se simula el complemento por brecha de género, con 2 hijos se sumarían unos 73,80 € al mes, hasta unos 1.960 € brutos mensuales.',
                 'Si la misma persona retrasara su jubilación hasta los 67 años, tendría 42 años cotizados y 2 años de demora sobre la edad ordinaria. Eso añade un incentivo del 8 % y la pensión subiría a unos 2.037 € brutos al mes, unos 28.512 € al año.'
             ]
-        },
+        }],
         faq: [
             {
                 question: '¿Es la pensión que cobraré realmente?',
@@ -176,14 +185,23 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
             'Fija el plazo en años, de 1 a 100.',
             'Pulsa «Calcular proyección». Verás el capital final, lo aportado, los intereses estimados y un gráfico con la evolución año a año.'
         ],
-        example: {
-            title: 'Ejemplo: 5.000 € iniciales y 200 € al mes durante 20 años',
-            paragraphs: [
-                'Imagina que empiezas con 5.000 €, aportas 200 € al final de cada mes y supones una rentabilidad anual nominal del 6 % durante 20 años.',
-                'En total habrás aportado 53.000 €: los 5.000 € iniciales más 48.000 € en cuotas mensuales. El capital final estimado sería de unos 108.959 €, de los que unos 55.959 € serían intereses.',
-                'A los 10 años tendrías unos 41.873 € habiendo aportado 29.000 €, es decir, unos 12.873 € de intereses. En la segunda mitad del plazo se generan unos 43.086 € de intereses, más del triple. Es el efecto del interés compuesto: los intereses ya ganados empiezan a generar sus propios intereses, y por eso el tiempo pesa más que el importe de cada aportación.'
-            ]
-        },
+        examples: [
+            {
+                title: 'Ejemplo: 5.000 € iniciales y 200 € al mes durante 20 años',
+                paragraphs: [
+                    'Imagina que empiezas con 5.000 €, aportas 200 € al final de cada mes y supones una rentabilidad anual nominal del 6 % durante 20 años.',
+                    'En total habrás aportado 53.000 €: los 5.000 € iniciales más 48.000 € en cuotas mensuales. El capital final estimado sería de unos 108.959 €, de los que unos 55.959 € serían intereses.',
+                    'A los 10 años tendrías unos 41.873 € habiendo aportado 29.000 €, es decir, unos 12.873 € de intereses. En la segunda mitad del plazo se generan unos 43.086 € de intereses, más del triple. Es el efecto del interés compuesto: los intereses ya ganados empiezan a generar sus propios intereses, y por eso el tiempo pesa más que el importe de cada aportación.'
+                ]
+            },
+            {
+                title: 'Ejemplo: empezar sin capital inicial',
+                paragraphs: [
+                    'También puedes empezar desde cero. Si aportas 100 € al final de cada mes durante 10 años y supones una rentabilidad nominal del 5 % anual, habrás aportado 12.000 €.',
+                    'La proyección estima un capital final de unos 15.528 €, incluidos unos 3.528 € de intereses. Es una simulación constante: no contempla cambios de rentabilidad, comisiones, impuestos ni inflación.'
+                ]
+            }
+        ],
         faq: [
             {
                 question: '¿Qué es el interés compuesto?',
@@ -222,16 +240,39 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
             'Indica los días trabajados pendientes de cobrar y los días de vacaciones que no has disfrutado.',
             'Si hay pagas extra devengadas pendientes, escribe el importe bruto que figura en la nómina o el convenio.',
             'Selecciona la fecha de inicio del contrato y la de fin. En caso de fallecimiento, la fecha de fin es la del fallecimiento.',
-            'Elige la causa de extinción: despido objetivo, despido improcedente o fallecimiento del trabajador.',
-            'Pulsa «Estimar cantidades». El resultado separa el finiquito, que son las cantidades ya devengadas, de la indemnización.'
+            'Elige la causa de extinción: despido objetivo o improcedente, baja voluntaria, fin de contrato temporal o fallecimiento.',
+            'Pulsa «Estimar cantidades». El resultado separa el finiquito, que son las cantidades ya devengadas, de la indemnización. La baja voluntaria no genera indemnización; el fin de contrato temporal se estima, como regla general, a 12 días por año trabajado.'
         ],
-        example: {
-            title: 'Ejemplo: finiquito por fallecimiento',
-            paragraphs: [
-                'Imagina un trabajador con un salario bruto de 30.000 € al año que fallece con 10 días de salario pendientes de cobrar y 12 días de vacaciones sin disfrutar, sin pagas extra pendientes.',
-                'Con la causa «Fallecimiento» la calculadora estima unos 822 € de salario pendiente y unos 986 € de vacaciones, es decir, un finiquito de unos 1.808 € brutos. La indemnización es de 0 €, porque la muerte extingue el contrato pero no es un despido.'
-            ]
-        },
+        examples: [
+            {
+                title: 'Ejemplo: despido objetivo o improcedente',
+                paragraphs: [
+                    'Imagina un salario bruto anual de 30.000 €, cuatro años trabajados y 8 días de salario pendientes, 12 días de vacaciones sin disfrutar y 500 € de pagas extra pendientes. El finiquito estimado sería de unos 2.144 € brutos.',
+                    'Si la extinción es un despido objetivo, la indemnización estimada sería de 80 días, unos 6.575 €, para un total de unos 8.719 €. Si se trata de un despido improcedente posterior al 12/02/2012, serían 132 días, unos 10.849 €, y unos 12.993 € en total. Son escenarios alternativos: la calculadora no determina la calificación legal del despido.'
+                ]
+            },
+            {
+                title: 'Ejemplo: baja voluntaria',
+                paragraphs: [
+                    'Con el mismo salario y cantidades pendientes del ejemplo anterior, el finiquito seguiría siendo de unos 2.144 € brutos.',
+                    'La indemnización sería de 0 €, así que el total estimado coincide con el finiquito. El posible preaviso que haya que dar depende del convenio o contrato.'
+                ]
+            },
+            {
+                title: 'Ejemplo: fin de contrato temporal',
+                paragraphs: [
+                    'Para un salario anual de 30.000 € y un año trabajado, la regla general de 12 días por año da una indemnización orientativa de unos 986 € brutos, antes de sumar cualquier finiquito pendiente.',
+                    'Algunos contratos y supuestos están excluidos legalmente de esta indemnización, como los contratos formativos o de sustitución. Comprueba el tipo de contrato y el convenio aplicable.'
+                ]
+            },
+            {
+                title: 'Ejemplo: finiquito por fallecimiento',
+                paragraphs: [
+                    'Imagina un trabajador con un salario bruto de 30.000 € al año que fallece con 10 días de salario pendientes de cobrar y 12 días de vacaciones sin disfrutar, sin pagas extra pendientes.',
+                    'Con la causa «Fallecimiento» la calculadora estima unos 822 € de salario pendiente y unos 986 € de vacaciones, es decir, un finiquito de unos 1.808 € brutos. La indemnización es de 0 €, porque la muerte extingue el contrato pero no es un despido.'
+                ]
+            }
+        ],
         faq: [
             {
                 question: '¿Hay indemnización si el trabajador fallece?',
@@ -252,6 +293,14 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
             {
                 question: '¿Cómo calculo un finiquito por fallecimiento con esta herramienta?',
                 answer: 'Elige la causa «Fallecimiento del trabajador», pon como fecha de fin la del fallecimiento e introduce los días y las cantidades pendientes. La indemnización saldrá a 0 € y el total coincidirá con el finiquito.'
+            },
+            {
+                question: '¿Me corresponde indemnización si dimito o pido la baja voluntaria?',
+                answer: 'No. La baja voluntaria no genera indemnización, aunque sí corresponde liquidar el salario y demás cantidades devengadas pendientes, incluidas las vacaciones no disfrutadas y pagas extra pendientes. Comprueba también el preaviso previsto en tu convenio o contrato.'
+            },
+            {
+                question: '¿Qué indemnización se cobra al terminar un contrato temporal?',
+                answer: 'Como regla general, 12 días de salario por año trabajado, prorrateados por el tiempo de servicio. Hay contratos y supuestos excluidos legalmente —como los contratos formativos o de sustitución—, por lo que el resultado es orientativo y debe comprobarse el tipo de contrato y el convenio aplicable.'
             }
         ]
     },
@@ -265,14 +314,14 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
             'Pulsa «Calcular préstamo». Verás la cuota, los intereses, el coste total y lo que sale realmente de tu bolsillo.',
             'Usa el comparador de tipos para ver cómo cambiaría el coste con un TIN un punto por debajo o por encima, y despliega la tabla de amortización para ver cada cuota.'
         ],
-        example: {
+        examples: [{
             title: 'Ejemplo: préstamo de 10.000 € a 5 años',
             paragraphs: [
                 'Imagina un préstamo de 10.000 € a un TIN del 8,5 % durante 5 años (60 cuotas) y una comisión de apertura del 1,5 %.',
                 'Con el sistema francés pagarías una cuota constante de unos 205,17 € al mes. Los intereses totales serían de unos 2.309,87 € y la comisión de apertura, 150 €, que se paga aparte. El coste total de la financiación sería de unos 2.459,87 € y lo que sale de tu bolsillo, unos 12.459,87 €.',
                 'Con el sistema español la primera cuota sería de unos 237,50 € y la última de unos 167,65 €, con unos 2.160,36 € de intereses.'
             ]
-        },
+        }],
         faq: [
             {
                 question: '¿Qué diferencia hay entre TIN y TAE?',

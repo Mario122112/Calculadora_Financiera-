@@ -2,10 +2,12 @@
  * Causa de extinción del contrato.
  * - objective: despido objetivo (20 días por año).
  * - unfair: despido improcedente (tramos 45/33 días).
+ * - resignation: baja voluntaria. No genera indemnización.
+ * - temporary-end: fin de contrato temporal (12 días por año, con excepciones legales).
  * - death: fallecimiento del trabajador. No genera indemnización por despido;
  *   solo se liquidan las cantidades ya devengadas.
  */
-export type DismissalType = 'objective' | 'unfair' | 'death';
+export type DismissalType = 'objective' | 'unfair' | 'resignation' | 'temporary-end' | 'death';
 
 export interface SeveranceEstimateInput {
   annualSalary: number;
@@ -32,7 +34,13 @@ export interface SeveranceEstimate {
 }
 
 const unfairDismissalTransitionDate = '2012-02-12';
-const VALID_DISMISSAL_TYPES: readonly DismissalType[] = ['objective', 'unfair', 'death'];
+const VALID_DISMISSAL_TYPES: readonly DismissalType[] = [
+  'objective',
+  'unfair',
+  'resignation',
+  'temporary-end',
+  'death'
+];
 
 function parseDate(value: string, fieldName: string): number {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
@@ -112,13 +120,16 @@ export function calculateSeverance(input: SeveranceEstimateInput): SeveranceEsti
   let severanceDays = 0;
   let severanceAmount = 0;
 
-  if (input.dismissalType === 'death') {
-    // Fallecimiento: no hay indemnización por despido. Solo se liquida lo devengado.
+  if (input.dismissalType === 'death' || input.dismissalType === 'resignation') {
+    // Estas causas no generan indemnización; solo se liquida lo devengado.
     severanceDays = 0;
     severanceAmount = 0;
   } else if (input.dismissalType === 'objective') {
     severanceDays = Math.min(20 * serviceYears, 365);
     severanceAmount = Math.min(dailySalary * 20 * serviceYears, input.annualSalary);
+  } else if (input.dismissalType === 'temporary-end') {
+    severanceDays = 12 * serviceYears;
+    severanceAmount = dailySalary * severanceDays;
   } else {
     const transition = Date.parse(`${unfairDismissalTransitionDate}T00:00:00Z`);
     const preTransitionMonths = start < transition

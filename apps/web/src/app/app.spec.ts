@@ -1510,6 +1510,39 @@ describe('App', () => {
     expect(result.totalGross).toBeCloseTo(6000, 2);
   });
 
+  it('should calculate no dismissal compensation for voluntary resignation', () => {
+    const result = calculateSeverance({
+      annualSalary: 36500,
+      pendingSalaryDays: 5,
+      unusedVacationDays: 10,
+      accruedExtraPay: 500,
+      contractStartDate: '2020-01-01',
+      terminationDate: '2021-01-01',
+      dismissalType: 'resignation'
+    });
+
+    expect(result.severanceDays).toBe(0);
+    expect(result.severanceAmount).toBe(0);
+    expect(result.settlementTotal).toBe(2000);
+    expect(result.totalGross).toBe(2000);
+  });
+
+  it('should calculate 12 days per year for the end of a temporary contract', () => {
+    const result = calculateSeverance({
+      annualSalary: 36500,
+      pendingSalaryDays: 0,
+      unusedVacationDays: 0,
+      accruedExtraPay: 0,
+      contractStartDate: '2020-01-01',
+      terminationDate: '2021-01-01',
+      dismissalType: 'temporary-end'
+    });
+
+    expect(result.severanceDays).toBe(12);
+    expect(result.severanceAmount).toBe(1200);
+    expect(result.totalGross).toBe(1200);
+  });
+
   it('should apply the pre-February-2012 and post-transition unfair dismissal rates', () => {
     const result = calculateSeverance({
       annualSalary: 36500,
@@ -1622,6 +1655,11 @@ describe('App', () => {
       .toContain('Finiquito estimado');
     expect(harness.routeNativeElement?.querySelector('.result-metrics')?.textContent)
       .toContain('Indemnización estimada');
+    const exampleTitles = Array.from(harness.routeNativeElement?.querySelectorAll('.calculator-guide h3') ?? [])
+      .map(heading => heading.textContent?.trim());
+    expect(exampleTitles).toContain('Ejemplo: despido objetivo o improcedente');
+    expect(exampleTitles).toContain('Ejemplo: baja voluntaria');
+    expect(exampleTitles).toContain('Ejemplo: fin de contrato temporal');
   });
 
   it('should associate reversed contract dates with an accessible validation message', async () => {

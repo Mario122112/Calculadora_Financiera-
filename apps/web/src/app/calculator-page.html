@@ -731,6 +731,8 @@
           <select id="dismissal-type" name="dismissalType" required [(ngModel)]="severanceData.dismissalType">
             <option value="objective">Despido objetivo (20 días por año)</option>
             <option value="unfair">Despido improcedente (tramos 45/33 días)</option>
+            <option value="resignation">Baja voluntaria / dimisión (sin indemnización)</option>
+            <option value="temporary-end">Fin de contrato temporal (12 días por año*)</option>
             <option value="death">Fallecimiento del trabajador (sin indemnización)</option>
           </select>
         </label>
@@ -738,6 +740,15 @@
         <p class="field-hint field-wide">Al extinguirse el contrato por fallecimiento no corresponde indemnización por
           despido. Las cantidades pendientes las cobran los herederos. Indica como fecha de fin la del fallecimiento.
         </p>
+        }
+        @if (severanceData.dismissalType === 'resignation') {
+        <p class="field-hint field-wide">En una baja voluntaria no corresponde indemnización, pero sí el finiquito de
+          las cantidades devengadas y pendientes de pago.</p>
+        }
+        @if (severanceData.dismissalType === 'temporary-end') {
+        <p class="field-hint field-wide">Estimación general de 12 días de salario por año trabajado, prorrateados por
+          el tiempo de servicio. Puede no aplicarse a contratos formativos, de sustitución u otros supuestos excluidos
+          legalmente.</p>
         }
         @if (severanceDateError()) {
         <p class="field-error field-wide" id="severance-date-error" role="alert">La fecha de inicio no puede ser
@@ -754,7 +765,8 @@
       <div class="result-panel" role="status" aria-live="polite">
         <div class="result-lead"><span class="result-kicker">TOTAL BRUTO ORIENTATIVO</span><strong>{{
             formatMoney(result.totalGross) }}</strong><span>{{ result.dismissalType === 'death' ? 'Finiquito estimado a
-            favor de los herederos, antes de impuestos' : 'Finiquito e indemnización estimados antes de impuestos'
+            favor de los herederos, antes de impuestos' : result.dismissalType === 'resignation' ? 'Finiquito estimado,
+            sin indemnización por baja voluntaria' : 'Finiquito e indemnización estimados antes de impuestos'
             }}</span></div>
         <div class="result-metrics">
           <div><span>Salario pendiente</span><strong>{{ formatMoney(result.pendingSalary) }}</strong></div>
@@ -762,12 +774,13 @@
           <div><span>Pagas extra pendientes</span><strong>{{ formatMoney(result.accruedExtraPay) }}</strong></div>
           <div><span>Finiquito estimado</span><strong>{{ formatMoney(result.settlementTotal) }}</strong></div>
           <div><span>Antigüedad calculada</span><strong>{{ result.serviceYears | number:'1.0-2' }} años</strong></div>
-          @if (result.dismissalType !== 'death') {
+          @if (result.dismissalType !== 'death' && result.dismissalType !== 'resignation') {
           <div><span>Días de indemnización estimados</span><strong>{{ result.severanceDays | number:'1.0-2' }}</strong>
           </div>
           }
           <div><span>Indemnización estimada</span><strong>{{ result.dismissalType === 'death' ? '0 € (extinción por
-              fallecimiento)' : formatMoney(result.severanceAmount) }}</strong></div>
+              fallecimiento)' : result.dismissalType === 'resignation' ? '0 € (baja voluntaria)' :
+              formatMoney(result.severanceAmount) }}</strong></div>
         </div>
         <p class="result-caveat">
           @if (result.dismissalType === 'death') {
@@ -775,6 +788,13 @@
           cantidades ya
           devengadas. Algunos convenios o seguros colectivos pueden prever una cuantía aparte, que esta calculadora no
           incluye.
+          } @else if (result.dismissalType === 'resignation') {
+          La baja voluntaria no genera indemnización. El finiquito liquida las cantidades devengadas pendientes, como
+          salario, vacaciones y pagas extra. Revisa el preaviso que establezcan tu convenio o contrato.
+          } @else if (result.dismissalType === 'temporary-end') {
+          Se estima una indemnización general de 12 días de salario por año trabajado, prorrateada por el tiempo de
+          servicio. Hay modalidades y supuestos legalmente excluidos (por ejemplo, contratos formativos o de
+          sustitución), por lo que conviene comprobar el tipo de contrato y el convenio aplicable.
           } @else {
           La indemnización objetiva se limita a 12 mensualidades. Para el despido improcedente se aplican 45 días por
           año antes
@@ -1000,8 +1020,8 @@
         }
       </ol>
 
-      @if (guide.example; as example) {
-      <h2>{{ example.title }}</h2>
+      @for (example of guide.examples; track example.title) {
+      <h3>{{ example.title }}</h3>
       @for (paragraph of example.paragraphs; track $index) {
       <p>{{ paragraph }}</p>
       }
