@@ -9,6 +9,7 @@ import {
   calculateMortgage,
   calculatePersonalLoan,
   comparePersonalLoanScenarios,
+  calculateClasesPasivasEstimate,
   calculatePensionEstimate,
   calculateSalaryNet,
   calculateSeverance
@@ -194,6 +195,9 @@ describe('App', () => {
     expect((element.querySelector('.salary-form') as HTMLFormElement).checkValidity()).toBe(true);
     expect(element.querySelector('#pension-children')).not.toBeNull();
     expect(element.querySelector('#include-gender-gap-supplement')).toBeNull();
+    const pensionRegimeNote = element.querySelector('.pension-regime-note');
+    expect(pensionRegimeNote?.querySelector('summary')?.textContent).toContain('¿Eres funcionario/a?');
+    expect((pensionRegimeNote as HTMLDetailsElement).open).toBe(false);
 
     calculatorButtons[3].click();
     await fixture.whenStable();
@@ -212,6 +216,38 @@ describe('App', () => {
     fixture.detectChanges();
     expect((element.querySelector('.salary-form') as HTMLFormElement).checkValidity()).toBe(true);
     expect(element.querySelector('#personal-loan-title')).not.toBeNull();
+  });
+
+  it('should show the dedicated Clases Pasivas inputs and calculate its result', async () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    const pensionCard = element.querySelectorAll('.calculator-card')[2] as HTMLAnchorElement;
+    pensionCard.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const regimeSelect = element.querySelector('#pension-regime') as HTMLSelectElement;
+    regimeSelect.value = 'clases-pasivas';
+    regimeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(element.querySelector('#cp-group')).not.toBeNull();
+    expect(element.querySelector('#contribution-base')).toBeNull();
+    expect((element.querySelector('.salary-form') as HTMLFormElement).checkValidity()).toBe(false);
+
+    const groupSelect = element.querySelector('#cp-group') as HTMLSelectElement;
+    groupSelect.value = 'A2';
+    groupSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect((element.querySelector('.salary-form') as HTMLFormElement).checkValidity()).toBe(true);
+
+    fixture.componentInstance['calculatePension']();
+    fixture.detectChanges();
+    expect(element.querySelector('.result-panel')?.textContent).toContain('PENSIÓN BRUTA ORIENTATIVA');
+    expect(element.querySelector('.result-panel')?.textContent).toContain('Voluntaria');
+    expect(fixture.componentInstance['clasesPasivasResult']()?.projectedServiceYears).toBe(30);
   });
 
   it('should show a salary estimate for a standard annual salary', () => {
@@ -612,6 +648,62 @@ describe('App', () => {
     expect(result.replacementPercentage).toBe(1);
     expect(result.eligible).toBe(true);
     expect(result.monthlyGross).toBeCloseTo(2036.57, 2);
+  });
+
+  it('should estimate a voluntary Clases Pasivas pension from age 60 with 30 years of service', () => {
+    const result = calculateClasesPasivasEstimate({
+      currentAge: 50,
+      currentServiceYears: 20,
+      retirementAge: 60,
+      group: 'A2'
+    });
+
+    expect(result.projectedServiceYears).toBe(30);
+    expect(result.servicePercentage).toBe(81.73);
+    expect(result.eligible).toBe(true);
+    expect(result.retirementType).toBe('voluntary');
+    expect(result.annualGross).toBeCloseTo(41473.91 * 0.8173, 2);
+    expect(result.monthlyGross).toBeCloseTo(result.annualGross / 14, 2);
+  });
+
+  it('should require the applicable age and service thresholds in Clases Pasivas', () => {
+    const tooYoung = calculateClasesPasivasEstimate({
+      currentAge: 49,
+      currentServiceYears: 20,
+      retirementAge: 59,
+      group: 'A1'
+    });
+    const ordinary = calculateClasesPasivasEstimate({
+      currentAge: 50,
+      currentServiceYears: 15,
+      retirementAge: 65,
+      group: 'C1'
+    });
+    const insufficientService = calculateClasesPasivasEstimate({
+      currentAge: 50,
+      currentServiceYears: 0,
+      retirementAge: 60,
+      group: 'A1'
+    });
+
+    expect(tooYoung.eligible).toBe(false);
+    expect(tooYoung.meetsVoluntaryRetirementRequirements).toBe(false);
+    expect(ordinary.eligible).toBe(true);
+    expect(ordinary.retirementType).toBe('ordinary');
+    expect(insufficientService.eligible).toBe(false);
+    expect(insufficientService.meetsMinimumService).toBe(false);
+  });
+
+  it('should apply the 2026 maximum pension limit to Clases Pasivas estimates', () => {
+    const result = calculateClasesPasivasEstimate({
+      currentAge: 40,
+      currentServiceYears: 15,
+      retirementAge: 60,
+      group: 'A1'
+    });
+
+    expect(result.projectedServiceYears).toBe(35);
+    expect(result.annualGross).toBe(47034.4);
   });
 
   it('should not estimate a contributory pension before 15 years', () => {

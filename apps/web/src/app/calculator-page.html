@@ -431,13 +431,31 @@
         <div>
           <p class="eyebrow">CALCULADORA 03 <span class="heading-divider">/</span> JUBILACIÓN</p>
           <h2 id="pension-title">Proyecta tu pensión</h2>
-          <p class="workspace-copy">Estimamos la cuantía bruta según tu base y los años cotizados previstos.</p>
+          <p class="workspace-copy">Estimamos la cuantía bruta según tu régimen, cotizaciones o servicios previstos.</p>
         </div>
         <span class="workspace-number">3<span> / 6</span></span>
       </div>
 
+      @if (pensionRegime === 'general') {
+      <details class="pension-regime-note">
+        <summary>¿Eres funcionario/a? Consulta qué régimen te corresponde</summary>
+        <p>Algunos funcionarios de Clases Pasivas pueden solicitar la jubilación voluntaria desde los 60 años si
+          cumplen los requisitos específicos, incluidos los de servicios efectivos. No se aplica automáticamente a
+          todo el profesorado ni a todos los empleados públicos. Si perteneces a ese régimen, selecciónalo en el
+          formulario para ver una estimación separada.</p>
+      </details>
+      }
+
       <form #pensionForm class="salary-form" (ngSubmit)="calculatePension()" (input)="refreshPensionResult(pensionForm)"
         (change)="refreshPensionResult(pensionForm)">
+        <label class="field field-wide" for="pension-regime">
+          <span class="field-label">Régimen de pensión</span>
+          <select id="pension-regime" name="pensionRegime" required [(ngModel)]="pensionRegime">
+            <option value="general">Régimen General</option>
+            <option value="clases-pasivas">Clases Pasivas del Estado</option>
+          </select>
+        </label>
+        @if (pensionRegime === 'general') {
         <p class="form-section-title field-wide">Edad y cotización</p>
         <label class="field" for="current-age"><span class="field-label">Edad actual</span><span
             class="input-with-suffix"><input id="current-age" name="currentAge" type="number" min="16" max="75" step="1"
@@ -531,12 +549,84 @@
         <span class="field-hint field-wide">No se presupone que estar casado/a implique tener cónyuge a cargo. Para
           jubilaciones futuras no se proyectan cuantías mínimas ni límites de ingresos de 2026.</span>
         }
+        } @else {
+        <p class="form-section-title field-wide">Jubilación en Clases Pasivas</p>
+        <label class="field" for="cp-current-age">
+          <span class="field-label">Edad actual</span>
+          <span class="input-with-suffix"><input id="cp-current-age" name="cpCurrentAge" type="number" min="16" max="75"
+              step="1" required [(ngModel)]="clasesPasivasData.currentAge" /><span>años</span></span>
+        </label>
+        <label class="field" for="cp-retirement-age">
+          <span class="field-label">Edad prevista de jubilación</span>
+          <span class="input-with-suffix"><input id="cp-retirement-age" name="cpRetirementAge" type="number"
+              [min]="clasesPasivasData.currentAge" max="75" step="1" required
+              [(ngModel)]="clasesPasivasData.retirementAge" /><span>años</span></span>
+        </label>
+        <label class="field" for="cp-service-years">
+          <span class="field-label">Años de servicios efectivos reconocidos</span>
+          <span class="input-with-suffix"><input id="cp-service-years" name="cpCurrentServiceYears" type="number"
+              min="0" [max]="clasesPasivasData.currentAge - 16" step="1" required
+              [(ngModel)]="clasesPasivasData.currentServiceYears" /><span>años</span></span>
+          <span class="field-hint">No son necesariamente todos los años cotizados: introduce los servicios que te
+            reconozca Clases Pasivas.</span>
+        </label>
+        <label class="field" for="cp-group">
+          <span class="field-label">Grupo funcionarial</span>
+          <select id="cp-group" name="cpGroup" required [(ngModel)]="clasesPasivasData.group">
+            <option value="" disabled>Selecciona tu grupo</option>
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="B">B</option>
+            <option value="C1">C1</option>
+            <option value="C2">C2</option>
+            <option value="E">E / Agrupaciones profesionales</option>
+          </select>
+        </label>
+        <p class="field-hint field-wide">Se proyecta que sigues en servicio activo hasta la edad elegida y en el mismo
+          grupo funcionarial. No modela carreras en varios grupos, servicios en otros regímenes, carreras iniciadas antes
+          de 1985 ni edades especiales propias de ciertos cuerpos.</p>
+        }
         <div class="form-footer">
-          <p><span class="privacy-mark" aria-hidden="true">●</span> Supone que cotizas de forma continua hasta
-            jubilarte.</p>
+          @if (pensionRegime === 'general') {
+          <p><span class="privacy-mark" aria-hidden="true">●</span> Supone que cotizas de forma continua hasta jubilarte.</p>
+          } @else {
+          <p><span class="privacy-mark" aria-hidden="true">●</span> Supone servicio continuo en el grupo elegido.</p>
+          }
           <button class="submit-button" type="submit">Estimar pensión <span aria-hidden="true">→</span></button>
         </div>
       </form>
+
+      @if (pensionRegime === 'clases-pasivas' && clasesPasivasResult(); as result) {
+      <div class="result-panel" role="status" aria-live="polite">
+        @if (result.eligible) {
+        <div class="result-lead">
+          <span class="result-kicker">PENSIÓN BRUTA ORIENTATIVA · CLASES PASIVAS</span>
+          <strong>{{ formatMoney(result.monthlyGross) }}<small> / mes</small></strong>
+          <span>{{ formatMoney(result.annualGross) }} brutos al año en 14 pagas</span>
+        </div>
+        <div class="result-metrics">
+          <div><span>Tipo de jubilación estimado</span><strong>{{ result.retirementType === 'voluntary' ? 'Voluntaria' : 'Ordinaria' }}</strong></div>
+          <div><span>Edad prevista</span><strong>{{ clasesPasivasData.retirementAge }} años</strong></div>
+          <div><span>Servicios efectivos previstos</span><strong>{{ result.projectedServiceYears }} años</strong></div>
+          <div><span>Grupo aplicado</span><strong>{{ result.group }}</strong></div>
+          <div><span>Porcentaje del haber regulador</span><strong>{{ result.servicePercentage | number:'1.2-2' }}%</strong></div>
+          <div><span>Haber regulador anual de referencia (2026)</span><strong>{{ formatMoney(result.regulatoryAmount) }}</strong></div>
+        </div>
+        } @else {
+        <div class="result-lead result-ineligible">
+          <span class="result-kicker">NO ALCANZA LOS REQUISITOS ESTIMADOS</span>
+          <strong>{{ result.projectedServiceYears }} años de servicio</strong>
+          <span>@if (!result.meetsMinimumService) { Se requieren al menos 15 años de servicios efectivos para una pensión ordinaria. }
+            @else { Antes de los 65 años, este escenario requiere 60 años cumplidos y 30 años de servicios efectivos para la jubilación voluntaria. }</span>
+        </div>
+        }
+        <p class="result-caveat">Estimación con haberes reguladores y límite máximo de 2026. La fórmula oficial cuenta
+          años completos de servicios efectivos; aquí se presupone servicio continuo en un solo grupo hasta la edad
+          indicada. Si has pasado por varios cuerpos o grupos, tienes servicios en otros regímenes, jornada reducida,
+          periodos no reconocidos, iniciaste tu carrera antes de 1985 o perteneces a un cuerpo con edad especial, el
+          cálculo puede cambiar. La pensión definitiva y el derecho a jubilarte los determina el organismo gestor.</p>
+      </div>
+      }
 
       @if (pensionResult(); as result) {
       <div class="result-panel" role="status" aria-live="polite">

@@ -52,8 +52,45 @@ export interface PensionEstimate {
   eligible: boolean;
 }
 
+export type ClasesPasivasGroup = 'A1' | 'A2' | 'B' | 'C1' | 'C2' | 'E';
+
+export interface ClasesPasivasEstimateInput {
+  currentAge: number;
+  currentServiceYears: number;
+  retirementAge: number;
+  group: ClasesPasivasGroup;
+}
+
+export interface ClasesPasivasEstimate {
+  projectedServiceYears: number;
+  retirementYear: number;
+  group: ClasesPasivasGroup;
+  regulatoryAmount: number;
+  servicePercentage: number;
+  annualGross: number;
+  monthlyGross: number;
+  meetsMinimumService: boolean;
+  meetsVoluntaryRetirementRequirements: boolean;
+  eligible: boolean;
+  retirementType: 'voluntary' | 'ordinary' | 'not-eligible';
+}
+
 const referenceYear = 2026;
 const annualMaximumPension = 47034.4;
+const clasesPasivasRegulatoryAmounts: Record<ClasesPasivasGroup, number> = {
+  A1: 52697.06,
+  A2: 41473.91,
+  B: 36317.13,
+  C1: 31852.67,
+  C2: 25200.74,
+  E: 21485.65
+};
+const clasesPasivasServicePercentages = [
+  0, 1.24, 2.55, 3.88, 5.31, 6.83, 8.43, 10.11, 11.88, 13.73,
+  15.67, 17.71, 19.86, 22.1, 24.45, 26.92, 30.57, 34.23, 37.88,
+  41.54, 45.19, 48.84, 52.5, 56.15, 59.81, 63.46, 67.11, 70.77,
+  74.42, 78.08, 81.73, 85.38, 89.04, 92.69, 96.35, 100
+];
 const monthlyGenderGapSupplementReference = 36.9;
 const minimumPensionByCategory = {
   'no-spouse': 13106.8,
@@ -348,5 +385,57 @@ export function calculatePensionEstimate(input: PensionEstimateInput): PensionEs
     meetsMinimumContribution,
     meetsOrdinaryRetirementAge,
     eligible
+  };
+}
+
+export function calculateClasesPasivasEstimate(input: ClasesPasivasEstimateInput): ClasesPasivasEstimate {
+  if (!Number.isInteger(input.currentAge) || input.currentAge < 16 || input.currentAge > 75) {
+    throw new RangeError('La edad actual debe ser un entero entre 16 y 75 años.');
+  }
+  if (!Number.isInteger(input.retirementAge) || input.retirementAge < input.currentAge || input.retirementAge > 75) {
+    throw new RangeError('La edad de jubilación debe ser un entero igual o superior a la actual y no superar 75 años.');
+  }
+  if (
+    !Number.isInteger(input.currentServiceYears) ||
+    input.currentServiceYears < 0 ||
+    input.currentServiceYears > input.currentAge - 16
+  ) {
+    throw new RangeError('Los años de servicios efectivos deben ser enteros y coherentes con la edad actual.');
+  }
+  if (!Object.hasOwn(clasesPasivasRegulatoryAmounts, input.group)) {
+    throw new RangeError('Selecciona un grupo funcionarial válido.');
+  }
+
+  const projectedServiceYears = input.currentServiceYears + input.retirementAge - input.currentAge;
+  const servicePercentage = clasesPasivasServicePercentages[Math.min(projectedServiceYears, 35)];
+  const meetsMinimumService = projectedServiceYears >= 15;
+  const meetsVoluntaryRetirementRequirements = input.retirementAge >= 60 && projectedServiceYears >= 30;
+  const eligible = meetsMinimumService &&
+    (input.retirementAge >= 65 || meetsVoluntaryRetirementRequirements);
+  const retirementType = !eligible
+    ? 'not-eligible'
+    : input.retirementAge < 65
+      ? 'voluntary'
+      : 'ordinary';
+  const annualGross = eligible
+    ? Math.min(
+      clasesPasivasRegulatoryAmounts[input.group] * servicePercentage / 100,
+      annualMaximumPension
+    )
+    : 0;
+  const retirementYear = Math.round(referenceYear + input.retirementAge - input.currentAge);
+
+  return {
+    projectedServiceYears,
+    retirementYear,
+    group: input.group,
+    regulatoryAmount: clasesPasivasRegulatoryAmounts[input.group],
+    servicePercentage,
+    annualGross,
+    monthlyGross: annualGross / 14,
+    meetsMinimumService,
+    meetsVoluntaryRetirementRequirements,
+    eligible,
+    retirementType
   };
 }

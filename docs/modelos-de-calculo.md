@@ -69,6 +69,12 @@ El complemento para la reducción de la brecha de género se incorpora como esce
 
 El complemento a mínimos es otro concepto distinto. La interfaz recoge situación familiar, si el cónyuge tiene ingresos y otros ingresos propios, pero estar casado/a o declarar que el cónyuge no tiene ingresos no confirma por sí solo la dependencia económica legal. Para el año de referencia 2026, las cuantías anuales son 17.592,40 EUR con cónyuge a cargo, 13.106,80 EUR sin cónyuge y 12.441,80 EUR con cónyuge no a cargo; los límites de ingresos de referencia son 11.013 EUR con cónyuge a cargo y 9.442 EUR en los otros casos. Solo se estima una cuantía cuando el año proyectado es 2026. Para jubilaciones futuras no se reutilizan ni proyectan los importes de 2026: se informa que el complemento podría corresponder, sujeto a los requisitos, ingresos y cuantías vigentes en el año de jubilación. La estimación no verifica la convivencia/dependencia económica, el cómputo legal de rentas ni el resto de requisitos personales.
 
+## Pensión de Clases Pasivas
+
+La estimación de Clases Pasivas es un cálculo independiente del Régimen General. Proyecta los años de servicios efectivos completos sumando el servicio declarado hasta hoy y el servicio continuo supuesto hasta la edad elegida. Aplica al haber regulador anual del grupo seleccionado la escala legal del artículo 31 del texto refundido de la Ley de Clases Pasivas: 81,73 % con 30 años, 100 % desde 35 años. Para jubilarse voluntariamente, comprueba el escenario general de 60 años y 30 años de servicios efectivos; para jubilación ordinaria aplica 65 años y al menos 15 de servicios. El importe anual se limita al máximo de 2026 (47.034,40 EUR) y se divide entre 14 pagas.
+
+Los haberes reguladores de referencia para 2026 son: A1 52.697,06 EUR; A2 41.473,91 EUR; B 36.317,13 EUR; C1 31.852,67 EUR; C2 25.200,74 EUR; E/Agrupaciones profesionales 21.485,65 EUR. Se presupone que los servicios se prestaron en un mismo grupo, sin jornada reducida. No se modelan servicios en varios grupos o regímenes, reconocimiento de servicios previos, edades de jubilación específicas de algunos cuerpos, pensiones concurrentes, complementos ni revalorización futura. Es una aproximación y no determina el derecho ni la cuantía oficial.
+
 ## Interés compuesto
 
 La proyección usa una rentabilidad nominal anual constante dividida entre doce para obtener el tipo mensual. Cada mes se aplica el interés y después se añade la aportación mensual, por lo que las aportaciones se realizan al final del mes. El saldo final es la suma del capital inicial capitalizado y de las aportaciones capitalizadas; a tipo cero equivale al capital inicial más todas las aportaciones.
@@ -91,6 +97,8 @@ Fuentes oficiales:
 - [Ley del IRPF, artículo 20: reducción por rendimientos del trabajo](https://www.boe.es/buscar/act.php?id=BOE-A-2006-20764#a20)
 - [Seguridad Social: cotizaciones y bases de 2026](https://www.seg-social.es/wps/portal/wss/internet/Trabajadores/CotizacionRecaudacionTrabajadores/36537)
 - [Real Decreto-ley 3/2026: revalorización, máximos y mínimos de pensiones (BOE)](https://www.boe.es/buscar/act.php?id=BOE-A-2026-2548)
+- [Texto refundido de la Ley de Clases Pasivas del Estado, artículos 28 a 32 (BOE)](https://www.boe.es/buscar/act.php?id=BOE-A-1987-12636#a28)
+- [ANPE: tabla de haberes reguladores de Clases Pasivas para 2026](https://anpe.es/notices/35558/Clases-Pasivas.-Tabla-de-haberes-reguladores-para-el-c%C3%A1lculo-de-las-pensiones-en-2026)
 - [Estatuto de los Trabajadores: texto consolidado (artículos 53 y 56)](https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430)
 
 Las reglas y cuantías deberán revisarse y versionarse con las publicaciones oficiales de cada ejercicio antes de emplearse para decisiones fiscales o de jubilación.

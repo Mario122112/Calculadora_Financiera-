@@ -1,7 +1,13 @@
 export { calculateMortgage } from './mortgage/index.js';
 export type { MortgageEstimate, MortgageEstimateInput,MortgageAmortizationSystem } from './mortgage/index.js';
-export { calculatePensionEstimate } from './pension/index.js';
-export type { PensionEstimate, PensionEstimateInput } from './pension/index.js';
+export { calculateClasesPasivasEstimate, calculatePensionEstimate } from './pension/index.js';
+export type {
+  ClasesPasivasEstimate,
+  ClasesPasivasEstimateInput,
+  ClasesPasivasGroup,
+  PensionEstimate,
+  PensionEstimateInput
+} from './pension/index.js';
 export { calculateSalaryNet } from './salary/index.js';
 export type { SalaryEstimate, SalaryEstimateInput } from './salary/index.js';
 export { calculateCompoundInterest } from './compound-interest/index.js';

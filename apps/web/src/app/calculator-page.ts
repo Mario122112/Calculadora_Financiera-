@@ -7,6 +7,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { calculatorGuides } from './calculator-guides';
 import {
+  calculateClasesPasivasEstimate,
   calculateMortgage,
   calculatePensionEstimate,
   calculateSalaryNet,
@@ -15,6 +16,8 @@ import {
   calculatePersonalLoan,
   comparePersonalLoanScenarios,
   type CompoundInterestEstimate,
+  type ClasesPasivasEstimate,
+  type ClasesPasivasGroup,
   type DismissalType,
   type MortgageEstimate,
   type MortgageAmortizationSystem,
@@ -69,10 +72,10 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
   },
   pension: {
     title: 'Calculadora de pensión de jubilación',
-    summary: 'Proyecta una pensión contributiva orientativa a partir de la edad prevista de jubilación, la cotización acumulada y una base media mensual.',
-    detail: 'Indica tu edad actual, años cotizados, edad prevista de jubilación y una base media mensual representativa. Puedes añadir escenarios para complementos.',
-    interpretation: 'El resultado muestra una cuantía bruta estimada en 14 pagas, junto con años cotizados previstos, porcentaje aplicado y, si corresponde, complementos simulados.',
-    limitations: 'La Seguridad Social calcula con bases históricas reales y requisitos legales completos. Este escenario simplificado no reconstruye esas bases ni garantiza derecho a una prestación o complemento.'
+    summary: 'Proyecta una pensión contributiva orientativa del Régimen General o de Clases Pasivas.',
+    detail: 'Elige el régimen correspondiente. El Régimen General usa una base media mensual y años cotizados; Clases Pasivas usa el grupo funcionarial y años de servicios efectivos.',
+    interpretation: 'El resultado es una cuantía bruta estimada en 14 pagas. Las reglas, requisitos y datos necesarios son distintos en cada régimen.',
+    limitations: 'Ambos cálculos son escenarios simplificados y no sustituyen la resolución del organismo gestor. El Régimen General no reconstruye las bases históricas; Clases Pasivas presupone un único grupo durante toda la carrera, servicio continuo y usa cuantías de 2026. No contempla cambios de grupo, otros regímenes, jornadas reducidas ni edades especiales.'
   },
   'compound-interest': {
     title: 'Calculadora de interés compuesto',
@@ -116,6 +119,7 @@ export class CalculatorPage {
   protected readonly salaryResult = signal<SalaryEstimate | null>(null);
   protected readonly mortgageResult = signal<MortgageEstimate | null>(null);
   protected readonly pensionResult = signal<PensionEstimate | null>(null);
+  protected readonly clasesPasivasResult = signal<ClasesPasivasEstimate | null>(null);
   protected readonly compoundInterestResult = signal<CompoundInterestEstimate | null>(null);
   protected readonly severanceResult = signal<SeveranceEstimate | null>(null);
   protected readonly personalLoanResult = signal<PersonalLoanPageResult | null>(null);
@@ -126,6 +130,7 @@ export class CalculatorPage {
   protected readonly severanceDateError = signal(false);
   protected readonly personalLoanError = signal<string | null>(null);
   protected salaryInputMode: 'annual' | 'monthly' = 'annual';
+  protected pensionRegime: 'general' | 'clases-pasivas' = 'general';
   protected readonly calculatorGuide = computed(() => {
     const calculator = this.selectedCalculator();
     return calculator ? calculatorGuides[calculator] : null;
@@ -166,6 +171,13 @@ export class CalculatorPage {
     otherIncomeStatus: 'unknown' as 'unknown' | 'no' | 'yes',
     otherAnnualIncome: 0,
     residesInSpain: true
+  };
+
+  protected clasesPasivasData = {
+    currentAge: 40,
+    currentServiceYears: 10,
+    retirementAge: 60,
+    group: '' as ClasesPasivasGroup | ''
   };
 
   protected compoundInterestData = {
@@ -409,8 +421,24 @@ export class CalculatorPage {
   }
 
   protected calculatePension(): void {
+    if (this.pensionRegime === 'clases-pasivas') {
+      if (!this.clasesPasivasData.group) {
+        this.clasesPasivasResult.set(null);
+        this.pensionResult.set(null);
+        return;
+      }
+
+      this.clasesPasivasResult.set(calculateClasesPasivasEstimate({
+        ...this.clasesPasivasData,
+        group: this.clasesPasivasData.group
+      }));
+      this.pensionResult.set(null);
+      return;
+    }
+
     if (this.pensionContributionYearsInvalid()) {
       this.pensionResult.set(null);
+      this.clasesPasivasResult.set(null);
       return;
     }
 
@@ -418,6 +446,7 @@ export class CalculatorPage {
       ...this.pensionData,
       includeGenderGapSupplement: this.pensionData.children > 0
     }));
+    this.clasesPasivasResult.set(null);
   }
 
   protected calculateCompoundInterest(): void {
@@ -528,14 +557,16 @@ export class CalculatorPage {
   }
 
   protected refreshPensionResult(form: HTMLFormElement): void {
-    if (!this.pensionResult()) {
+    if (!this.pensionResult() && !this.clasesPasivasResult()) {
       return;
     }
 
-    if (form.checkValidity() && !this.pensionContributionYearsInvalid()) {
+    const invalidContributionYears = this.pensionRegime === 'general' && this.pensionContributionYearsInvalid();
+    if (form.checkValidity() && !invalidContributionYears) {
       this.calculatePension();
     } else {
       this.pensionResult.set(null);
+      this.clasesPasivasResult.set(null);
     }
   }
 

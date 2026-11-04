@@ -122,14 +122,14 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
 
     pension: {
         howTo: [
-            'Indica tu edad actual y los años que llevas cotizados. Los años cotizados no pueden superar los transcurridos desde que cumpliste 16.',
-            'Escribe la edad a la que prevés jubilarte.',
-            'Introduce la base media mensual de cotización. No es lo que pagas de cuota, sino la base mensual que aparece en tu informe de cotización.',
-            'Si quieres, añade los complementos opcionales: hijos para simular el complemento por brecha de género o el posible complemento a mínimos.',
+            'Elige tu régimen: Régimen General o Clases Pasivas del Estado. Si no sabes cuál te corresponde, consúltalo con el organismo que gestiona tu pensión.',
+            'En el Régimen General, introduce edad, cotización acumulada y base media mensual. En Clases Pasivas, introduce años de servicios efectivos reconocidos y grupo funcionarial.',
+            'Indica la edad prevista de jubilación. En Clases Pasivas, el escenario supone que continúas en servicio activo y en el mismo grupo.',
+            'En el Régimen General puedes añadir escenarios para complementos opcionales.',
             'Pulsa «Estimar pensión» para ver una cuantía bruta orientativa en 14 pagas.'
         ],
         examples: [{
-            title: 'Ejemplo: jubilación a los 65 años con 40 años cotizados',
+            title: 'Ejemplo en el Régimen General: jubilación a los 65 años con 40 años cotizados',
             paragraphs: [
                 'Imagina una persona de 40 años que lleva 15 años cotizados, piensa jubilarse a los 65, tiene una base media de cotización de 2.200 € al mes y 2 hijos.',
                 'Al jubilarse habría cotizado 40 años, y se jubilaría en torno a 2051. Como supera los 38,5 años exigidos, podría jubilarse a los 65 sin penalización. Con 40 años cotizados se alcanza el 100 % de la base reguladora. La calculadora estima una base reguladora de unos 1.886 €, así que la pensión bruta sería de unos 1.886 € al mes en 14 pagas, es decir, unos 26.400 € al año.',
@@ -139,16 +139,20 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
         }],
         faq: [
             {
+                question: '¿La calculadora sirve para funcionarios de Clases Pasivas? ¿Puedo jubilarme a los 60?',
+                answer: 'Sí, ofrece una estimación separada de Clases Pasivas basada en el grupo funcionarial y los años completos de servicios efectivos. La jubilación voluntaria puede solicitarse desde los 60 años con 30 años de servicios efectivos; no se aplica automáticamente a todo el profesorado ni a todos los empleados públicos. El cálculo presupone un único grupo durante toda la carrera y no cubre grupos mixtos, otros regímenes ni edades especiales. Consulta tu régimen y condiciones con el organismo gestor.'
+            },
+            {
                 question: '¿Es la pensión que cobraré realmente?',
                 answer: 'No, es una estimación orientativa. La calculadora parte de una única base media de cotización que tú introduces. La pensión oficial se calcula con tus bases mensuales reales de los últimos años y compara varios métodos legales, así que el resultado real puede ser distinto. Para una cifra precisa, consulta a la Seguridad Social.'
             },
             {
                 question: '¿Cuántos años necesito cotizar para tener derecho a pensión?',
-                answer: 'Como mínimo 15 años. Con ese mínimo se cobra el 50 % de la base reguladora, y el porcentaje va subiendo con cada mes adicional hasta alcanzar el 100 % con unos 36 años y 6 meses cotizados según el calendario de 2026. La calculadora usa ese calendario como referencia y lo actualizará cuando cambien las reglas.'
+                answer: 'En el Régimen General se exigen al menos 15 años cotizados (incluidos 2 dentro de los 15 anteriores); ese mínimo da derecho al 50 % de la base reguladora. En Clases Pasivas se requieren 15 años de servicios efectivos para la jubilación ordinaria; el porcentaje depende de la escala propia y alcanza el 100 % con 35 años.'
             },
             {
-                question: '¿A qué edad puedo jubilarme sin penalización?',
-                answer: 'A los 65 años si acreditas al menos 38 años y 6 meses cotizados (38 años y 3 meses si te jubilas en 2026). Si no llegas a ese periodo, la edad ordinaria es de 67 años (66 años y 10 meses en 2026).'
+                question: '¿A qué edad puedo jubilarme?',
+                answer: 'En el Régimen General, la edad ordinaria de referencia en 2026 es 65 años con 38 años y 3 meses cotizados, o 66 años y 10 meses si no llegas a ese periodo. En Clases Pasivas, la jubilación voluntaria puede solicitarse desde los 60 años con 30 años de servicios efectivos; la edad ordinaria general es 65, con excepciones para algunos cuerpos.'
             },
             {
                 question: '¿Qué pasa si retraso la jubilación?',
@@ -160,11 +164,11 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
             },
             {
                 question: '¿Cómo se simula el complemento por hijos?',
-                answer: 'La calculadora lo trata como un importe fijo por hijo (36,90 € al mes en 14 pagas, hasta 4 hijos). El derecho real depende de tu situación y de quién de los progenitores lo solicite, así que úsalo solo como referencia.'
+                answer: 'Solo en el Régimen General, la calculadora lo trata como un importe fijo por hijo (36,90 € al mes en 14 pagas, hasta 4 hijos). El derecho real depende de tu situación y de quién de los progenitores lo solicite, así que úsalo solo como referencia.'
             },
             {
                 question: '¿Qué es el complemento a mínimos?',
-                answer: 'Es una ayuda que eleva las pensiones contributivas más bajas hasta una cuantía mínima, siempre que los ingresos y la situación familiar cumplan los límites establecidos. La calculadora solo estima un importe con los datos de 2026 y, para años futuros, indica si sería posible sin proyectar cuantías.'
+                answer: 'En el Régimen General, es una ayuda que eleva las pensiones contributivas más bajas hasta una cuantía mínima, siempre que los ingresos y la situación familiar cumplan los límites establecidos. La calculadora solo estima un importe con los datos de 2026 y, para años futuros, indica si sería posible sin proyectar cuantías.'
             },
             {
                 question: '¿Hay un límite máximo de pensión?',
