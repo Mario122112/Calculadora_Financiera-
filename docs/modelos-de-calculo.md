@@ -35,7 +35,7 @@ Se aplica un sistema de amortización de capital constante (también conocido co
 
 `cuota_mes = amortización_mensual + capital_pendiente × interés_mensual`
 
-La primera cuota se calcula sobre el capital inicial; la última, sobre el capital pendiente antes del último pago. Los intereses totales equivalen a `capital × interés_mensual × (número_de_pagos + 1) / 2`. Para un interés del 0 %, todas las cuotas coinciden con el capital dividido entre el número de pagos. La entrada se resta del precio para obtener el capital financiado. No se convierten TAE a TIN ni se incluyen comisiones, seguros, impuestos, tasación o gastos de compraventa; en una oferta real también pueden cambiar el tipo y el calendario.
+La primera cuota se calcula sobre el capital inicial; la última, sobre el capital pendiente antes del último pago. Los intereses totales equivalen a `capital × interés_mensual × (número_de_pagos + 1) / 2`. Para un interés del 0 %, todas las cuotas coinciden con el capital dividido entre el número de pagos. La cantidad en euros aportada como entrada se resta del precio para obtener el capital financiado; debe ser inferior al precio de la vivienda. No se convierten TAE a TIN ni se incluyen comisiones, seguros, impuestos, tasación o gastos de compraventa; en una oferta real también pueden cambiar el tipo y el calendario.
 
 ## Préstamo personal
 

@@ -296,7 +296,7 @@
         <div>
           <p class="eyebrow">CALCULADORA 02 <span class="heading-divider">/</span> HIPOTECA</p>
           <h2 id="mortgage-title">Calcula tu cuota mensual</h2>
-          <p class="workspace-copy">Ajusta precio, entrada, interés y plazo para ver el coste estimado.</p>
+          <p class="workspace-copy">Ajusta precio, aportación en euros, interés y plazo para ver el coste estimado.</p>
         </div>
         <span class="workspace-number">2<span> / 6</span></span>
       </div>
@@ -307,12 +307,12 @@
             class="input-with-suffix"><input id="property-price" name="propertyPrice" type="number" min="0.01"
               step="any" required [(ngModel)]="mortgageData.propertyPrice" /><span>€</span></span></label>
         <label class="field" for="down-payment"><span class="field-label">Aportación inicial</span><span
-            class="input-with-suffix"><input id="down-payment" name="downPaymentPercent" type="number" min="0" max="100"
-              step="1" required [(ngModel)]="mortgageData.downPaymentPercent"
+            class="input-with-suffix"><input id="down-payment" name="downPaymentAmount" type="number" min="0"
+              step="0.01" required [(ngModel)]="mortgageData.downPaymentAmount"
               [attr.aria-invalid]="mortgageError() ? 'true' : null"
-              [attr.aria-describedby]="mortgageError() ? 'down-payment-error' : null" /><span>%</span></span>@if
-          (mortgageError()) { <span class="field-error" id="down-payment-error" role="alert">Con esta aportación no
-            queda capital por financiar, así que no hay una hipoteca que calcular.</span> }</label>
+              [attr.aria-describedby]="mortgageError() ? 'down-payment-error' : null" /><span>€</span></span>@if
+          (mortgageError()) { <span class="field-error" id="down-payment-error" role="alert">La aportación debe ser
+            inferior al precio de la vivienda para que quede capital por financiar.</span> }</label>
         <label class="field" for="interest-rate"><span class="field-label">Interés anual</span><span
             class="input-with-suffix"><input id="interest-rate" name="annualInterestRate" type="number" min="0" max="30"
               step="0.01" required [(ngModel)]="mortgageData.annualInterestRate" /><span>% TIN</span></span></label>

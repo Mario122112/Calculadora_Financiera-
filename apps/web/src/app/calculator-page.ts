@@ -66,7 +66,7 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
   mortgage: {
     title: 'Calculadora de hipoteca',
     summary: 'Calcula la cuota mensual estimada y el coste total de una hipoteca con sistema de amortización francés o español.',
-    detail: 'Indica el precio de la vivienda, el porcentaje de entrada, el interés nominal anual, el plazo y el sistema de amortización. La entrada se resta del precio para estimar el capital financiado.',
+    detail: 'Indica el precio de la vivienda, la cantidad en euros que aportas como entrada, el interés nominal anual, el plazo y el sistema de amortización. La entrada se resta del precio para estimar el capital financiado.',
     interpretation: 'En el sistema francés, el más habitual, la cuota es constante: al principio pesan más los intereses y con el tiempo más el capital. En el español se amortiza el mismo capital cada mes y la cuota disminuye. El total pagado permite ver el coste de intereses estimado. El gráfico y la tabla de amortización muestran cuánto capital e intereses pagas cada año.',
     limitations: 'Supone un tipo de interés constante: en una hipoteca variable la cuota cambiaría con el Euríbor. No incluye comisiones, seguros, impuestos, tasación ni gastos de compraventa. Una oferta real puede usar tipos, condiciones o calendarios diferentes.'
   },
@@ -152,7 +152,7 @@ export class CalculatorPage {
 
   protected mortgageData = {
     propertyPrice: 240000,
-    downPaymentPercent: 20,
+    downPaymentAmount: 48000,
     annualInterestRate: 3.2,
     termYears: 25,
     amortizationSystem: 'french' as MortgageAmortizationSystem
@@ -381,7 +381,7 @@ export class CalculatorPage {
     }
     this.mortgageTermError.set(false);
 
-    const principal = this.mortgageData.propertyPrice * (1 - this.mortgageData.downPaymentPercent / 100);
+    const principal = this.mortgageData.propertyPrice - this.mortgageData.downPaymentAmount;
     if (principal <= 0) {
       this.mortgageResult.set(null);
       this.mortgageError.set(true);

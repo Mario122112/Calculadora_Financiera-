@@ -920,9 +920,32 @@ describe('App', () => {
     expect(element.querySelector('.form-footer')?.textContent).toContain('Sistema español');
   });
 
+  it('should subtract the mortgage down payment entered in euros from the property price', async () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.componentInstance['mortgageData'].downPaymentAmount = 14000;
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    (element.querySelectorAll('.calculator-card')[1] as HTMLAnchorElement).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const downPaymentInput = element.querySelector('#down-payment') as HTMLInputElement;
+    expect(downPaymentInput.name).toBe('downPaymentAmount');
+    expect(downPaymentInput.value).toBe('14000');
+    expect(downPaymentInput.parentElement?.textContent).toContain('€');
+    expect(downPaymentInput.parentElement?.textContent).not.toContain('%');
+
+    (element.querySelector('.salary-form') as HTMLFormElement).dispatchEvent(
+      new Event('submit', { bubbles: true, cancelable: true })
+    );
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance['mortgageResult']()?.principal).toBe(226000);
+  });
+
   it('should explain that no mortgage can be calculated when the down payment covers the full price', async () => {
     const fixture = TestBed.createComponent(App);
-    fixture.componentInstance['mortgageData'].downPaymentPercent = 100;
+    fixture.componentInstance['mortgageData'].downPaymentAmount = 240000;
     fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
     (element.querySelectorAll('.calculator-card')[1] as HTMLAnchorElement).click();
@@ -937,7 +960,7 @@ describe('App', () => {
     expect(element.querySelector('#down-payment')?.getAttribute('aria-invalid')).toBe('true');
     expect(element.querySelector('#down-payment')?.getAttribute('aria-describedby')).toBe('down-payment-error');
     expect(element.querySelector('#down-payment-error')?.textContent)
-      .toContain('no queda capital por financiar');
+      .toContain('inferior al precio de la vivienda');
     expect(fixture.componentInstance['mortgageResult']()).toBeNull();
   });
 

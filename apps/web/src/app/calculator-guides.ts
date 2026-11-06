@@ -81,7 +81,7 @@ export const calculatorGuides: Record<Calculator, CalculatorGuide> = {
 
     mortgage: {
         howTo: [
-            'Introduce el precio de la vivienda y el porcentaje que aportas como entrada. La calculadora resta la entrada para saber cuánto capital financias.',
+            'Introduce el precio de la vivienda y la cantidad en euros que aportas como entrada. La calculadora resta esa cantidad para saber cuánto capital financias.',
             'Indica el interés anual (TIN) que te ofrece el banco y el plazo en años, de 1 a 50.',
             'Elige el sistema de amortización. Si dudas, deja el francés, que es el más habitual.',
             'Pulsa «Calcular hipoteca» y consulta la cuota mensual, los intereses totales y el total pagado.',
