@@ -22,8 +22,10 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
+            "server": "src/main.server.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "outputMode": "static",
             "assets": [
               {
                 "glob": "**/*",
@@ -60,6 +62,11 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "allowedHosts": [
+              ".trycloudflare.com"
+            ]
+          },
           "configurations": {
             "production": {
               "buildTarget": "web:build:production"

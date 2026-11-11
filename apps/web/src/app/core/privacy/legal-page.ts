@@ -5,7 +5,7 @@ import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { methodologyPage } from './methodology-content';
 
-type LegalPageId = 'legal' | 'privacy' | 'contact' | 'methodology';
+type LegalPageId = 'legal' | 'privacy' | 'cookies' | 'contact' | 'methodology';
 
 interface LegalSection {
   heading: string;
@@ -114,6 +114,25 @@ const legalPages: Record<LegalPageId, LegalPageContent> = {
 
     ]
   },
+  cookies: {
+    eyebrow: 'COOKIES Y ALMACENAMIENTO',
+    title: 'Política de cookies',
+    introduction: 'Información sobre las cookies y el almacenamiento utilizados por CuentaClara.',
+    sections: [
+      {
+        heading: 'Datos de las calculadoras',
+        paragraphs: [
+          'La calculadora en sí no instala cookies ni usa almacenamiento local para guardar los datos que introduces.'
+        ]
+      },
+      {
+        heading: 'Servicios externos',
+        paragraphs: [
+          'Algunas páginas pueden cargar servicios de terceros. Estos servicios pueden utilizar sus propias tecnologías de almacenamiento conforme a sus políticas y a la configuración aplicable.'
+        ]
+      }
+    ]
+  },
   contact: {
     eyebrow: 'CONTACTO',
     title: 'Contacto y sugerencias',
@@ -184,5 +203,3 @@ export class LegalPage {
     });
   }
 }
-
-

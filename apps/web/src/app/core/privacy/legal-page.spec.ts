@@ -60,9 +60,12 @@ describe('Legal pages', () => {
     expect(element.textContent).not.toContain('cuentaclara-privacy-choice-v2');
   });
 
-  it('does not expose a standalone page for services not used by the application', async () => {
+  it('renders a noindex not-found page without ad slots for unknown routes', async () => {
     const harness = await RouterTestingHarness.create('/publicidad-y-terceros');
+    const element = harness.routeNativeElement as HTMLElement;
 
-    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toContain('Decisiones claras');
+    expect(element.querySelector('h1')?.textContent).toContain('Esta página no existe');
+    expect(element.querySelector('.adsbygoogle')).toBeNull();
+    expect(TestBed.inject(Meta).getTag('name="robots"')?.content).toBe('noindex, nofollow');
   });
 });

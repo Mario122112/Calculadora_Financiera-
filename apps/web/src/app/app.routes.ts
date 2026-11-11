@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { CalculatorPage } from './calculator-page';
 import { LegalPage } from './core/privacy/legal-page';
+import { NotFound } from './not-found';
 
 export const routes: Routes = [
   {
@@ -111,5 +112,9 @@ export const routes: Routes = [
       description: 'Cómo funcionan las calculadoras de CuentaClara: fórmulas, datos de referencia de 2026 y normas en las que se apoyan.'
     }
   },
-  { path: '**', redirectTo: '' }
+  {
+    path: '**',
+    component: NotFound,
+    title: 'Página no encontrada | CuentaClara'
+  }
 ];
