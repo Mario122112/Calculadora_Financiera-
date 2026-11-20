@@ -1,4 +1,5 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
+import { GUIDE_ARTICLES } from './generated-guides';
 
 export const serverRoutes: ServerRoute[] = [
   { path: '', renderMode: RenderMode.Prerender },
@@ -10,8 +11,16 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'calculadora-finiquito-indemnizacion', renderMode: RenderMode.Prerender },
   { path: 'aviso-legal', renderMode: RenderMode.Prerender },
   { path: 'politica-de-privacidad', renderMode: RenderMode.Prerender },
-  { path: 'politica-de-cookies', renderMode: RenderMode.Prerender },
   { path: 'contacto', renderMode: RenderMode.Prerender },
   { path: 'como-se-calcula', renderMode: RenderMode.Prerender },
+  { path: 'sobre-nosotros', renderMode: RenderMode.Prerender },
+  { path: 'guias', renderMode: RenderMode.Prerender },
+  {
+    path: 'guias/:slug',
+    renderMode: RenderMode.Prerender,
+    async getPrerenderParams() {
+      return GUIDE_ARTICLES.map(({ slug }) => ({ slug }));
+    }
+  },
   { path: '**', renderMode: RenderMode.Client }
 ];

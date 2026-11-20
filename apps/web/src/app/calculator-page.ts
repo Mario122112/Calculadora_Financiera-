@@ -1,11 +1,14 @@
 import { Component, Injector, afterNextRender, computed, inject, signal } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Meta } from '@angular/platform-browser';
-import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { calculatorGuides } from './calculator-guides';
+import { GUIDE_SEO_DATA } from './generated-guide-seo';
+import pageDates from './seo/page-last-modified.json';
+import { CanonicalLink } from './seo/canonical-link.directive';
 import {
   calculateClasesPasivasEstimate,
   calculateMortgage,
@@ -53,7 +56,19 @@ interface CalculatorContent {
   detail: string;
   interpretation: string;
   limitations: string;
+  updatedAt: string;
+  sources: { label: string; url: string }[];
+  related: { label: string; path: string }[];
+  relatedGuides?: { label: string; path: string }[];
 }
+
+// TODO: verificar los datos de referencia de 2026 antes de actualizar la fecha editorial.
+const CALCULATOR_LAST_UPDATED = new Intl.DateTimeFormat('es-ES', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC'
+}).format(new Date(`${pageDates.calculatorLastModified}T00:00:00Z`));
 
 const calculatorContent: Record<Calculator, CalculatorContent> = {
   salary: {
@@ -61,52 +76,107 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
     summary: 'Calcula tu salario neto en España: estima cuánto podrías recibir después de las cotizaciones a la Seguridad Social y una retención aproximada de IRPF.',
     detail: 'Necesitas el salario bruto anual o el importe bruto por paga, el número de pagas y datos como edad, contrato y circunstancias familiares que pueden afectar a la estimación.',
     interpretation: 'El resultado muestra el neto medio por paga según el número de pagas elegido, el neto anual y el desglose de Seguridad Social e IRPF. La nómina real puede distribuir las pagas extra y las retenciones de otra manera.',
-    limitations: 'Es una aproximación con reglas de referencia de 2026. No calcula la declaración definitiva ni todas las circunstancias fiscales, y no sustituye el simulador de retenciones de la AEAT.'
+    limitations: 'Es una aproximación con reglas de referencia de 2026. No calcula la declaración definitiva ni todas las circunstancias fiscales, y no sustituye el simulador de retenciones de la AEAT.',
+    updatedAt: CALCULATOR_LAST_UPDATED,
+    sources: [
+      { label: 'Agencia Tributaria: retenciones', url: 'https://sede.agenciatributaria.gob.es/Sede/Retenciones.shtml' },
+      { label: 'Seguridad Social: cotización', url: 'https://www.seg-social.es/wps/portal/wss/internet/Trabajadores/CotizacionRecaudacionTrabajadores' }
+    ],
+    related: [
+      { label: 'Calculadora de pensión', path: '/calculadora-pension/' },
+      { label: 'Calculadora de finiquito e indemnización', path: '/calculadora-finiquito-indemnizacion/' }
+    ],
+    relatedGuides: [
+      { label: 'Salario bruto y salario neto', path: '/guias/salario-bruto-neto/' },
+      { label: 'Retención de IRPF y declaración de la renta', path: '/guias/retencion-irpf-nomina-renta/' }
+    ]
   },
   mortgage: {
     title: 'Calculadora de hipoteca',
     summary: 'Calcula la cuota mensual estimada y el coste total de una hipoteca con sistema de amortización francés o español.',
     detail: 'Indica el precio de la vivienda, la cantidad en euros que aportas como entrada, el interés nominal anual, el plazo y el sistema de amortización. La entrada se resta del precio para estimar el capital financiado.',
     interpretation: 'En el sistema francés, el más habitual, la cuota es constante: al principio pesan más los intereses y con el tiempo más el capital. En el español se amortiza el mismo capital cada mes y la cuota disminuye. El total pagado permite ver el coste de intereses estimado. El gráfico y la tabla de amortización muestran cuánto capital e intereses pagas cada año.',
-    limitations: 'Supone un tipo de interés constante: en una hipoteca variable la cuota cambiaría con el Euríbor. No incluye comisiones, seguros, impuestos, tasación ni gastos de compraventa. Una oferta real puede usar tipos, condiciones o calendarios diferentes.'
+    limitations: 'Supone un tipo de interés constante: en una hipoteca variable la cuota cambiaría con el Euríbor. No incluye comisiones, seguros, impuestos, tasación ni gastos de compraventa. Una oferta real puede usar tipos, condiciones o calendarios diferentes.',
+    updatedAt: CALCULATOR_LAST_UPDATED,
+    sources: [
+      { label: 'Banco de España: Portal del Cliente Bancario', url: 'https://clientebancario.bde.es/pcb/es/' }
+    ],
+    related: [
+      { label: 'Calculadora de préstamo personal', path: '/calculadora-prestamo-personal/' },
+      { label: 'Calculadora de interés compuesto', path: '/calculadora-interes-compuesto/' }
+    ]
   },
   pension: {
     title: 'Calculadora de pensión de jubilación',
     summary: 'Proyecta una pensión contributiva orientativa del Régimen General o de Clases Pasivas.',
     detail: 'Elige el régimen correspondiente. El Régimen General usa una base media mensual y años cotizados; Clases Pasivas usa el grupo funcionarial y años de servicios efectivos.',
     interpretation: 'El resultado es una cuantía bruta estimada en 14 pagas. Las reglas, requisitos y datos necesarios son distintos en cada régimen.',
-    limitations: 'Ambos cálculos son escenarios simplificados y no sustituyen la resolución del organismo gestor. El Régimen General no reconstruye las bases históricas; Clases Pasivas presupone un único grupo durante toda la carrera, servicio continuo y usa cuantías de 2026. No contempla cambios de grupo, otros regímenes, jornadas reducidas ni edades especiales.'
+    limitations: 'Ambos cálculos son escenarios simplificados y no sustituyen la resolución del organismo gestor. El Régimen General no reconstruye las bases históricas; Clases Pasivas presupone un único grupo durante toda la carrera, servicio continuo y usa cuantías de 2026. No contempla cambios de grupo, otros regímenes, jornadas reducidas ni edades especiales.',
+    updatedAt: CALCULATOR_LAST_UPDATED,
+    sources: [
+      { label: 'Seguridad Social: pensiones', url: 'https://www.seg-social.es/wps/portal/wss/internet/Trabajadores/PrestacionesPensionesTrabajadores' },
+      { label: 'Ley General de la Seguridad Social (BOE)', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724' }
+    ],
+    related: [
+      { label: 'Calculadora de sueldo neto', path: '/sueldo-neto/' },
+      { label: 'Calculadora de interés compuesto', path: '/calculadora-interes-compuesto/' }
+    ]
   },
   'compound-interest': {
     title: 'Calculadora de interés compuesto',
     summary: 'Proyecta cómo podría crecer un capital con aportaciones mensuales y una rentabilidad anual hipotética.',
     detail: 'Indica el capital inicial, cuánto aportarás al final de cada mes, una rentabilidad nominal anual y el plazo de inversión.',
     interpretation: 'El resultado separa el dinero aportado de los intereses teóricos y muestra la evolución estimada al cierre de cada año.',
-    limitations: 'La rentabilidad es un supuesto constante, no una promesa. No se descuentan impuestos, inflación, comisiones ni cambios en el rendimiento.'
+    limitations: 'La rentabilidad es un supuesto constante, no una promesa. No se descuentan impuestos, inflación, comisiones ni cambios en el rendimiento.',
+    updatedAt: CALCULATOR_LAST_UPDATED,
+    sources: [
+      { label: 'Finanzas para Todos: educación financiera', url: 'https://www.finanzasparatodos.es/' }
+    ],
+    related: [
+      { label: 'Calculadora de pensión', path: '/calculadora-pension/' },
+      { label: 'Calculadora de préstamo personal', path: '/calculadora-prestamo-personal/' }
+    ]
   },
   severance: {
     title: 'Calculadora de finiquito e indemnización',
     summary: 'Estima por separado salarios pendientes, vacaciones no disfrutadas, pagas extra indicadas e indemnización por despido o fallecimiento del trabajador.',
     detail: 'Introduce el salario bruto anual, los días de salario y vacaciones pendientes, la paga extra acumulada no cobrada, las fechas del contrato y la causa de extinción.',
     interpretation: 'El finiquito agrupa cantidades devengadas pendientes de pago; la indemnización, cuando corresponde, se calcula aparte según la causa y la antigüedad. En caso de fallecimiento no se estima indemnización y las cantidades las cobran los herederos.',
-    limitations: 'Es un cálculo bruto simplificado. No determina si el despido es procedente, no interpreta convenios, salarios variables ni exenciones fiscales, y no analiza la fiscalidad ni el reparto de la herencia; contrasta los datos con asesoramiento laboral.'
+    limitations: 'Es un cálculo bruto simplificado. No determina si el despido es procedente, no interpreta convenios, salarios variables ni exenciones fiscales, y no analiza la fiscalidad ni el reparto de la herencia; contrasta los datos con asesoramiento laboral.',
+    updatedAt: CALCULATOR_LAST_UPDATED,
+    sources: [
+      { label: 'Estatuto de los Trabajadores (BOE)', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430' }
+    ],
+    related: [
+      { label: 'Calculadora de sueldo neto', path: '/sueldo-neto/' },
+      { label: 'Calculadora de pensión', path: '/calculadora-pension/' }
+    ]
   },
   'personal-loan': {
     title: 'Calculadora de préstamo personal',
     summary: 'Estima la cuota, los intereses y el coste total de un préstamo personal con comisión y gastos desglosados, con sistema francés o español.',
     detail: 'Indica el importe, el TIN anual, el plazo, el sistema de amortización y los posibles costes iniciales o periódicos. La comisión se calcula sobre el importe solicitado y se paga aparte.',
     interpretation: 'En el sistema francés, el más habitual, la cuota es constante: al principio pesan más los intereses y con el tiempo más el capital. En el español se amortiza el mismo capital cada mes y las cuotas van bajando. En ambos casos el último pago se ajusta al céntimo para cancelar el saldo.',
-    limitations: 'Es una simulación matemática, no una oferta bancaria ni la TAE real. No convierte TAE a TIN ni incorpora costes automáticamente al capital financiado.'
+    limitations: 'Es una simulación matemática, no una oferta bancaria ni la TAE real. No convierte TAE a TIN ni incorpora costes automáticamente al capital financiado.',
+    updatedAt: CALCULATOR_LAST_UPDATED,
+    sources: [
+      { label: 'Banco de España: Portal del Cliente Bancario', url: 'https://clientebancario.bde.es/pcb/es/' }
+    ],
+    related: [
+      { label: 'Calculadora de hipoteca', path: '/calculadora-hipoteca/' },
+      { label: 'Calculadora de interés compuesto', path: '/calculadora-interes-compuesto/' }
+    ]
   }
 };
 
 @Component({
   selector: 'app-calculator-page',
-  imports: [DecimalPipe, FormsModule, RouterLink],
+  imports: [CanonicalLink, DecimalPipe, FormsModule, NgOptimizedImage],
   templateUrl: './calculator-page.html',
   styleUrl: './calculator-page.scss'
 })
 export class CalculatorPage {
+  readonly recentGuides = GUIDE_SEO_DATA.slice(0, 2);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly meta = inject(Meta);
@@ -241,7 +311,7 @@ export class CalculatorPage {
   }
 
   private updateRouteMetadata(
-    routeData: Readonly<Record<string, unknown>> = this.router.routerState.snapshot.root.firstChild?.data ?? {}
+    routeData: Readonly<Record<string, unknown>> = this.activeRouteData()
   ): void {
     const routeCalculator: unknown = routeData?.['calculator'];
     const calculator: Calculator | null = routeCalculator === 'salary' ||
@@ -270,6 +340,18 @@ export class CalculatorPage {
     if (typeof description === 'string') {
       this.meta.updateTag({ name: 'description', content: description });
     }
+  }
+
+  private activeRouteData(): Readonly<Record<string, unknown>> {
+    let routeData: Readonly<Record<string, unknown>> = {};
+    const visit = (route: ActivatedRouteSnapshot): void => {
+      if (Object.keys(route.routeConfig?.data ?? {}).length > 0) {
+        routeData = route.data;
+      }
+      route.children.forEach(visit);
+    };
+    visit(this.router.routerState.snapshot.root);
+    return routeData;
   }
 
   protected calculateSalary(): void {

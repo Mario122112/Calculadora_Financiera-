@@ -21,7 +21,7 @@ npm run start:web
 npm run build:web
 ```
 
-Las estimaciones no sustituyen cálculos oficiales ni asesoramiento financiero, fiscal o laboral. Las reglas fiscales y laborales deben versionarse por territorio y ejercicio. La calculadora de IRPF queda pendiente hasta verificar las escalas autonómicas oficiales para 2026.
+Las estimaciones no sustituyen cálculos oficiales ni asesoramiento financiero, fiscal o laboral. Las reglas fiscales y laborales deben versionarse por territorio y ejercicio. La estimación del IRPF es orientativa y no reproduce todas las escalas autonómicas ni el procedimiento oficial de retenciones.
 
 ## Rutas de la aplicacion web
 
@@ -32,9 +32,8 @@ Las estimaciones no sustituyen cálculos oficiales ni asesoramiento financiero, 
 - `/calculadora-pension`: proyeccion orientativa de pension de jubilacion.
 - `/calculadora-interes-compuesto`: proyección con aportaciones mensuales e interés nominal.
 - `/calculadora-finiquito-indemnizacion`: estimación separada del finiquito y de la indemnización por despido.
-- `/aviso-legal`: uso del sitio y nota sobre la posible obligación de identificación legal pendiente de revisión.
+- `/aviso-legal`: titularidad, uso y condiciones del sitio.
 - `/politica-de-privacidad`: información sobre el tratamiento realizado actualmente por el código de la aplicación.
-- `/politica-de-cookies`: información sobre cookies y almacenamiento del navegador.
 - `/contacto`: datos de contacto y enlace de correo electrónico `mailto:`.
 
 Los titulos y las descripciones se configuran por ruta en Angular. La etiqueta canonical y el sitemap deben añadirse cuando se defina el dominio publico y las URLs definitivas; el alojamiento futuro tambien debe servir la aplicacion Angular para rutas directas.

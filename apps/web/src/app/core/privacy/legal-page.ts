@@ -2,10 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Meta } from '@angular/platform-browser';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { methodologyPage } from './methodology-content';
+import { CanonicalLink } from '../../seo/canonical-link.directive';
 
-type LegalPageId = 'legal' | 'privacy' | 'cookies' | 'contact' | 'methodology';
+type LegalPageId = 'legal' | 'privacy' | 'contact' | 'methodology' | 'about';
 
 interface LegalSection {
   heading: string;
@@ -35,8 +36,17 @@ const legalPages: Record<LegalPageId, LegalPageContent> = {
   legal: {
     eyebrow: 'INFORMACIÓN DEL SITIO',
     title: 'Aviso legal',
-    introduction: 'CuentaClara es una marca gestionada por Mario Galindo, particular.',
+    introduction: 'Información sobre la titularidad, el uso y las condiciones del sitio.',
     sections: [
+      {
+        heading: 'Titular e identificación',
+        paragraphs: [
+          'Titular del sitio: Mario Galindo.',
+          'Ubicación: Murcia, España.',
+          'Correo de contacto: cuentaclaracalc@gmail.com.',
+          'CuentaClara es el nombre del sitio. La información sobre publicidad y tratamiento de datos se detalla en la política de privacidad.'
+        ]
+      },
       {
         heading: 'Uso de las calculadoras',
         paragraphs: [
@@ -58,7 +68,14 @@ const legalPages: Record<LegalPageId, LegalPageContent> = {
         ]
       },
       {
-        heading: 'Legislación aplicable y modificaciones',
+        heading: 'Publicidad y modificaciones',
+        paragraphs: [
+          'El sitio carga el código de Google AdSense. Google y otros proveedores publicitarios pueden utilizar cookies o tecnologías similares según la configuración del servicio y las preferencias de la persona usuaria. Consulta la política de privacidad.',
+          'El aviso puede modificarse si cambian la titularidad, el alojamiento, la actividad del sitio o la normativa aplicable.'
+        ]
+      },
+      {
+        heading: 'Legislación aplicable',
         paragraphs: [
           'Este aviso se rige por la legislación española. Si eres consumidor, te corresponde el fuero que establezca la normativa vigente.',
           'Este aviso puede modificarse para adaptarlo a cambios legales o del sitio.'
@@ -69,66 +86,77 @@ const legalPages: Record<LegalPageId, LegalPageContent> = {
   privacy: {
     eyebrow: 'DATOS Y PRIVACIDAD',
     title: 'Política de privacidad',
-    introduction: 'Información sobre cómo se tratan los datos al usar las calculadoras o al contactar por correo.',
+    introduction: 'Información sobre los datos tratados por CuentaClara, el formulario de contacto, el alojamiento y la publicidad de terceros.',
     sections: [
       {
         heading: 'Responsable del tratamiento',
         paragraphs: [
-          'Responsable: Mario Galindo, particular.',
-          'Correo de contacto: cuentaclaracalc@gmail.com'
+          'Responsable: Mario Galindo.',
+          'Ubicación: Murcia, España.',
+          'Correo de contacto: cuentaclaracalc@gmail.com.'
         ]
       },
       {
         heading: 'Datos introducidos en las calculadoras',
         paragraphs: [
-          'Los cálculos se realizan en tu navegador. CuentaClara no envía, recibe ni guarda los valores que introduces en las calculadoras.'
-        ]
-      },
-      {
-        heading: 'Cookies y almacenamiento local',
-        paragraphs: [
-          'Este sitio no utiliza cookies propias ni de terceros, ni guarda información en el almacenamiento local de tu navegador.'
+          'Los cálculos se realizan en tu navegador y la aplicación no envía los valores introducidos en las calculadoras a un servidor de CuentaClara.',
+          'El proveedor de alojamiento puede tratar datos técnicos de conexión necesarios para servir la web, como la dirección IP, información del navegador y registros de solicitudes, conforme a su configuración y política.',
+          'El sitio carga el código de Google AdSense. Google y sus proveedores publicitarios pueden recibir datos técnicos e identificadores del dispositivo o del navegador y tratar información relacionada con la publicación, personalización o medición de anuncios, de acuerdo con la configuración del servicio y las preferencias registradas.'
         ]
       },
       {
         heading: 'Formulario de contacto',
         paragraphs: [
-          'Si usas el formulario, se envían tu nombre, tu correo y el contenido del mensaje al servicio Formspree, que los reenvía a mi correo. Solo recibiré esos datos si decides enviarlos.',
-          'Finalidad: responder a tu consulta o sugerencia. Base jurídica: tu consentimiento, que das al marcar la casilla de la política de privacidad y enviar el formulario (art. 6.1.a RGPD).',
-          'No incluyas información financiera, fiscal o personal sensible en tu mensaje.'
+          'Si envías el formulario, se transmiten tu nombre, correo electrónico y mensaje a Formspree para que lo reenvíe al correo de CuentaClara. La finalidad es atender la consulta; el formulario solicita que confirmes que has leído esta política.',
+          'No incluyas información financiera, fiscal ni otros datos sensibles en el mensaje.'
         ]
       },
       {
-        heading: 'Conservación y destinatarios',
+        heading: 'Finalidades, base jurídica y destinatarios',
         paragraphs: [
-          'Conservaré el mensaje el tiempo necesario para atender tu consulta y, después, hasta un máximo de 30 dias, salvo que tenga que conservarlo por una obligación legal.',
-          'No cedo tus datos a terceros. El correo se recibe en una cuenta de Gmail, por lo que Google actúa como proveedor del servicio de correo y puede tratar el mensaje conforme a su propia política de privacidad.'
+          'Los datos del formulario se utilizan para responder a la consulta.',
+          'En el sitio intervienen Formspree para el formulario, Google para el correo y AdSense, y el proveedor de alojamiento.',
+          'Google y sus proveedores publicitarios pueden tratar datos para mostrar y medir anuncios, según la configuración del servicio.'
         ]
       },
       {
-        heading: 'Alojamiento',
+        heading: 'Derechos',
         paragraphs: [
-          'Al cargar el sitio, el servicio de alojamiento puede recibir datos técnicos de conexión, como la dirección IP o el navegador utilizado, necesarios para ofrecerte la web. Este tratamiento lo realiza el proveedor de alojamiento conforme a su propia política de privacidad.'
+          'Puedes ejercer los derechos que correspondan en materia de protección de datos escribiendo a cuentaclaracalc@gmail.com. También puedes presentar una reclamación ante la Agencia Española de Protección de Datos.'
+        ]
+      },
+      {
+        heading: 'Cookies y publicidad',
+        paragraphs: [
+          'Las calculadoras no necesitan enviar los valores que introduces a CuentaClara. Sin embargo, el código de Google AdSense puede utilizar cookies o tecnologías similares para publicar y medir anuncios, limitar su frecuencia y, según la configuración del servicio, personalizar la publicidad.'
         ]
       }
-
     ]
   },
-  cookies: {
-    eyebrow: 'COOKIES Y ALMACENAMIENTO',
-    title: 'Política de cookies',
-    introduction: 'Información sobre las cookies y el almacenamiento utilizados por CuentaClara.',
+  about: {
+    eyebrow: 'CUENTACLARA',
+    title: 'Sobre nosotros',
+    introduction: 'Quién desarrolla CuentaClara, cómo se preparan sus estimaciones y cómo se mantienen los contenidos.',
     sections: [
       {
-        heading: 'Datos de las calculadoras',
+        heading: 'Quién está detrás',
         paragraphs: [
-          'La calculadora en sí no instala cookies ni usa almacenamiento local para guardar los datos que introduces.'
+          'CuentaClara es un proyecto de Mario Galindo, que vive en Murcia, España.',
+          'Para contactar, proponer una corrección o enviar una sugerencia, escribe a cuentaclaracalc@gmail.com.'
         ]
       },
       {
-        heading: 'Servicios externos',
+        heading: 'Cómo elaboramos las herramientas',
         paragraphs: [
-          'Algunas páginas pueden cargar servicios de terceros. Estos servicios pueden utilizar sus propias tecnologías de almacenamiento conforme a sus políticas y a la configuración aplicable.'
+          'Las calculadoras ofrecen estimaciones y publican sus supuestos, limitaciones y fórmulas en la página «Cómo se calcula». Los resultados pueden diferir de los cálculos oficiales porque simplifican datos y circunstancias individuales.',
+          'No presentamos las estimaciones como asesoramiento financiero, fiscal, laboral o jurídico. Para decisiones importantes, contrasta el resultado con la fuente oficial o con un profesional.'
+        ],
+        links: [{ label: 'Cómo se calcula', url: '/como-se-calcula/' }]
+      },
+      {
+        heading: 'Actualización y correcciones',
+        paragraphs: [
+          'Las fechas de actualización y las fuentes consultadas se indican en las páginas correspondientes. Para señalar un error o sugerir una corrección, escribe a cuentaclaracalc@gmail.com.'
         ]
       }
     ]
@@ -153,7 +181,7 @@ const legalPages: Record<LegalPageId, LegalPageContent> = {
 
 @Component({
   selector: 'app-legal-page',
-  imports: [RouterLink, FormsModule],
+  imports: [CanonicalLink, FormsModule],
   templateUrl: './legal-page.html',
   styleUrl: './legal-page.scss'
 })

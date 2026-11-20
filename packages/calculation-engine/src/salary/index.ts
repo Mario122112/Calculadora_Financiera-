@@ -31,7 +31,9 @@ export interface SalaryEstimate {
   effectiveRate: number;
 }
 
+// TODO: verificar topes y tipos de cotización de 2026 frente a las fuentes oficiales.
 const annualMaximumContributionBase = 5101.2 * 12;
+// TODO: verificar escala, mínimos y reducciones de IRPF usados como aproximación para 2026.
 const incomeTaxBands = [
   { limit: 12450, rate: 0.19 },
   { limit: 20200, rate: 0.24 },

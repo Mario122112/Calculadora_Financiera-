@@ -1,0 +1,156 @@
+:host {
+  --guide-ink: #18352f;
+  --guide-muted: #68766f;
+  --guide-line: #dce5df;
+  --guide-green: #1f6a4f;
+  display: block;
+  color: var(--guide-ink);
+}
+
+.guide-shell { min-height: 100vh; display: flex; flex-direction: column; }
+.guide-footer nav { display: flex; flex-wrap: wrap; gap: 12px 18px; }
+.guide-brand { color: inherit; font-size: 18px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+.guide-page { flex: 1; }
+
+.guide-page {
+  width: min(900px, calc(100% - 48px));
+  margin: 0 auto;
+  padding-bottom: 48px;
+}
+
+.guide-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding-top: 20px;
+  color: var(--guide-muted);
+  font-size: 12px;
+}
+
+.guide-breadcrumb a,
+.guide-page a { color: var(--guide-green); }
+
+.guide-header,
+.guide-index,
+.guide-not-found { padding: 62px 0 32px; }
+
+.guide-eyebrow {
+  margin: 0 0 12px;
+  color: var(--guide-green);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+}
+
+.guide-header h1,
+.guide-index h1,
+.guide-not-found h1 {
+  max-width: 780px;
+  margin: 0;
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 400;
+  line-height: 1.12;
+}
+
+.guide-summary {
+  max-width: 700px;
+  margin: 18px 0;
+  color: var(--guide-muted);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.guide-byline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin: 22px 0 0;
+}
+
+.guide-byline div { display: grid; gap: 4px; }
+.guide-byline dt { color: var(--guide-muted); font-size: 11px; }
+.guide-byline dd { margin: 0; font-size: 12px; font-weight: 700; }
+
+.guide-toc,
+.guide-faq,
+.guide-links,
+.guide-sources {
+  margin: 24px 0;
+  padding: 22px 24px;
+  border: 1px solid var(--guide-line);
+  border-radius: 5px;
+  background: #fff;
+}
+
+.guide-toc h2,
+.guide-faq h2,
+.guide-links h2,
+.guide-sources h2,
+.guide-body h2,
+.guide-card h2 {
+  margin: 0 0 14px;
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 25px;
+  font-weight: 400;
+}
+
+.guide-toc ol,
+.guide-links ul,
+.guide-sources ul { margin: 0; padding-left: 20px; }
+.guide-toc li,
+.guide-links li,
+.guide-sources li { margin: 8px 0; line-height: 1.5; }
+
+.guide-body {
+  padding: 10px 0;
+  color: #344941;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.guide-body h2 { margin-top: 34px; color: var(--guide-ink); }
+.guide-body p { margin: 14px 0; }
+.guide-body ul,
+.guide-body ol { padding-left: 24px; }
+.guide-body li { margin: 7px 0; }
+.guide-body table { width: 100%; border-collapse: collapse; }
+.guide-body th,
+.guide-body td { padding: 9px 10px; border-bottom: 1px solid var(--guide-line); text-align: left; }
+.guide-body blockquote { margin: 22px 0; padding: 8px 18px; border-left: 3px solid var(--guide-green); background: #fff; }
+
+.guide-faq details { padding: 13px 0; border-top: 1px solid var(--guide-line); }
+.guide-faq summary { color: var(--guide-ink); font-weight: 700; cursor: pointer; }
+.guide-faq p { margin: 9px 0 0; color: var(--guide-muted); line-height: 1.6; }
+
+.guide-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 30px; }
+.guide-card { padding: 22px; border: 1px solid var(--guide-line); border-radius: 5px; background: #fff; }
+.guide-card-date { margin: 0 0 10px; color: var(--guide-muted); font-size: 11px; }
+.guide-card h2 { line-height: 1.3; }
+.guide-card h2 a { text-decoration: none; }
+.guide-card > p:not(.guide-card-date) { color: var(--guide-muted); font-size: 13px; line-height: 1.6; }
+.guide-card-link { display: inline-flex; gap: 8px; margin-top: 8px; font-size: 12px; font-weight: 700; }
+.guide-not-found p:not(.guide-eyebrow) { color: var(--guide-muted); }
+.guide-footer {
+  min-height: 76px;
+  padding: 20px max(6vw, 24px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--guide-line);
+  color: var(--guide-muted);
+}
+.guide-footer .guide-brand { color: var(--guide-green); }
+.guide-footer nav a { color: var(--guide-green); font-size: 11px; }
+
+@media (max-width: 640px) {
+  .guide-page { width: min(100% - 32px, 900px); }
+  .guide-footer { align-items: flex-start; flex-direction: column; }
+  .guide-footer { padding-inline: 16px; }
+  .guide-header,
+  .guide-index,
+  .guide-not-found { padding-top: 40px; }
+  .guide-list { grid-template-columns: 1fr; }
+  .guide-body { font-size: 14px; }
+}

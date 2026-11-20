@@ -1,6 +1,6 @@
 <main class="legal-shell">
   <nav class="legal-breadcrumb" aria-label="Navegación">
-    <a routerLink="/">Inicio</a>
+    <a canonicalLink="/">Inicio</a>
     <span aria-hidden="true">/</span>
     <span>{{ content.title }}</span>
   </nav>
@@ -75,7 +75,7 @@
           <input id="contact-consent" name="consent" type="checkbox" required [(ngModel)]="form.consent"
             [attr.aria-invalid]="submitted() && !form.consent ? 'true' : null"
             [attr.aria-describedby]="submitted() && !form.consent ? 'contact-consent-error' : null" />
-          <span>He leído la <a routerLink="/politica-de-privacidad">política de privacidad</a></span>
+          <span>He leído la <a canonicalLink="/politica-de-privacidad/">política de privacidad</a></span>
         </label>
         @if (submitted() && !form.consent) {
         <p class="contact-error" id="contact-consent-error" role="alert">
@@ -104,10 +104,11 @@
   </article>
 
   <nav class="legal-related" aria-label="Información legal">
-    <a routerLink="/como-se-calcula">Cómo se calcula</a>
-    <a routerLink="/aviso-legal">Aviso legal</a>
-    <a routerLink="/politica-de-privacidad">Privacidad</a>
-    <a routerLink="/contacto">Contacto y sugerencias</a>
-    <a routerLink="/">Volver a las calculadoras</a>
+    <a canonicalLink="/sobre-nosotros/">Sobre nosotros</a>
+    <a canonicalLink="/como-se-calcula/">Cómo se calcula</a>
+    <a canonicalLink="/aviso-legal/">Aviso legal</a>
+    <a canonicalLink="/politica-de-privacidad/">Privacidad</a>
+    <a canonicalLink="/contacto/">Contacto y sugerencias</a>
+    <a canonicalLink="/">Volver a las calculadoras</a>
   </nav>
 </main>

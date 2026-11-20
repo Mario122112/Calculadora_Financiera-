@@ -14,7 +14,7 @@ describe('Legal pages', () => {
   it.each([
     ['/aviso-legal', 'Aviso legal | CuentaClara', 'Aviso legal'],
     ['/politica-de-privacidad', 'Política de privacidad | CuentaClara', 'Política de privacidad'],
-    ['/politica-de-cookies', 'Política de cookies | CuentaClara', 'Política de cookies']
+    ['/sobre-nosotros', 'Sobre nosotros | CuentaClara', 'Sobre nosotros']
   ])('renders %s with its title and description', async (path, expectedTitle, heading) => {
     const harness = await RouterTestingHarness.create(path);
     const element = harness.routeNativeElement as HTMLElement;
@@ -22,50 +22,38 @@ describe('Legal pages', () => {
     expect(element.querySelector('h1')?.textContent).toContain(heading);
     expect(TestBed.inject(Title).getTitle()).toBe(expectedTitle);
     expect(TestBed.inject(Meta).getTag('name="description"')?.content).toBeTruthy();
-    expect(element.querySelector('.legal-related a[routerLink="/politica-de-cookies"]')).not.toBeNull();
   });
 
-  it('explains possible identification requirements and the incomplete address', async () => {
+  it('shows the provided legal identity, leaves undisclosed details pending, and discloses advertising', async () => {
     const harness = await RouterTestingHarness.create('/aviso-legal');
-    const legalElement = harness.routeNativeElement as HTMLElement;
-    expect(legalElement.textContent).toContain('Ley 34/2002 (LSSI-CE), artículo 10');
-    expect(legalElement.textContent).toContain('Murcia) no es una dirección postal completa');
-    expect(legalElement.textContent).toContain('dirección profesional');
+    const element = harness.routeNativeElement as HTMLElement;
 
-    await harness.navigateByUrl('/politica-de-privacidad');
-    const privacyElement = harness.routeNativeElement as HTMLElement;
-    expect(privacyElement.textContent).toContain('servicio de alojamiento');
-    expect(privacyElement.textContent).toContain('cuenta de Gmail de Google');
-    expect(privacyElement.textContent).toContain('plazos de conservación');
+    expect(element.textContent).toContain('Titular del sitio: Mario Galindo.');
+    expect(element.textContent).toContain('Ubicación: Murcia, España.');
+    expect(element.textContent).not.toContain('domicilio postal');
+    expect(element.textContent).not.toContain('NIF/NIE');
+    expect(element.textContent).toContain('Google AdSense');
   });
 
-  it('shows the authorized public contact details and a user-controlled mailto link', async () => {
-    const harness = await RouterTestingHarness.create('/contacto');
+  it('describes third-party data processing and remaining verification in the privacy policy', async () => {
+    const harness = await RouterTestingHarness.create('/politica-de-privacidad');
+    const element = harness.routeNativeElement as HTMLElement;
+
+    expect(element.textContent).toContain('Formspree');
+    expect(element.textContent).toContain('Google AdSense');
+    expect(element.textContent).not.toContain('PENDIENTE');
+    expect(element.textContent).toContain('cookies o tecnologías similares');
+    expect(element.textContent).toContain('según la configuración del servicio, personalizar la publicidad.');
+  });
+
+  it('shows only the provided personal details on the about page', async () => {
+    const harness = await RouterTestingHarness.create('/sobre-nosotros');
     const element = harness.routeNativeElement as HTMLElement;
 
     expect(element.textContent).toContain('Mario Galindo');
     expect(element.textContent).toContain('Murcia, España');
-    expect(element.querySelector('a[href="mailto:cuentaclaracalc@gmail.com"]')?.textContent)
-      .toBe('cuentaclaracalc@gmail.com');
-    expect(element.querySelector('form')).toBeNull();
-    expect(element.textContent).toContain('solo se transmite si lo revisas y pulsas Enviar');
-  });
-
-  it('explains that the current site does not use cookies or browser storage', async () => {
-    const harness = await RouterTestingHarness.create('/politica-de-cookies');
-    const element = harness.routeNativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('no instala cookies ni usa almacenamiento local');
-    expect(element.textContent).not.toContain('Configurar');
-    expect(element.textContent).not.toContain('cuentaclara-privacy-choice-v2');
-  });
-
-  it('renders a noindex not-found page without ad slots for unknown routes', async () => {
-    const harness = await RouterTestingHarness.create('/publicidad-y-terceros');
-    const element = harness.routeNativeElement as HTMLElement;
-
-    expect(element.querySelector('h1')?.textContent).toContain('Esta página no existe');
-    expect(element.querySelector('.adsbygoogle')).toBeNull();
-    expect(TestBed.inject(Meta).getTag('name="robots"')?.content).toBe('noindex, nofollow');
+    expect(element.textContent).toContain('cuentaclaracalc@gmail.com');
+    expect(element.textContent).not.toContain('PENDIENTE');
+    expect(element.querySelector('a[href="/como-se-calcula/"]')).not.toBeNull();
   });
 });

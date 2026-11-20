@@ -1,6 +1,6 @@
 * { box-sizing: border-box; }
 
-html { min-width: 320px; scroll-behavior: smooth; }
+html { min-width: 320px; overflow-y: scroll; scroll-behavior: smooth; scrollbar-gutter: stable; }
 
 body {
 	min-width: 320px;
@@ -10,6 +10,53 @@ body {
 }
 
 button, input, select { font: inherit; }
+
+.topbar {
+	min-height: 76px;
+	padding: 0 max(6vw, 24px);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: #18352f;
+	color: #f5f7ed;
+}
+
+.brand {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	color: inherit;
+	font-size: 19px;
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.brand-mark {
+	width: 30px;
+	height: 30px;
+	display: grid;
+	place-items: center;
+	border-radius: 50%;
+	background: #d6ef84;
+	color: #18352f;
+	font-family: Georgia, serif;
+	font-size: 18px;
+}
+
+.topbar-meta {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	color: #d2ddd3;
+	font-size: 12px;
+}
+
+.status-dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #d6ef84;
+}
 
 @keyframes rise-in {
 	from { opacity: 0; transform: translateY(10px); }
@@ -166,10 +213,19 @@ select:focus-visible {
 }
 
 @media (max-width: 760px) {
+	.topbar { flex-wrap: wrap; gap: 12px; padding-block: 14px; }
+	.topbar-meta { margin-left: auto; }
+	.topbar-nav { order: 3; flex: 1 0 100%; flex-wrap: wrap; justify-content: center; }
+}
+
+@media (min-width: 761px) and (max-width: 980px) {
+	.topbar { flex-wrap: wrap; gap: 12px; padding-block: 14px; }
 	.topbar-nav { order: 3; flex: 1 0 100%; flex-wrap: wrap; justify-content: center; }
 }
 
 @media (max-width: 520px) {
+	.topbar { min-height: 64px; padding-inline: 20px; }
+	.topbar-meta { font-size: 10px; }
 	.topbar-nav { gap: 12px 16px; justify-content: flex-start; }
 	.topbar-nav a { font-size: 11px; }
 	.calculator-intro { margin-top: 25px; padding: 19px 17px; }

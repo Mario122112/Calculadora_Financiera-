@@ -75,6 +75,7 @@ export interface ClasesPasivasEstimate {
   retirementType: 'voluntary' | 'ordinary' | 'not-eligible';
 }
 
+// TODO: verificar cuantías y reglas de referencia de 2026 frente a la normativa oficial publicada.
 const referenceYear = 2026;
 const annualMaximumPension = 47034.4;
 const clasesPasivasRegulatoryAmounts: Record<ClasesPasivasGroup, number> = {

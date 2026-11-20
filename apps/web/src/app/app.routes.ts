@@ -1,7 +1,13 @@
-import { Routes } from '@angular/router';
+import { ResolveFn, Routes } from '@angular/router';
 import { CalculatorPage } from './calculator-page';
 import { LegalPage } from './core/privacy/legal-page';
 import { NotFound } from './not-found';
+import { GUIDE_SEO_DATA } from './generated-guide-seo';
+
+const guideArticleTitle: ResolveFn<string> = route => {
+  const article = GUIDE_SEO_DATA.find(guide => guide.slug === route.paramMap.get('slug'));
+  return article ? `${article.title} | CuentaClara` : 'Guía no encontrada | CuentaClara';
+};
 
 export const routes: Routes = [
   {
@@ -73,7 +79,7 @@ export const routes: Routes = [
     title: 'Aviso legal | CuentaClara',
     data: {
       legalPage: 'legal',
-      description: 'Información sobre el uso de las calculadoras de CuentaClara y las obligaciones de identificación pendientes de revisión.'
+      description: 'Información sobre el uso de las calculadoras y las condiciones del sitio CuentaClara.'
     }
   },
   {
@@ -83,15 +89,6 @@ export const routes: Routes = [
     data: {
       legalPage: 'privacy',
       description: 'Información sobre los datos que CuentaClara trata al usar las calculadoras o contactar por correo.'
-    }
-  },
-  {
-    path: 'politica-de-cookies',
-    loadComponent: () => import('./core/privacy/legal-page').then(module => module.LegalPage),
-    title: 'Política de cookies | CuentaClara',
-    data: {
-      legalPage: 'cookies',
-      description: 'Información sobre las cookies y el almacenamiento utilizados por CuentaClara.'
     }
   },
   {
@@ -110,6 +107,31 @@ export const routes: Routes = [
     data: {
       legalPage: 'methodology',
       description: 'Cómo funcionan las calculadoras de CuentaClara: fórmulas, datos de referencia de 2026 y normas en las que se apoyan.'
+    }
+  },
+  {
+    path: 'sobre-nosotros',
+    loadComponent: () => import('./core/privacy/legal-page').then(module => module.LegalPage),
+    title: 'Sobre nosotros | CuentaClara',
+    data: {
+      legalPage: 'about',
+      description: 'Quién está detrás de CuentaClara, cómo se elaboran sus calculadoras y cómo se mantienen sus contenidos.'
+    }
+  },
+  {
+    path: 'guias',
+    loadComponent: () => import('./guide-pages').then(module => module.GuidePages),
+    title: 'Guías de finanzas personales | CuentaClara',
+    data: {
+      description: 'Guías prácticas sobre salario, impuestos y decisiones financieras en España.'
+    }
+  },
+  {
+    path: 'guias/:slug',
+    loadComponent: () => import('./guide-pages').then(module => module.GuidePages),
+    title: guideArticleTitle,
+    data: {
+      description: 'Guías prácticas sobre salario, impuestos y decisiones financieras en España.'
     }
   },
   {

@@ -1,22 +1,23 @@
 <div class="app-shell">
   <header class="topbar">
-    <a class="brand" routerLink="/" aria-label="CuentaClara, inicio">
-      <span class="brand-mark" aria-hidden="true"><img src="/euro.png" alt="" width="20" height="20" /></span>
+    <a class="brand" canonicalLink="/" aria-label="CuentaClara, inicio">
+      <span class="brand-mark" aria-hidden="true"><img ngSrc="/euro.png" alt="" width="20" height="20" /></span>
       <span>CuentaClara</span>
     </a>
-    <nav class="topbar-nav" aria-label="Calculadoras">
-      <a routerLink="/sueldo-neto" [attr.aria-current]="selectedCalculator() === 'salary' ? 'page' : null">Sueldo
+    <nav class="topbar-nav" aria-label="Navegación">
+      <a canonicalLink="/sueldo-neto/" [attr.aria-current]="selectedCalculator() === 'salary' ? 'page' : null">Sueldo
         neto</a>
-      <a routerLink="/calculadora-hipoteca"
+      <a canonicalLink="/calculadora-hipoteca/"
         [attr.aria-current]="selectedCalculator() === 'mortgage' ? 'page' : null">Hipoteca</a>
-      <a routerLink="/calculadora-pension"
+      <a canonicalLink="/calculadora-pension/"
         [attr.aria-current]="selectedCalculator() === 'pension' ? 'page' : null">Pensión</a>
-      <a routerLink="/calculadora-interes-compuesto"
+      <a canonicalLink="/calculadora-interes-compuesto/"
         [attr.aria-current]="selectedCalculator() === 'compound-interest' ? 'page' : null">Interés compuesto</a>
-      <a routerLink="/calculadora-finiquito-indemnizacion"
+      <a canonicalLink="/calculadora-finiquito-indemnizacion/"
         [attr.aria-current]="selectedCalculator() === 'severance' ? 'page' : null">Finiquito</a>
-      <a routerLink="/calculadora-prestamo-personal"
+      <a canonicalLink="/calculadora-prestamo-personal/"
         [attr.aria-current]="selectedCalculator() === 'personal-loan' ? 'page' : null">Préstamo personal</a>
+      <a canonicalLink="/guias/">Guías</a>
     </nav>
     <div class="topbar-meta">
       <span class="status-dot" aria-hidden="true"></span>
@@ -25,19 +26,31 @@
   </header>
 
   <main id="inicio">
-    <section class="intro" aria-labelledby="page-title">
+    @if (calculatorPage(); as page) {
+    <nav class="page-breadcrumb" aria-label="Migas de pan">
+      <a canonicalLink="/">Inicio</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ page.title }}</span>
+    </nav>
+    }
+
+    <section class="intro" [class.home-intro]="!calculatorPage()" aria-labelledby="page-title">
       @if (calculatorPage(); as page) {
       <p class="eyebrow">CALCULADORA FINANCIERA <span>/ ESPAÑA</span></p>
       <h1 class="page-title" id="page-title">{{ page.title }}</h1>
       <p class="intro-copy">{{ page.summary }}</p>
       } @else {
-      <p class="eyebrow"><span>01</span> TU ESPACIO FINANCIERO</p>
-      <h1 class="page-title" id="page-title">Decisiones claras,<br /><em>números bajo control.</em></h1>
-      <p class="intro-copy">Elige qué quieres calcular. Empezamos por lo importante, saber cuánto llega realmente a tu
-        cuenta.</p>
+      <p class="eyebrow">CUENTACLARA <span>/ FINANZAS COTIDIANAS</span></p>
+      <h1 class="page-title" id="page-title">Calculadoras financieras para entender tus números.</h1>
+      <p class="intro-copy">CuentaClara reúne herramientas gratuitas para explorar decisiones habituales de trabajo,
+        vivienda, ahorro y jubilación en España. Puedes probar escenarios con tus propios datos sin enviar las cifras
+        introducidas a un servidor de la aplicación.</p>
+      <p class="intro-copy">Cada resultado es una estimación: explicamos los supuestos, las limitaciones y las fuentes
+        para que puedas valorar si el cálculo te sirve y contrastarlo antes de tomar una decisión.</p>
       }
     </section>
 
+    @if (!selectedCalculator()) {
     <section class="calculator-section" aria-labelledby="calculator-title">
       <div class="section-heading">
         <div>
@@ -49,9 +62,9 @@
 
       <div class="calculator-grid">
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'salary'"
-          [attr.aria-current]="selectedCalculator() === 'salary' ? 'page' : null" routerLink="/sueldo-neto"
+          [attr.aria-current]="selectedCalculator() === 'salary' ? 'page' : null" canonicalLink="/sueldo-neto/"
           (click)="openCalculator('salary')">
-          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true"><img src="/euro.png" alt=""
+          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true"><img ngSrc="/euro.png" alt=""
                 width="25" height="20" /></span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Sueldo neto</span>
           <span class="card-description">Descubre cuánto cobrarás después de impuestos y cotizaciones.</span>
@@ -59,10 +72,10 @@
         </a>
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'mortgage'"
-          [attr.aria-current]="selectedCalculator() === 'mortgage' ? 'page' : null" routerLink="/calculadora-hipoteca"
+          [attr.aria-current]="selectedCalculator() === 'mortgage' ? 'page' : null" canonicalLink="/calculadora-hipoteca/"
           (click)="openCalculator('mortgage')">
           <span class="card-topline">
-            <span class="card-icon mortgage-icon" aria-hidden="true"><img src="/boton-de-inicio.png" alt="" width="25"
+            <span class="card-icon mortgage-icon" aria-hidden="true"><img ngSrc="/boton-de-inicio.png" alt="" width="25"
                 height="20" /></span>
             <span class="availability available">DISPONIBLE</span>
           </span>
@@ -72,10 +85,10 @@
         </a>
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'pension'"
-          [attr.aria-current]="selectedCalculator() === 'pension' ? 'page' : null" routerLink="/calculadora-pension"
+          [attr.aria-current]="selectedCalculator() === 'pension' ? 'page' : null" canonicalLink="/calculadora-pension/"
           (click)="openCalculator('pension')">
           <span class="card-topline">
-            <span class="card-icon pension-icon" aria-hidden="true"><img src="/reloj.png" alt="" width="25"
+            <span class="card-icon pension-icon" aria-hidden="true"><img ngSrc="/reloj.png" alt="" width="25"
                 height="20" /></span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Pensión</span>
           <span class="card-description">Proyecta una pensión pública orientativa según tus cotizaciones.</span>
@@ -84,9 +97,9 @@
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'compound-interest'"
           [attr.aria-current]="selectedCalculator() === 'compound-interest' ? 'page' : null"
-          routerLink="/calculadora-interes-compuesto" (click)="openCalculator('compound-interest')">
+          canonicalLink="/calculadora-interes-compuesto/" (click)="openCalculator('compound-interest')">
           <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true"><img
-                src="/flecha-diagonal.png" alt="" width="25" height="" /></span><span
+                ngSrc="/flecha-diagonal.png" alt="" width="25" height="20" /></span><span
               class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Interés compuesto</span>
           <span class="card-description">Proyecta capital y aportaciones mensuales con una rentabilidad
@@ -96,8 +109,8 @@
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'severance'"
           [attr.aria-current]="selectedCalculator() === 'severance' ? 'page' : null"
-          routerLink="/calculadora-finiquito-indemnizacion" (click)="openCalculator('severance')">
-          <span class="card-topline"><span class="card-icon mortgage-icon" aria-hidden="true"><img src="/briefcase.png"
+          canonicalLink="/calculadora-finiquito-indemnizacion/" (click)="openCalculator('severance')">
+          <span class="card-topline"><span class="card-icon mortgage-icon" aria-hidden="true"><img ngSrc="/briefcase.png"
                 alt="" width="25" height="20" /></span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Finiquito e indemnización</span>
           <span class="card-description">Separa cantidades pendientes de cobro e indemnización estimada por
@@ -107,8 +120,8 @@
 
         <a class="calculator-card" [class.is-selected]="selectedCalculator() === 'personal-loan'"
           [attr.aria-current]="selectedCalculator() === 'personal-loan' ? 'page' : null"
-          routerLink="/calculadora-prestamo-personal" (click)="openCalculator('personal-loan')">
-          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true"><img src="/landmark.png"
+          canonicalLink="/calculadora-prestamo-personal/" (click)="openCalculator('personal-loan')">
+          <span class="card-topline"><span class="card-icon salary-icon" aria-hidden="true"><img ngSrc="/landmark.png"
                 alt="" width="25" height="20" /></span><span class="availability available">DISPONIBLE</span></span>
           <span class="card-title">Préstamo personal</span>
           <span class="card-description">Compara cuotas, intereses, comisiones y coste total con distintos TIN.</span>
@@ -116,6 +129,7 @@
         </a>
       </div>
     </section>
+    }
 
     @if (calculatorPage(); as page) {
     <section class="calculator-intro" id="calculadora" aria-labelledby="calculator-intro-title">
@@ -123,6 +137,65 @@
       <p>{{ page.detail }}</p>
       <p>{{ page.interpretation }}</p>
       <p class="result-caveat">{{ page.limitations }}</p>
+      <p class="calculator-updated">Última actualización: {{ page.updatedAt }}</p>
+      <p class="calculator-sources">
+        <strong>Fuentes oficiales:</strong>
+        @for (source of page.sources; track source.url; let last = $last) {
+        <a [href]="source.url" target="_blank" rel="noopener noreferrer">{{ source.label }}</a>@if (!last) { · }
+        }
+      </p>
+      <p><a canonicalLink="/como-se-calcula/">Consulta cómo se calcula esta estimación</a>.</p>
+    </section>
+
+    }
+
+    @if (!selectedCalculator() && recentGuides.length) {
+    <section class="home-guides" aria-labelledby="guides-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">LECTURAS PRÁCTICAS</p>
+          <h2 id="guides-title">Guías recientes</h2>
+        </div>
+      </div>
+      <div class="home-guide-grid">
+        @for (guide of recentGuides; track guide.slug) {
+        <a class="calculator-card home-guide-card" [canonicalLink]="'/guias/' + guide.slug + '/'">
+          <span class="card-title">{{ guide.title }}</span>
+          <span class="card-description">{{ guide.summary }}</span>
+          <span class="card-action">Leer la guía <span aria-hidden="true">→</span></span>
+        </a>
+        }
+      </div>
+    </section>
+
+    <section class="home-method" aria-labelledby="home-method-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">TRANSPARENCIA</p>
+          <h2 id="home-method-title">Cómo trabajamos</h2>
+        </div>
+      </div>
+      <div class="home-method-grid">
+        <div>
+          <h3>Fuentes y supuestos visibles</h3>
+          <p>Indicamos las fuentes oficiales consultadas y explicamos las fórmulas, los supuestos y lo que cada
+            herramienta no contempla.</p>
+        </div>
+        <div>
+          <h3>Revisión de los datos</h3>
+          <p>Las normas y cuantías pueden cambiar. Señalamos la fecha de actualización de cada calculadora y debemos
+            revisar sus referencias cuando se publican cambios oficiales.</p>
+        </div>
+        <div>
+          <h3>Estimaciones, no asesoramiento</h3>
+          <p>Los resultados sirven para explorar escenarios; no sustituyen una nómina, una oferta bancaria, una
+            resolución oficial ni el consejo de un profesional.</p>
+        </div>
+      </div>
+      <p class="home-method-links">
+        <a canonicalLink="/como-se-calcula/">Ver metodología</a>
+        <a canonicalLink="/sobre-nosotros/">Sobre CuentaClara</a>
+      </p>
     </section>
     }
 
@@ -1101,6 +1174,39 @@
     </section>
     }
 
+    @if (calculatorPage(); as page) {
+    <div class="calculator-recommendations">
+      <section class="calculator-related" aria-labelledby="related-calculators-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">SIGUIENTE PASO</p>
+            <h2 id="related-calculators-title">Calculadoras relacionadas</h2>
+          </div>
+        </div>
+        <ul>
+          @for (related of page.related; track related.path) {
+          <li><a [canonicalLink]="related.path">{{ related.label }}</a></li>
+          }
+        </ul>
+      </section>
+      @if (page.relatedGuides?.length) {
+      <section class="calculator-related" aria-labelledby="related-guides-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">LECTURAS ÚTILES</p>
+            <h2 id="related-guides-title">Guías relacionadas</h2>
+          </div>
+        </div>
+        <ul>
+          @for (guide of page.relatedGuides; track guide.path) {
+          <li><a [canonicalLink]="guide.path">{{ guide.label }}</a></li>
+          }
+        </ul>
+      </section>
+      }
+    </div>
+    }
+
     @if (calculatorGuide(); as guide) {
     <section class="calculator-intro calculator-guide" aria-labelledby="guide-title">
       <h2 id="guide-title">Cómo usar esta calculadora</h2>
@@ -1130,10 +1236,12 @@
       <span>CUENTACLARA</span>
       <span>Estimaciones orientativas · España</span>
       <nav aria-label="Información legal">
-        <a routerLink="/como-se-calcula">Cómo se calcula</a>
-        <a routerLink="/aviso-legal">Aviso legal</a>
-        <a routerLink="/politica-de-privacidad">Privacidad</a>
-        <a routerLink="/contacto">Contacto y sugerencias</a>
+        <a canonicalLink="/como-se-calcula/">Cómo se calcula</a>
+        <a canonicalLink="/guias/">Guías</a>
+        <a canonicalLink="/aviso-legal/">Aviso legal</a>
+        <a canonicalLink="/politica-de-privacidad/">Privacidad</a>
+        <a canonicalLink="/sobre-nosotros/">Sobre nosotros</a>
+        <a canonicalLink="/contacto/">Contacto y sugerencias</a>
       </nav>
     </footer>
   </main>

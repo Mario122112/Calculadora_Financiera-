@@ -20,23 +20,24 @@ const BOE_ESTATUTO = 'https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430';
 const BOE_LGSS = 'https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724';
 const BOE_IRPF = 'https://www.boe.es/buscar/act.php?id=BOE-A-2006-20764';
 
+// TODO: verificar las cifras y reglas de referencia de 2026 indicadas en los apartados frente a fuentes oficiales.
 export const methodologyPage: MethodologyPage = {
   eyebrow: 'TRANSPARENCIA',
   title: 'Cómo se calcula',
   introduction:
-    'Aquí explicamos cómo funciona cada calculadora, qué datos de referencia usa y en qué normas se apoya. Todo se calcula en tu navegador. Los datos fiscales y de cotización son de referencia para 2026. Última revisión: octubre de 2026.',
+    'Aquí explicamos cómo funciona cada calculadora, qué datos de referencia usa y en qué normas se apoya. Todo se calcula en tu navegador. Los datos fiscales, de cotización y pensiones son referencias orientativas de 2026, sujetas a revisión y contraste con las publicaciones oficiales antes de tomar decisiones. Última revisión editorial: 20 de noviembre de 2026.',
   sections: [
     {
       heading: 'Criterios generales',
       paragraphs: [
         'Todas las calculadoras ofrecen estimaciones orientativas y simplificadas. No sustituyen al cálculo oficial de la Agencia Tributaria, la Seguridad Social, una entidad financiera o un profesional.',
-        'Los importes se calculan sin redondear y se redondean solo al mostrarlos. Cada calculadora indica en su página qué no incluye. Si encuentras una cifra que no cuadra, escríbenos desde la página de contacto.'
+        'Los importes se calculan sin redondear y se redondean solo al mostrarlos, salvo los préstamos personales, cuyas cuotas y saldos se redondean a céntimos en cada periodo. Cada calculadora indica en su página qué no incluye. Si encuentras una cifra que no cuadra, escríbenos desde la página de contacto.',
       ]
     },
     {
       heading: 'Sueldo neto',
       paragraphs: [
-        'Seguridad Social: la cotización del trabajador se calcula sobre el salario bruto anual con un máximo de 61.214 € de base (5.101,20 € al mes). Se aplican contingencias comunes (4,70 %), desempleo (1,55 % en contrato indefinido y 1,60 % en temporal), formación profesional (0,10 %) y mecanismo de equidad intergeneracional (0,15 %). Si el salario supera la base máxima, se añade una cuota de solidaridad por tramos (0,19 %, 0,21 % y 0,24 %) sobre el exceso.',
+        'Seguridad Social: la cotización del trabajador se calcula sobre el salario bruto anual con un máximo de 61.214,40 € de base (5.101,20 € al mes). Se aplican contingencias comunes (4,70 %), desempleo (1,55 % en contrato indefinido y 1,60 % en temporal), formación profesional (0,10 %) y mecanismo de equidad intergeneracional (0,15 %). Si el salario supera la base máxima, se añade una cuota de solidaridad por tramos (0,19 %, 0,21 % y 0,24 %) sobre el exceso.',
         'Base del IRPF: se parte del salario bruto y se restan la cotización a la Seguridad Social, 2.000 € de otros gastos deducibles, los gastos adicionales por discapacidad si procede y la reducción por rendimientos del trabajo. Esta reducción solo se aplica a salarios bajos y no se aplica si indicas otras rentas no exentas superiores a 6.500 € al año.',
         'Cuota del IRPF: sobre la base se aplica una escala general de seis tramos (19 % hasta 12.450 €, 24 % hasta 20.200 €, 30 % hasta 35.200 €, 37 % hasta 60.000 €, 45 % hasta 300.000 € y 47 % por encima) y se resta la cuota que corresponde al mínimo personal y familiar. Ese mínimo parte de 5.550 € y aumenta por edad (a partir de 65 y de 75 años), por descendientes (con un incremento por menores de 3 años), por discapacidad y por movilidad reducida.',
         'Es una aproximación: el IRPF real depende de tu comunidad autónoma y de otras circunstancias personales, y las retenciones de tu nómina las calcula tu empresa. El neto por paga es el neto anual dividido entre el número de pagas.'
@@ -52,8 +53,8 @@ export const methodologyPage: MethodologyPage = {
       heading: 'Hipoteca',
       paragraphs: [
         'El capital financiado es el precio de la vivienda menos la entrada. El tipo mensual es el TIN anual dividido entre 100 y entre 12.',
-        'Sistema francés: la cuota es constante y se calcula como capital × i / (1 − (1 + i)^−n), donde i es el tipo mensual y n el número de cuotas. Cada mes los intereses son el capital pendiente por el tipo mensual, y el resto de la cuota amortiza capital.',
-        'Sistema español: cada mes se amortiza el mismo capital (capital dividido entre n) y se pagan los intereses sobre el saldo pendiente, por lo que la cuota va bajando.',
+        'El formulario selecciona por defecto el sistema francés. La cuota constante se calcula como capital × i / (1 − (1 + i)^−n), donde i es el tipo mensual y n el número de cuotas. Cada mes los intereses son el capital pendiente multiplicado por el tipo mensual, y el resto de la cuota amortiza capital. Con un tipo del 0 %, el capital se divide entre las cuotas.',
+        'Si se elige el sistema español, cada mes se amortiza el mismo capital (capital dividido entre n) y se pagan intereses sobre el saldo pendiente, por lo que la cuota va bajando.',
         'El gráfico y la tabla por años suman el capital y los intereses de las cuotas de cada año. El cálculo supone un tipo de interés constante: en una hipoteca variable la cuota cambiaría con el Euríbor. No incluye comisiones, seguros, impuestos, tasación ni gastos de compraventa.'
       ],
       links: [{ label: 'Banco de España', url: 'https://www.bde.es' }]
@@ -61,9 +62,10 @@ export const methodologyPage: MethodologyPage = {
     {
       heading: 'Préstamo personal',
       paragraphs: [
-        'Usa las mismas fórmulas que la hipoteca, con sistema francés o español. Cada cuota se redondea al céntimo y la última se ajusta para cancelar exactamente el saldo.',
+        'El formulario selecciona por defecto el sistema francés: la cuota teórica es capital × i / (1 − (1 + i)^−n), con i como TIN mensual y n como número de cuotas. El interés de cada mes se calcula sobre el saldo anterior; la parte restante de la cuota reduce el capital. Las cuotas, intereses, principal amortizado y saldo se redondean a céntimos en cada periodo; la última cuota amortiza el saldo pendiente para dejarlo en cero.',
+        'En el sistema español, cada cuota amortiza el mismo principal —redondeado a céntimos— salvo la última, que cancela el saldo restante. El interés se calcula sobre el saldo anterior, por lo que las cuotas disminuyen.',
         'La comisión de apertura es un porcentaje sobre el importe solicitado y se paga aparte: no se suma al capital ni a la cuota. Los gastos iniciales y el coste mensual adicional, como un seguro, también se muestran por separado y suman al coste total.',
-        'El comparador de tipos recalcula el préstamo con un TIN un punto por debajo y un punto por encima del que indicas. Son escenarios matemáticos, no ofertas. La calculadora trabaja con el TIN y no calcula la TAE.'
+        'El comparador de tipos recalcula el préstamo con un TIN un punto por debajo y un punto por encima del que indicas, limitado al intervalo admitido de 0 % a 100 %. Son escenarios matemáticos, no ofertas. La calculadora trabaja con el TIN y no calcula la TAE.'
       ],
       links: [{ label: 'Banco de España', url: 'https://www.bde.es' }]
     },
@@ -94,7 +96,8 @@ export const methodologyPage: MethodologyPage = {
       paragraphs: [
         'El salario diario es el salario bruto anual dividido entre 365. El salario pendiente son los días trabajados sin cobrar por el salario diario, y las vacaciones no disfrutadas son los días pendientes por el salario diario. Las pagas extra devengadas pendientes se suman con el importe bruto que indicas. El finiquito es la suma de estos conceptos.',
         'La antigüedad se calcula en meses entre la fecha de inicio y la de fin del contrato, y una fracción final de mes cuenta como un mes completo.',
-        'Despido objetivo: 20 días de salario por año de servicio, con un máximo de 12 mensualidades. Despido improcedente: 45 días por año para el tiempo trabajado antes del 12 de febrero de 2012 y 33 días por año desde esa fecha, con topes de 720 días o, en el régimen transitorio, de 1.260 días.',
+        'Despido objetivo: 20 días de salario por año de servicio, con un máximo de 365 días en esta implementación. Despido improcedente: 45 días por año para el tiempo trabajado antes del 12 de febrero de 2012 y 33 días por año desde esa fecha, con topes de 720 días o, si la cuantía generada antes de la fecha de transición supera ese tope, de 1.260 días.',
+        'Fin de contrato temporal: la herramienta aplica 12 días por año de servicio y no identifica los tipos de contrato o supuestos excluidos; verifica el derecho antes de usar esa estimación.',
         'Fallecimiento del trabajador: el contrato se extingue sin indemnización por despido y solo se liquidan las cantidades ya devengadas, que cobran los herederos. Algunos convenios o seguros pueden prever una cuantía aparte, que la calculadora no incluye.',
         'El cálculo supone un salario fijo, no interpreta convenios y no determina si un despido es procedente.'
       ],

@@ -1,5 +1,6 @@
 import type { Calculator } from './calculator-page';
 
+// TODO: verificar las cifras y reglas de 2026 de los ejemplos y preguntas frecuentes frente a fuentes oficiales.
 export interface GuideExample {
     title: string;
     paragraphs: string[];

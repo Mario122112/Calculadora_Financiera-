@@ -17,6 +17,23 @@ import {
 
 describe('App', () => {
   beforeEach(async () => {
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: (media: string): MediaQueryList => ({
+        matches: false,
+        media,
+        onchange: null,
+        addListener: () => undefined,
+        removeListener: () => undefined,
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+        dispatchEvent: () => true
+      })
+    });
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+      configurable: true,
+      value: () => undefined
+    });
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [provideRouter(routes)],
@@ -33,8 +50,8 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Decisiones claras');
-    expect(compiled.querySelectorAll('.calculator-card')).toHaveLength(6);
+    expect(compiled.querySelector('h1')?.textContent).toContain('Calculadoras financieras');
+    expect(compiled.querySelectorAll('.calculator-grid .calculator-card')).toHaveLength(6);
   });
 
   it('should open the salary questionnaire when selected', async () => {
@@ -149,6 +166,13 @@ describe('App', () => {
       await harness.navigateByUrl(page.path, App);
       expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toContain(page.heading);
       expect(harness.routeNativeElement?.querySelector(page.formId)).not.toBeNull();
+
+      const workspace = harness.routeNativeElement?.querySelector('.calculator-workspace');
+      const recommendations = harness.routeNativeElement?.querySelector('.calculator-recommendations');
+      expect(workspace).not.toBeNull();
+      expect(recommendations).not.toBeNull();
+      expect(workspace!.compareDocumentPosition(recommendations!) & Node.DOCUMENT_POSITION_FOLLOWING)
+        .not.toBe(0);
     }
   });
 
@@ -159,37 +183,69 @@ describe('App', () => {
 
     expect(element.querySelector('app-cookie-consent')).toBeNull();
     expect(element.querySelector('.brand')?.getAttribute('href')).toBe('/');
-    expect(element.querySelectorAll('.topbar-nav a')).toHaveLength(6);
-    expect(Array.from(element.querySelectorAll('.calculator-card')).map(link => link.getAttribute('href')))
+    expect(element.querySelectorAll('.topbar-nav a')).toHaveLength(7);
+    expect(Array.from(element.querySelectorAll('.calculator-grid .calculator-card')).map(link => link.getAttribute('href')))
       .toEqual([
-        '/sueldo-neto',
-        '/calculadora-hipoteca',
-        '/calculadora-pension',
-        '/calculadora-interes-compuesto',
-        '/calculadora-finiquito-indemnizacion',
-        '/calculadora-prestamo-personal'
+        '/sueldo-neto/',
+        '/calculadora-hipoteca/',
+        '/calculadora-pension/',
+        '/calculadora-interes-compuesto/',
+        '/calculadora-finiquito-indemnizacion/',
+        '/calculadora-prestamo-personal/'
       ]);
     expect(Array.from(element.querySelectorAll('.page-footer nav a')).map(link => link.getAttribute('href')))
-      .toEqual(['/aviso-legal', '/politica-de-privacidad', '/politica-de-cookies', '/contacto']);
+      .toEqual([
+        '/como-se-calcula/',
+        '/guias/',
+        '/aviso-legal/',
+        '/politica-de-privacidad/',
+        '/sobre-nosotros/',
+        '/contacto/'
+      ]);
+    expect(Array.from(element.querySelectorAll('.home-guides .home-guide-card')).map(link => link.getAttribute('href')))
+      .toEqual(['/guias/salario-bruto-neto/', '/guias/retencion-irpf-nomina-renta/']);
+  });
+
+  it('shows calculator-specific context and hides the home calculator grid on tool pages', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/calculadora-hipoteca', App);
+    const element = harness.routeNativeElement as HTMLElement;
+
+    expect(element.querySelector('.calculator-section')).toBeNull();
+    expect(element.querySelector('.page-breadcrumb')?.textContent).toContain('Inicio');
+    expect(element.querySelector('.page-breadcrumb')?.textContent).toContain('Calculadora de hipoteca');
+    expect(element.querySelector('.calculator-updated')?.textContent).toContain('20 de noviembre de 2026');
+    expect(element.querySelector('.calculator-sources a[href="https://clientebancario.bde.es/pcb/es/"]')).not.toBeNull();
+    expect(element.querySelector('.calculator-intro a[href="/como-se-calcula/"]')).not.toBeNull();
+    expect(element.querySelectorAll('.calculator-related a')).toHaveLength(2);
+  });
+
+  it('links the salary calculator to the two editorial guides', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/sueldo-neto', App);
+    const element = harness.routeNativeElement as HTMLElement;
+
+    expect(Array.from(element.querySelectorAll('[aria-labelledby="related-guides-title"] a'))
+      .map(link => link.getAttribute('href')))
+      .toEqual(['/guias/salario-bruto-neto/', '/guias/retencion-irpf-nomina-renta/']);
   });
 
   it('should keep the salary, mortgage, and pension forms valid with their default values', async () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
-    const calculatorButtons = element.querySelectorAll('.calculator-card') as NodeListOf<HTMLAnchorElement>;
-
-    calculatorButtons[0].click();
+    const salaryLink = element.querySelector('.calculator-card') as HTMLAnchorElement;
+    salaryLink.click();
     await fixture.whenStable();
     fixture.detectChanges();
     expect((element.querySelector('.salary-form') as HTMLFormElement).checkValidity()).toBe(true);
 
-    calculatorButtons[1].click();
+    (element.querySelector('.topbar-nav a[href="/calculadora-hipoteca/"]') as HTMLAnchorElement).click();
     await fixture.whenStable();
     fixture.detectChanges();
     expect((element.querySelector('.salary-form') as HTMLFormElement).checkValidity()).toBe(true);
 
-    calculatorButtons[2].click();
+    (element.querySelector('.topbar-nav a[href="/calculadora-pension/"]') as HTMLAnchorElement).click();
     await fixture.whenStable();
     fixture.detectChanges();
     expect((element.querySelector('.salary-form') as HTMLFormElement).checkValidity()).toBe(true);
@@ -199,19 +255,19 @@ describe('App', () => {
     expect(pensionRegimeNote?.querySelector('summary')?.textContent).toContain('¿Eres funcionario/a?');
     expect((pensionRegimeNote as HTMLDetailsElement).open).toBe(false);
 
-    calculatorButtons[3].click();
+    (element.querySelector('.topbar-nav a[href="/calculadora-interes-compuesto/"]') as HTMLAnchorElement).click();
     await fixture.whenStable();
     fixture.detectChanges();
     expect((element.querySelector('.salary-form') as HTMLFormElement).checkValidity()).toBe(true);
     expect(element.querySelector('#compound-interest-title')).not.toBeNull();
 
-    calculatorButtons[4].click();
+    (element.querySelector('.topbar-nav a[href="/calculadora-finiquito-indemnizacion/"]') as HTMLAnchorElement).click();
     await fixture.whenStable();
     fixture.detectChanges();
     expect((element.querySelector('.salary-form') as HTMLFormElement).checkValidity()).toBe(true);
     expect(element.querySelector('#severance-title')).not.toBeNull();
 
-    calculatorButtons[5].click();
+    (element.querySelector('.topbar-nav a[href="/calculadora-prestamo-personal/"]') as HTMLAnchorElement).click();
     await fixture.whenStable();
     fixture.detectChanges();
     expect((element.querySelector('.salary-form') as HTMLFormElement).checkValidity()).toBe(true);
@@ -402,7 +458,8 @@ describe('App', () => {
     const result = calculateMortgage({
       principal: 100000,
       annualInterestRate: 12,
-      termYears: 1
+      termYears: 1,
+      amortizationSystem: 'spanish'
     });
 
     expect(result.paymentCount).toBe(12);
@@ -419,7 +476,8 @@ describe('App', () => {
       termMonths: 12,
       openingFeePercent: 1,
       upfrontExpenses: 50,
-      monthlyAdditionalCost: 2
+      monthlyAdditionalCost: 2,
+      amortizationSystem: 'spanish'
     });
 
     expect(result.firstMonthlyPayment).toBe(933.33);
@@ -441,7 +499,8 @@ describe('App', () => {
       termMonths: 12,
       openingFeePercent: 0,
       upfrontExpenses: 0,
-      monthlyAdditionalCost: 0
+      monthlyAdditionalCost: 0,
+      amortizationSystem: 'spanish'
     });
 
     expect(result.firstMonthlyPayment).toBe(100);
@@ -552,7 +611,8 @@ describe('App', () => {
       termMonths: 37,
       openingFeePercent: 0,
       upfrontExpenses: 0,
-      monthlyAdditionalCost: 0
+      monthlyAdditionalCost: 0,
+      amortizationSystem: 'spanish'
     });
 
     expect(result.amortizationSchedule).toHaveLength(37);
@@ -914,10 +974,10 @@ describe('App', () => {
     fixture.detectChanges();
 
     const result = element.querySelector('.result-lead > strong')?.textContent?.replace(/\u00a0/g, ' ');
-    expect(result).toContain('1152 € / mes');
+    expect(result).toContain('931 € / mes');
     const resultSummary = element.querySelector('.result-lead')?.textContent?.replace(/\u00a0/g, ' ');
-    expect(resultSummary).toContain('La última cuota será de 642 €');
-    expect(element.querySelector('.form-footer')?.textContent).toContain('Sistema español');
+    expect(resultSummary).toContain('financias 192.000 € durante 25 años');
+    expect(element.querySelector('.form-footer')?.textContent).toContain('Sistema francés');
   });
 
   it('should subtract the mortgage down payment entered in euros from the property price', async () => {
@@ -978,8 +1038,8 @@ describe('App', () => {
     fixture.detectChanges();
 
     expect(element.querySelector('.result-lead > strong')?.textContent?.replace(/\u00a0/g, ' '))
-      .toMatch(/237,\d{2} € \/ mes/);
-    expect(element.querySelector('.result-lead')?.textContent).toContain('PRIMERA CUOTA');
+      .toContain('205,17 € / mes');
+    expect(element.querySelector('.result-lead')?.textContent).toContain('CUOTA MENSUAL ESTIMADA');
     expect(element.querySelectorAll('.loan-scenarios tbody tr')).toHaveLength(3);
     expect(element.querySelector('.loan-amortization summary')?.textContent).toContain('60 periodos');
     expect(element.querySelectorAll('.loan-amortization tbody tr')).toHaveLength(60);
