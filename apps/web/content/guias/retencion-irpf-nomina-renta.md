@@ -17,68 +17,93 @@ faqs:
   - question: "¿Puede salir a pagar aunque haya tenido retenciones todos los meses?"
     answer: "Sí. La retención es un anticipo, no una liquidación definitiva. Si el total ingresado a cuenta es inferior al resultado anual que corresponda, la declaración puede arrojar una diferencia a ingresar."
   - question: "¿Una calculadora de sueldo neto calcula mi retención mensual?"
-    answer: "No en este caso: CuentaClara estima una cuota anual simplificada para obtener un neto orientativo. No reproduce el procedimiento de retenciones de la AEAT ni conoce todos los datos de tu nómina y situación fiscal."
+    answer: "No. CuentaClara estima una cuota anual simplificada para obtener un neto orientativo; no reproduce el procedimiento de retenciones de la AEAT ni todos los datos de tu nómina."
+  - question: "¿Cuándo estoy obligado a presentar la declaración de la renta?"
+    answer: "Depende del ejercicio, del tipo y la cuantía de tus rentas y de circunstancias como tener varios pagadores o haber trabajado como autónomo. Consulta los límites oficiales de la campaña correspondiente y el apartado de esta guía."
 sources:
   - label: "Agencia Tributaria: retenciones"
     url: "https://sede.agenciatributaria.gob.es/Sede/Retenciones.shtml"
+  - label: "Agencia Tributaria: obligación de declarar (Renta 2025)"
+    url: "https://sede.agenciatributaria.gob.es/Sede/Ayuda/25Presentacion/100/2.html"
+  - label: "Agencia Tributaria: modelo 145"
+    url: "https://sede.agenciatributaria.gob.es/Sede/procedimientos/G603.shtml"
   - label: "Ley del IRPF, artículo 99 (pagos a cuenta) (BOE)"
     url: "https://www.boe.es/buscar/act.php?id=BOE-A-2006-20764#a99"
+  - label: "Ley del IRPF, artículo 96 (obligación de declarar) (BOE)"
+    url: "https://www.boe.es/buscar/act.php?id=BOE-A-2006-20764#a96"
   - label: "Reglamento del IRPF: procedimiento general de retención (BOE)"
     url: "https://www.boe.es/buscar/act.php?id=BOE-A-2007-6820#a80"
 ---
 
-La retención de IRPF que aparece en la nómina suele confundirse con «el impuesto que pago». En realidad, son momentos distintos de un mismo proceso. Durante el año, la empresa descuenta e ingresa cantidades a cuenta. Después, la declaración anual determina el resultado que corresponde según las rentas, circunstancias y reglas del ejercicio completo.
+La retención de IRPF de la nómina es un pago a cuenta, no el impuesto anual definitivo. La empresa descuenta e ingresa anticipos durante el ejercicio; después, la declaración reúne las rentas y circunstancias que correspondan y calcula si queda una diferencia por pagar o devolver.
 
-La diferencia explica por qué puede salir a devolver o a ingresar incluso si la nómina tuvo retenciones todos los meses. Para verlo con claridad, sigamos tres momentos: el cálculo de cada anticipo, el cierre del ejercicio y la liquidación anual.
+> **Alcance:** la calculadora de CuentaClara estima una cuota anual simplificada para orientar sobre el sueldo neto. No calcula la retención que debe aplicar una empresa ni el resultado de tu declaración.
 
-## Primer momento: la empresa calcula pagos a cuenta
+## De la nómina a la declaración: un recorrido
 
-La empresa que paga rendimientos del trabajo puede estar obligada a practicar retención e ingresarla a la Administración tributaria. La Ley del IRPF trata las retenciones como pagos a cuenta del impuesto, no como una declaración completa de la persona trabajadora. El procedimiento reglamentario determina cómo se calcula el porcentaje aplicable a cada pago.
+La empresa calcula la retención de cada pago de acuerdo con el procedimiento reglamentario y los datos disponibles sobre la retribución prevista y las circunstancias comunicadas por la persona trabajadora. No basta con aplicar un porcentaje fijo al sueldo mensual: si cambia el salario previsto, el tiempo de trabajo o la información personal relevante, el cálculo puede revisarse. La retención que aparece en la nómina se ingresa a la Administración como pago a cuenta del IRPF.
 
-El cálculo de nómina utiliza información sobre remuneración prevista y circunstancias personales que se comunican al pagador. No equivale simplemente a tomar la escala del IRPF y aplicarla al sueldo de ese mes. Influyen, entre otros elementos, la remuneración anual prevista, la duración de la relación laboral, los datos personales relevantes y las reglas de cálculo del ejercicio.
+Al cerrar el ejercicio, cada pagador comunica cuánto abonó y retuvo. La suma puede diferir de la previsión inicial: quizá hubo dos empleos sucesivos, un bonus o meses sin trabajar. En la declaración se analizan conjuntamente las rentas del año y las circunstancias del contribuyente, en lugar de mirar cada nómina por separado. Por eso el porcentaje retenido sobre el salario no tiene por qué coincidir con el tipo efectivo anual.
 
-Una retención es un anticipo. Si una persona recibe 2.000 euros brutos en un pago y su nómina descuenta 300 euros como retención, esos 300 euros se ingresan como pago a cuenta. La operación no declara que su impuesto anual definitivo vaya a ser exactamente 300 euros, ni que cada paga siguiente deba repetir necesariamente esa cantidad.
+Si trabajaste para dos empresas, no compares únicamente el porcentaje que aparece en la última nómina con el resultado de la declaración. Reúne las nóminas y los certificados de retenciones de ambos pagadores; cada documento cubre solo lo que pagó esa empresa. Los datos fiscales de la AEAT permiten revisar ingresos y anticipos comunicados antes de confirmar el borrador.
 
-La retención puede revisarse si cambia lo que se prevé pagar o si se actualizan circunstancias comunicadas. Por eso, al cambiar de empleo, cobrar una parte variable o atravesar una modificación personal, conviene comprobar que los datos usados por el pagador siguen siendo correctos. La guía no reemplaza el procedimiento oficial: la AEAT publica para cada ejercicio el servicio y la documentación aplicables.
+La declaración determina la cuota que corresponde según las reglas del ejercicio y después descuenta los pagos a cuenta, incluidas las retenciones soportadas. De forma simplificada:
 
-## Segundo momento: se cierra el ejercicio
+> **Resultado de la declaración = cuota anual − pagos a cuenta**
 
-Al terminar el año, el importe realmente cobrado puede no coincidir con la previsión usada para calcular las retenciones. Puede haber cambios de salario, periodos sin empleo, pagos variables, varios pagadores o ingresos de otras clases. Cada pagador ha ingresado anticipos según la información de la que disponía, pero el impuesto anual considera el conjunto que deba declararse.
+Si las retenciones y otros pagos a cuenta superan la cuota, puede resultar una devolución. Si no llegan a cubrirla, puede salir una cantidad a ingresar. Una devolución no demuestra por sí sola que la empresa se equivocara, y haber tenido retenciones todos los meses tampoco garantiza que el resultado sea a devolver. La operación explica la diferencia final, pero el importe concreto depende de los datos y reglas de la declaración.
 
-La diferencia esencial es el ámbito. La nómina mira un pago y una relación con el pagador; la declaración reúne las rentas y circunstancias del contribuyente durante el ejercicio. La cuota anual puede incluir componentes estatales y autonómicos y tener en cuenta elementos que no aparecen en la nómina. Por ello, un porcentaje retenido sobre el sueldo no representa necesariamente el tipo efectivo final.
+## Por qué te puede salir a pagar
 
-Imagina que una persona tiene dos empleos sucesivos. Cada empresa puede calcular sus pagos a cuenta a partir de la retribución que prevé pagar ella misma. Al sumar el año, los ingresos y los anticipos de ambos periodos se consideran conjuntamente en la declaración que corresponda. Ninguna nómina aislada contiene por sí sola el resultado total.
+- **Dos pagadores o cambio de empresa.** Cada empresa puede calcular la retención considerando solo lo que prevé pagarte; al sumar los empleos, las retenciones conjuntas pueden quedar por debajo de la cuota anual. *Ejemplo: trabajas para una empresa hasta junio y empiezas en otra en julio.*
+- **Otras rentas.** Ingresos distintos del sueldo pueden aumentar la cuota y no siempre llevan retención suficiente. *Ejemplo: además de la nómina, cobras un alquiler durante parte del año.*
+- **Variable no prevista.** Un pago variable puede elevar el total anual por encima de la previsión usada para calcular los anticipos. *Ejemplo: recibes un bonus que no estaba incluido en el salario previsto al inicio del año.*
+- **Datos personales desactualizados.** Si comunicaste una circunstancia que reducía la retención y ya no se cumple, el anticipo puede ser inferior al correspondiente a tus datos actuales. *Ejemplo: la empresa sigue aplicando datos familiares que han cambiado.*
+- **Retención voluntariamente baja.** Si pediste que te aplicaran un porcentaje inferior al cálculo ordinario, quizá hayas ingresado menos a cuenta durante el año. *Ejemplo: solicitaste reducir voluntariamente la retención que te propuso la empresa.*
 
-## Tercer momento: la declaración compara cuota y anticipos
+## Por qué te puede salir a devolver
 
-La declaración anual calcula el resultado de acuerdo con las reglas aplicables a las rentas y circunstancias de ese ejercicio. Después se tienen en cuenta, entre otros conceptos, los pagos a cuenta ya soportados. De manera simplificada:
+- **Retención superior a la cuota final.** Si la empresa retuvo más de lo que resulta al calcular el ejercicio completo, la diferencia puede salir a devolver. *Ejemplo: tus ingresos finales fueron inferiores a los previstos cuando se fijó el porcentaje.*
+- **Cambio familiar durante el año.** Una circunstancia familiar puede modificar el resultado y quizá no se reflejó desde el primer pago. *Ejemplo: comunicas un nacimiento a mitad de año y revisas su efecto al presentar la declaración.*
+- **Deducciones autonómicas.** Una deducción aplicable en tu comunidad puede reducir la cuota aunque no aparezca en la nómina. *Ejemplo: cumples los requisitos de una deducción autonómica que no se aplica mediante la retención mensual.*
+- **Aportaciones a sistemas de previsión.** Una aportación con derecho a reducción puede cambiar la base liquidable; revisa las condiciones y límites vigentes. *Ejemplo: haces aportaciones individuales a un plan de pensiones que la empresa no conoce.*
+- **Ingresos inferiores a los previstos.** Si trabajaste menos meses o cobraste menos variable, las retenciones pueden superar la cuota final. *Ejemplo: el contrato termina antes de acabar el año y no tienes otro empleo.*
 
-> **Resultado de la declaración = cuota anual que corresponde − pagos a cuenta realizados**
+## Ejemplo con dos pagadores
 
-Si los pagos a cuenta superan la cuota anual, puede quedar una cantidad a devolver. Si son inferiores, puede resultar una cantidad a ingresar. Esta resta explica el signo del resultado, pero no sustituye las casillas ni las reglas de la declaración real.
+Si cambias de empresa a mitad de año, revisa por separado los certificados de retenciones de ambas. La declaración suma los ingresos y pagos a cuenta de los dos pagadores; no basta con mirar el último porcentaje de la nómina. El ejemplo numérico se completará con los resultados contrastados del simulador oficial de la AEAT.
 
-Una devolución no es una bonificación automática ni una prueba de que una empresa haya cometido un error. Puede indicar que durante el año se anticipó más de lo que resultó al cerrar el cálculo, pero también influyen otros elementos declarados. Del mismo modo, tener retenciones en todas las nóminas no garantiza una devolución: el total ingresado puede quedar por debajo de la cuota anual.
+<!-- DRAFT-ONLY: completar con el simulador oficial de la AEAT y retirar este comentario antes de publicar.
+Ejemplo de dos pagadores:
+- Ejercicio y comunidad autónoma: PENDIENTE
+- Rendimientos y retenciones del pagador 1: PENDIENTE
+- Rendimientos y retenciones del pagador 2: PENDIENTE
+- Circunstancias personales y familiares introducidas: PENDIENTE
+- Resultado del simulador AEAT y enlace/captura de referencia: PENDIENTE
+-->
 
-## Un ejemplo numérico sin convertirlo en una regla fiscal
+## Qué puedes hacer durante el año
 
-Tomemos ahora un caso distinto: 36.000 euros brutos al año en doce pagas, 35 años, contrato indefinido, sin descendientes ni discapacidad y sin otras rentas no exentas por encima del umbral del formulario. Con esos datos, el modelo actual de CuentaClara estima 2.340 euros de cotización, 6.609 euros de IRPF y 27.051 euros netos al año, es decir, un promedio de 2.254,25 euros al mes.
+1. **Comunica tus circunstancias.** Entrega a tu empresa el [modelo 145 de la AEAT](https://sede.agenciatributaria.gob.es/Sede/procedimientos/G603.shtml) si procede y actualízalo cuando cambien los datos. Se entrega al pagador, no se presenta en la Agencia Tributaria.
+2. **Pide una retención mayor si lo necesitas.** Si prevés un bonus, un cambio de empresa u otros ingresos, puedes solicitar por escrito un tipo superior para reducir la posibilidad de que los anticipos se queden cortos.
+3. **Guarda documentos.** Conserva las nóminas y el certificado anual de retenciones de cada pagador. Comprueba en los datos fiscales que figuren todos los ingresos y pagos a cuenta.
 
-Los 6.609 euros de IRPF son la salida de una aproximación simplificada, no el resultado de una declaración oficial ni el cálculo de la retención de una nómina concreta. La herramienta resta una estimación anual al salario para ilustrar el neto; no calcula cuánto debe retener el empleador en cada una de las doce nóminas.
+## ¿Estás obligado a declarar?
 
-Para entender la diferencia aritmética, supongamos solo a efectos didácticos que a lo largo del año se ingresan 6.000 euros a cuenta. Si la cuota anual real fuese 6.609 euros, la resta simplificada daría 609 euros por ingresar. Si se hubieran anticipado 7.000 euros y esa misma cuota anual correspondiese, la diferencia sería de 391 euros a devolver. Los importes son hipótesis para explicar el mecanismo, no tipos legales ni una previsión de tu declaración.
+Los límites dependen del ejercicio y del tipo de renta. Para la **declaración de Renta 2025, presentada en 2026**, la AEAT indica estos límites principales para rendimientos del trabajo:
 
-En un caso real no se debe reemplazar la cuota por la salida de esta calculadora ni tratar una devolución como ahorro ganado. La declaración puede considerar más rentas, deducciones, pagos a cuenta y datos personales. El ejemplo muestra únicamente por qué el anticipo y el resultado final no tienen que coincidir.
+- **22.000 € anuales**, como regla general si hay un solo pagador. Se mantiene el límite si hay varios pagadores cuando lo cobrado del segundo y restantes, ordenados por cuantía, no supera en conjunto **1.500 €**.
+- **15.876 € anuales** en ciertos supuestos, entre ellos varios pagadores cuando se supera el límite anterior, pensiones compensatorias, anualidades por alimentos no exentas o pagadores no obligados a retener.
+- Si se obtienen exclusivamente las rentas indicadas por la AEAT, existen límites separados: **1.600 €** conjuntos para determinados rendimientos del capital mobiliario y ganancias sometidos a retención; **1.000 €** conjuntos para ciertas rentas imputadas y ayudas. También hay una regla de rentas totales de hasta **1.000 €** y pérdidas patrimoniales inferiores a **500 €** para los casos previstos por la AEAT.
 
-## Cómo comprobar una discrepancia de forma ordenada
+Hay excepciones importantes: las personas titulares del ingreso mínimo vital y quienes integran su unidad de convivencia deben declarar; también quienes hayan estado de alta como autónomos durante el ejercicio. Además, ejercitar determinados derechos a reducción o deducción —por ejemplo, aportaciones a sistemas de previsión social— puede implicar obligación. Estos límites no cubren todos los casos: consulta la página de [obligación de declarar de la AEAT](https://sede.agenciatributaria.gob.es/Sede/Ayuda/25Presentacion/100/2.html) y el [artículo 96 de la Ley del IRPF](https://www.boe.es/buscar/act.php?id=BOE-A-2006-20764#a96) para el ejercicio aplicable. Tener una declaración a devolver no elimina por sí solo la obligación de presentarla.
 
-Si el neto de una nómina no coincide con lo que esperabas, empieza por comparar conceptos equivalentes. Revisa el bruto devengado, las cotizaciones, la retención de IRPF y las deducciones adicionales. Después contrasta las pagas extra, los días trabajados y los conceptos variables con el contrato y el calendario.
+## Qué aporta una calculadora de sueldo neto
 
-Si cambia el porcentaje de retención, pregunta qué previsión o dato ha cambiado. Guarda las nóminas y el certificado de retenciones anual. Este certificado reúne información útil para preparar la declaración y comparar los pagos a cuenta; no sustituye la revisión del borrador ni confirma por sí solo que todas las rentas estén incluidas.
+La [calculadora de sueldo neto](/sueldo-neto/) estima el neto anual a partir de datos limitados; no predice la retención de cada nómina. En un ejemplo con 30.000 € brutos, su resultado orientativo no sustituye los certificados de dos empleadores ni incorpora automáticamente alquileres, deducciones autonómicas o todas las circunstancias familiares. La [metodología de CuentaClara](/como-se-calcula/) detalla sus supuestos. Para comparar bruto y neto, consulta también la guía de [diferencia entre salario bruto y neto](/guias/salario-bruto-neto/).
 
-En la declaración, comprueba los datos fiscales, los pagadores y los pagos a cuenta antes de confirmar. Si falta un pagador, un ingreso o una circunstancia personal, la cifra sugerida puede necesitar revisión. La obligación de presentar declaración y el resultado son cuestiones distintas: un resultado a devolver no determina por sí mismo si había obligación de presentarla.
+## Sobre el autor y revisión
 
-## Qué muestra y qué no muestra CuentaClara
+> **CuentaClara** es un proyecto de **Mario Galindo**, que vive en **Murcia, España**. Para proponer una corrección o hacer una consulta, escribe a **cuentaclaracalc@gmail.com**.
 
-La [calculadora de sueldo neto](/sueldo-neto/) estima el neto anual a partir de un conjunto limitado de datos. Para hacerlo, calcula componentes aproximados de cotización e IRPF y distribuye el resultado en el número de pagas indicado. No ejecuta el algoritmo de retenciones de la AEAT ni predice cada línea de una nómina.
-
-La [metodología de cálculo](/como-se-calcula/) detalla las fórmulas y límites de ese modelo. Para una retención de nómina o una liquidación anual, utiliza los servicios de la Agencia Tributaria y las normas oficiales del ejercicio correspondiente. Si hay varios pagadores, ingresos adicionales o una situación fiscal no estándar, una estimación de salario neto no puede resolver el caso completo.
+**Datos revisados: 20 de noviembre de 2026.**

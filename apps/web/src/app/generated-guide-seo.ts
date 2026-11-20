@@ -52,7 +52,11 @@ export const GUIDE_SEO_DATA: readonly GuideSeoData[] = [
       },
       {
         "question": "¿Una calculadora de sueldo neto calcula mi retención mensual?",
-        "answer": "No en este caso: CuentaClara estima una cuota anual simplificada para obtener un neto orientativo. No reproduce el procedimiento de retenciones de la AEAT ni conoce todos los datos de tu nómina y situación fiscal."
+        "answer": "No. CuentaClara estima una cuota anual simplificada para obtener un neto orientativo; no reproduce el procedimiento de retenciones de la AEAT ni todos los datos de tu nómina."
+      },
+      {
+        "question": "¿Cuándo estoy obligado a presentar la declaración de la renta?",
+        "answer": "Depende del ejercicio, del tipo y la cuantía de tus rentas y de circunstancias como tener varios pagadores o haber trabajado como autónomo. Consulta los límites oficiales de la campaña correspondiente y el apartado de esta guía."
       }
     ]
   }

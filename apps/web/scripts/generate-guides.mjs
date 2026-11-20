@@ -118,6 +118,10 @@ async function main() {
     const source = await readFile(filePath, 'utf8');
     const { data, content } = matter(source);
     const slug = basename(filename, '.md');
+    const visibleContent = content.replace(/<!--[\s\S]*?-->/g, '');
+    if (visibleContent.includes('<!--')) {
+      throw new Error(`${filename}: hay un comentario Markdown interno sin cerrar.`);
+    }
 
     for (const field of ['slug', 'title', 'summary', 'author', 'publishedAt', 'updatedAt']) {
       assertString(data[field], field, filename);
@@ -137,10 +141,10 @@ async function main() {
     if (data.order !== undefined && (!Number.isInteger(data.order) || data.order < 0)) {
       throw new Error(`${filename}: "order" debe ser un entero no negativo.`);
     }
-    if (/<\/?[a-z][^>]*>/i.test(content)) {
+    if (/<\/?[a-z][^>]*>/i.test(visibleContent)) {
       throw new Error(`${filename}: no se permite HTML en el cuerpo Markdown.`);
     }
-    const markdownLinks = [...content.matchAll(/\]\(([^)]+)\)/g)].map(([, url]) => url);
+    const markdownLinks = [...visibleContent.matchAll(/\]\(([^)]+)\)/g)].map(([, url]) => url);
     if (markdownLinks.some(url =>
       (!url.startsWith('/') && !url.startsWith('https://')) ||
       (url.startsWith('/') && url !== '/' && !url.endsWith('/'))
@@ -148,21 +152,21 @@ async function main() {
       throw new Error(`${filename}: los enlaces internos Markdown deben tener barra final.`);
     }
 
-    const words = wordCount(content, data.faqs);
+    const words = wordCount(visibleContent, data.faqs);
     if (words < 1200 || words > 1500) {
       throw new Error(`${filename}: el artículo tiene ${words} palabras; el rango es 1.200-1.500.`);
     }
 
-    const headingMatches = [...content.matchAll(/^##\s+(.+)$/gm)];
-    const leadMarkdown = content.slice(0, headingMatches[0]?.index ?? content.length).trim();
+    const headingMatches = [...visibleContent.matchAll(/^##\s+(.+)$/gm)];
+    const leadMarkdown = visibleContent.slice(0, headingMatches[0]?.index ?? visibleContent.length).trim();
     const sections = await Promise.all(headingMatches.map(async (heading, index) => {
       const start = heading.index + heading[0].length;
-      const end = headingMatches[index + 1]?.index ?? content.length;
+      const end = headingMatches[index + 1]?.index ?? visibleContent.length;
       const title = heading[1].trim();
       return {
         id: createSlug(title),
         title,
-        html: await marked.parse(content.slice(start, end).trim())
+        html: await marked.parse(visibleContent.slice(start, end).trim())
       };
     }));
 
