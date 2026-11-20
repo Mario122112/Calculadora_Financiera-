@@ -33,6 +33,9 @@ main {
 	animation: rise-in 500ms ease-out both;
 }
 
+.intro:not(.home-intro) { padding-bottom: 28px; }
+.intro:not(.home-intro) + .calculator-intro { margin-top: 14px; }
+
 .eyebrow {
 	margin: 0 0 16px;
 	color: var(--green);
@@ -439,6 +442,8 @@ main {
 @media (max-width: 520px) {
 	main { width: calc(100% - 36px); }
 	.intro { padding: 46px 0 42px; }
+	.intro:not(.home-intro) { padding-bottom: 22px; }
+	.intro:not(.home-intro) + .calculator-intro { margin-top: 12px; }
 	.page-title { font-size: 39px; }
 	.intro-copy { font-size: 13px; }
 	.section-heading h2 { font-size: 24px; }

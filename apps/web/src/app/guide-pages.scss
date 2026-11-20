@@ -7,13 +7,20 @@
   color: var(--guide-ink);
 }
 
-.guide-shell { min-height: 100vh; display: flex; flex-direction: column; }
+.guide-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f7f9f5;
+  background-image: radial-gradient(#cbd8cc 0.7px, transparent 0.7px);
+  background-size: 24px 24px;
+}
 .guide-footer nav { display: flex; flex-wrap: wrap; gap: 12px 18px; }
 .guide-brand { color: inherit; font-size: 18px; font-weight: 700; text-decoration: none; white-space: nowrap; }
 .guide-page { flex: 1; }
 
 .guide-page {
-  width: min(900px, calc(100% - 48px));
+  width: min(1120px, calc(100% - 48px));
   margin: 0 auto;
   padding-bottom: 48px;
 }
@@ -34,6 +41,18 @@
 .guide-index,
 .guide-not-found { padding: 62px 0 32px; }
 
+.guide-header,
+.guide-index,
+.guide-not-found { animation: rise-in 500ms ease-out both; }
+
+.guide-article > .guide-toc,
+.guide-article > .guide-body,
+.guide-article > .guide-faq,
+.guide-article > .guide-links,
+.guide-article > .guide-sources {
+  animation: rise-in 500ms 80ms ease-out both;
+}
+
 .guide-eyebrow {
   margin: 0 0 12px;
   color: var(--guide-green);
@@ -48,9 +67,9 @@
   max-width: 780px;
   margin: 0;
   font-family: 'DM Serif Display', Georgia, serif;
-  font-size: clamp(36px, 5vw, 52px);
+  font-size: clamp(38px, 5vw, 58px);
   font-weight: 400;
-  line-height: 1.12;
+  line-height: 1.07;
 }
 
 .guide-summary {
@@ -71,6 +90,12 @@
 .guide-byline div { display: grid; gap: 4px; }
 .guide-byline dt { color: var(--guide-muted); font-size: 11px; }
 .guide-byline dd { margin: 0; font-size: 12px; font-weight: 700; }
+
+.guide-body,
+.guide-toc,
+.guide-faq,
+.guide-links,
+.guide-sources { max-width: 900px; }
 
 .guide-toc,
 .guide-faq,
@@ -145,7 +170,7 @@
 .guide-footer nav a { color: var(--guide-green); font-size: 11px; }
 
 @media (max-width: 640px) {
-  .guide-page { width: min(100% - 32px, 900px); }
+  .guide-page { width: calc(100% - 36px); }
   .guide-footer { align-items: flex-start; flex-direction: column; }
   .guide-footer { padding-inline: 16px; }
   .guide-header,

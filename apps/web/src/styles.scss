@@ -64,10 +64,13 @@ button, input, select { font: inherit; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.app-shell *, .app-shell *::before, .app-shell *::after {
+	.app-shell *, .guide-shell *,
+	.app-shell *::before, .app-shell *::after,
+	.guide-shell *::before, .guide-shell *::after {
 		animation-duration: 0.01ms !important;
 		transition-duration: 0.01ms !important;
 	}
+	.guide-shell * { animation-delay: 0ms !important; }
 }
 
 .check-control {
