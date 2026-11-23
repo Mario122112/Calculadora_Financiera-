@@ -17,6 +17,438 @@ export interface GuideArticle {
 
 export const GUIDE_ARTICLES: readonly GuideArticle[] = [
   {
+    "slug": "hipoteca-sistema-frances-amortizacion-constante",
+    "title": "Hipoteca: sistema francés o amortización constante, cuánto cambia la cuota y el coste",
+    "summary": "Compara cuota inicial, pago medio, intereses y capital pendiente en dos sistemas con el mismo préstamo.",
+    "author": "Mario Galindo",
+    "publishedAt": "23 de noviembre de 2026",
+    "updatedAt": "23 de noviembre de 2026",
+    "publishedAtIso": "2026-11-23",
+    "updatedAtIso": "2026-11-23",
+    "leadHtml": "<p>Para una hipoteca de <strong>200.000 € a 25 años y un TIN del 3,5 %</strong>, la primera cuota es <strong>1.001,25 €</strong> con el sistema francés y <strong>1.250,00 €</strong> con el español de capital constante: este último empieza <strong>248,75 € por encima</strong>. La cuota española pasa a ser menor en el <strong>mes 129</strong> —<strong>1.001,11 €</strong>, frente a <strong>1.001,25 €</strong>— y el motor estima <strong>12.582,48 € menos de intereses</strong> al final.</p>\n<p>El ejemplo compara cómo se distribuyen los pagos y cuánto interés suma cada calendario: <strong>100.374,14 €</strong> con el francés y <strong>87.791,67 €</strong> con el español de capital constante. Son resultados de un escenario matemático, no describen todas las ofertas hipotecarias ni recomiendan un sistema.</p>\n<blockquote>\n<p><strong>Estimación orientativa:</strong> es un resultado teórico, no una oferta hipotecaria ni asesoramiento financiero.</p>\n</blockquote>\n",
+    "sections": [
+      {
+        "id": "mismo-capital-mismo-interes-y-mismo-plazo",
+        "title": "Mismo capital, mismo interés y mismo plazo",
+        "html": "<p>Para reproducir el caso en la <a href=\"/calculadora-hipoteca/\">calculadora de hipoteca</a>, introduce un precio de vivienda de <strong>200.000 €</strong>, una aportación inicial de <strong>0 €</strong>, TIN anual de <strong>3,5 %</strong> y plazo de <strong>25 años</strong>. Ejecuta el cálculo una vez con «Francés» y otra con «Español». El capital financiado es 200.000 € y hay <strong>300 cuotas mensuales</strong> en ambos escenarios. El motor supone un tipo fijo y constante, sin comisiones, seguros ni amortizaciones anticipadas; una hipoteca variable cambia las cuotas cuando cambia el tipo.</p>\n<p>La tabla usa las salidas del motor para primera y última cuota, intereses y total pagado. La cuota media se obtiene del total pagado dividido entre las 300 cuotas; no se redondean los pagos en los cálculos internos, solo en su presentación.</p>\n<table>\n<thead>\n<tr>\n<th>Sistema de amortización</th>\n<th align=\"right\">Primera cuota</th>\n<th align=\"right\">Última cuota</th>\n<th align=\"right\">Cuota media</th>\n<th align=\"right\">Intereses totales</th>\n<th align=\"right\">Coste total (capital + intereses)</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Francés: cuota constante</td>\n<td align=\"right\">1.001,25 €</td>\n<td align=\"right\">1.001,25 €</td>\n<td align=\"right\">1.001,25 €</td>\n<td align=\"right\">100.374,14 €</td>\n<td align=\"right\">300.374,14 €</td>\n</tr>\n<tr>\n<td>Español: capital constante</td>\n<td align=\"right\">1.250,00 €</td>\n<td align=\"right\">668,61 €</td>\n<td align=\"right\">959,31 €</td>\n<td align=\"right\">87.791,67 €</td>\n<td align=\"right\">287.791,67 €</td>\n</tr>\n</tbody></table>\n<p>En esta guía y en el selector de CuentaClara, «Francés» significa <strong>cuota constante</strong> y «Español» significa <strong>amortización de capital constante</strong>. El Banco de España también emplea «amortización constante» al explicar la cuota del sistema francés; aquí se distingue entre mantener constante la cuota y mantener constante el capital amortizado.</p>\n"
+      },
+      {
+        "id": "que-cambia-dentro-de-cada-cuota",
+        "title": "Qué cambia dentro de cada cuota",
+        "html": "<p>En el <strong>sistema francés</strong>, cada pago contiene intereses sobre el capital pendiente y devolución de capital. En el primer mes de este ejemplo, los intereses son <strong>583,33 €</strong> en ambos sistemas. Como la cuota francesa es menor, ese mes amortiza <strong>417,91 €</strong> de capital, frente a los <strong>666,67 €</strong> del sistema español. Después, al reducirse el saldo, baja la parte destinada a intereses y aumenta la parte de capital dentro de la cuota fija. El Banco de España describe este comportamiento en su explicación de la <a href=\"https://clientebancario.bde.es/pcb/es/menu-horizontal/productosservici/financiacion/hipotecas/guia-textual/primerospasoscon/Cuota_hipotecaria.html\">cuota hipotecaria</a>.</p>\n<p>En el <strong>sistema español de capital constante</strong>, se devuelven <strong>666,67 € de capital</strong> en cada mensualidad. Los intereses se calculan sobre un saldo que va disminuyendo, así que también baja el importe total de la cuota. Por eso la primera cuota del caso es la mayor y la última es menor. La media, <strong>959,31 €</strong>, queda por debajo de la cuota fija francesa, pero no describe lo que se paga en el primer mes.</p>\n<p>Comparar solo la cuota inicial oculta el resto del recorrido. La primera cuota española es más alta, pero la deuda cae más deprisa. Con el francés, la cuota de entrada es más baja y previsible bajo el supuesto de interés fijo, aunque se acumulan más intereses durante todo el plazo. Las diferencias no se deben a que una opción financie menos capital: ambos escenarios comienzan en 200.000 € y duran 300 meses.</p>\n"
+      },
+      {
+        "id": "capital-pendiente-a-los-5-10-y-15-anos",
+        "title": "Capital pendiente a los 5, 10 y 15 años",
+        "html": "<p>El calendario del motor permite consultar el saldo después de cada mensualidad. La tabla muestra el capital que quedaría justo tras la cuota del mes 60, 120 y 180, respectivamente:</p>\n<table>\n<thead>\n<tr>\n<th>Momento</th>\n<th align=\"right\">Francés: capital pendiente</th>\n<th align=\"right\">Español: capital pendiente</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Tras 5 años (cuota 60)</td>\n<td align=\"right\">172.640,81 €</td>\n<td align=\"right\">160.000,00 €</td>\n</tr>\n<tr>\n<td>Tras 10 años (cuota 120)</td>\n<td align=\"right\">140.057,57 €</td>\n<td align=\"right\">120.000,00 €</td>\n</tr>\n<tr>\n<td>Tras 15 años (cuota 180)</td>\n<td align=\"right\">101.252,80 €</td>\n<td align=\"right\">80.000,00 €</td>\n</tr>\n</tbody></table>\n<p>En los tres cortes, se ha devuelto más capital con amortización constante. Eso explica por qué su saldo pendiente cae más deprisa y por qué el interés acumulado termina siendo menor: cada mes los intereses se aplican sobre una deuda más reducida. En el sistema francés también disminuye el saldo, pero más despacio en los primeros años.</p>\n<p>Los importes de capital pendiente son saldos teóricos del calendario, no la cifra de cancelación que necesariamente comunicaría una entidad. Una operación real puede tener una fecha de pago distinta, redondeos, comisiones u otras condiciones que la herramienta no incorpora.</p>\n"
+      },
+      {
+        "id": "en-que-mes-se-cruzan-las-cuotas",
+        "title": "En qué mes se cruzan las cuotas",
+        "html": "<p>La primera mensualidad del sistema español supera a la francesa en <strong>248,75 €</strong>. La diferencia se estrecha con el paso del tiempo, pero no se invierte enseguida: en el mes <strong>128</strong>, la cuota española todavía es <strong>1.003,06 €</strong>, por encima de los <strong>1.001,25 €</strong> del francés.</p>\n<p>En el mes <strong>129</strong>, el pago español baja a <strong>1.001,11 €</strong> y queda por debajo de la cuota francesa. Al final del plazo, el motor suma <strong>87.791,67 €</strong> de intereses con capital constante y <strong>100.374,14 €</strong> con el sistema francés: la diferencia de <strong>12.582,48 €</strong> se obtiene de los importes internos antes del redondeo de cada total. La tabla principal muestra esos totales redondeados por separado.</p>\n"
+      },
+      {
+        "id": "que-muestran-los-perfiles-de-pago",
+        "title": "Qué muestran los perfiles de pago",
+        "html": "<p>En este escenario, la cuota francesa permanece en <strong>1.001,25 €</strong> al mes. La española comienza en <strong>1.250,00 €</strong> y disminuye; desde el mes 129 queda por debajo de la francesa. El capital pendiente también evoluciona de forma distinta: tras cinco años, quedan <strong>12.640,81 € menos</strong> en el calendario español. Son diferencias de importe y calendario, no una conclusión sobre qué estructura conviene a cada persona.</p>\n<p>Para leer una oferta completa, comprueba cómo se expresa el tipo y qué gastos incluye. La <a href=\"/guias/tin-tae-comisiones-prestamo-personal/\">guía de TIN, comisiones y TAE</a> explica por qué no basta con mirar un tipo aislado; sus ejemplos son de préstamos personales, pero la distinción entre tipo y costes ayuda a leer las condiciones de financiación. El simulador del Banco de España enlazado abajo calcula con el sistema francés, mientras que la calculadora de CuentaClara permite comparar también el sistema de capital constante.</p>\n"
+      },
+      {
+        "id": "que-queda-fuera-de-esta-tabla",
+        "title": "Qué queda fuera de esta tabla",
+        "html": "<p>La tabla de coste total suma el capital y los intereses del modelo, no todos los importes de una oferta. No calcula la TAE ni compara comisiones, tasación, impuestos, gastos de compraventa o condiciones de bonificación. La <a href=\"/guias/tin-tae-comisiones-prestamo-personal/\">guía de TIN, comisiones y TAE</a> y el simulador oficial enlazado en las fuentes ayudan a revisar otros componentes; las condiciones concretas deben contrastarse en la documentación de cada préstamo.</p>\n<p>Para comparar escenarios, mantén iguales el capital y el plazo y modifica un solo supuesto cada vez. Si el tipo puede revisarse, la cuota real no seguirá necesariamente la trayectoria fija que muestra esta simulación.</p>\n<h3>Sobre el autor</h3>\n<blockquote>\n<p><strong>Sobre el autor:</strong> CuentaClara es un proyecto de Mario Galindo, que vive en Murcia, España. Para contactar, proponer una corrección o enviar una sugerencia, escribe a <a href=\"mailto:cuentaclaracalc@gmail.com\">cuentaclaracalc@gmail.com</a>.</p>\n</blockquote>\n<p><strong>Datos revisados: 23 de noviembre de 2026.</strong></p>\n"
+      }
+    ],
+    "headings": [
+      {
+        "id": "mismo-capital-mismo-interes-y-mismo-plazo",
+        "title": "Mismo capital, mismo interés y mismo plazo"
+      },
+      {
+        "id": "que-cambia-dentro-de-cada-cuota",
+        "title": "Qué cambia dentro de cada cuota"
+      },
+      {
+        "id": "capital-pendiente-a-los-5-10-y-15-anos",
+        "title": "Capital pendiente a los 5, 10 y 15 años"
+      },
+      {
+        "id": "en-que-mes-se-cruzan-las-cuotas",
+        "title": "En qué mes se cruzan las cuotas"
+      },
+      {
+        "id": "que-muestran-los-perfiles-de-pago",
+        "title": "Qué muestran los perfiles de pago"
+      },
+      {
+        "id": "que-queda-fuera-de-esta-tabla",
+        "title": "Qué queda fuera de esta tabla"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "¿Qué sistema empieza con una cuota más baja?",
+        "answer": "En el ejemplo, el sistema francés empieza en 1.001,25 € al mes y el español de capital constante en 1.250,00 €. La diferencia depende del capital, el TIN y el plazo."
+      },
+      {
+        "question": "¿Con qué sistema se pagan menos intereses en el ejemplo?",
+        "answer": "Con el sistema español de capital constante: 87.791,67 €, frente a 100.374,14 € con el francés, para el mismo capital, TIN y plazo."
+      },
+      {
+        "question": "¿El sistema francés mantiene la misma cuota en una hipoteca variable?",
+        "answer": "Solo mientras se mantenga el tipo usado en el cálculo. Si cambia el interés, también puede cambiar la cuota."
+      },
+      {
+        "question": "¿El coste total incluye comisiones y seguros?",
+        "answer": "No. En esta simulación es el capital más los intereses estimados. El motor no incorpora comisiones, seguros, impuestos ni gastos de compraventa."
+      }
+    ],
+    "relatedCalculators": [
+      {
+        "label": "Calculadora de hipoteca",
+        "url": "/calculadora-hipoteca/"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Banco de España: cuota hipotecaria",
+        "url": "https://clientebancario.bde.es/pcb/es/menu-horizontal/productosservici/financiacion/hipotecas/guia-textual/primerospasoscon/Cuota_hipotecaria.html"
+      },
+      {
+        "label": "Banco de España: simulador de préstamo hipotecario o personal",
+        "url": "https://clientebancario.bde.es/pcb/es/menu-horizontal/podemosayudarte/simuladores/simulador_prestamo_hipotecario_personal.html"
+      }
+    ]
+  },
+  {
+    "slug": "12-o-14-pagas-que-cambia-en-tu-sueldo",
+    "title": "12 o 14 pagas: qué cambia de verdad en tu sueldo",
+    "summary": "Compara el neto anual, el promedio mensual y el importe medio por paga con el mismo salario bruto anual.",
+    "author": "Mario Galindo",
+    "publishedAt": "23 de noviembre de 2026",
+    "updatedAt": "23 de noviembre de 2026",
+    "publishedAtIso": "2026-11-23",
+    "updatedAtIso": "2026-11-23",
+    "leadHtml": "<p>El neto anual estimado es <strong>23.124 €</strong> tanto en 12 como en 14 pagas, y el promedio mensual es <strong>1.927 €</strong> en ambos casos. El calendario sí cambia: en una distribución de 12 pagos se recibirían <strong>1.927 € al mes</strong>; en el escenario de 14, <strong>1.651,71 €</strong> en los meses ordinarios y <strong>3.303,43 €</strong> en junio y diciembre, al incluir una paga extra en cada uno.</p>\n<p>La tabla muestra el efecto sobre la liquidez, no un aumento del sueldo anual. Es una distribución simplificada: el motor reparte el neto en pagos iguales y no modela la retención mensual real ni el prorrateo de las extras.</p>\n<blockquote>\n<p><strong>Estimación orientativa:</strong> el motor estima un año completo con datos simplificados; no calcula una nómina ni la retención oficial de cada pago.</p>\n</blockquote>\n",
+    "sections": [
+      {
+        "id": "calendario-mensual-con-extras-en-junio-y-diciembre",
+        "title": "Calendario mensual con extras en junio y diciembre",
+        "html": "<p>El cuadro usa como entrada anual <strong>30.000 € brutos</strong> y el mismo perfil en las dos ejecuciones: 35 años, contrato indefinido, cero descendientes, sin discapacidad ni movilidad reducida y sin otras rentas no exentas por encima del umbral indicado. Para el desglose de ese bruto a neto, consulta la guía de <a href=\"/guias/salario-bruto-neto/\">salario bruto y salario neto</a>. En la <a href=\"/sueldo-neto/\">calculadora de sueldo neto</a>, cambia únicamente el número de pagas.</p>\n<table>\n<thead>\n<tr>\n<th>Mes</th>\n<th align=\"right\">12 pagas: neto del mes</th>\n<th align=\"right\">Acumulado</th>\n<th align=\"right\">14 pagas: neto del mes</th>\n<th align=\"right\">Acumulado</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Enero</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">1.651,71 €</td>\n<td align=\"right\">1.651,71 €</td>\n</tr>\n<tr>\n<td>Febrero</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">3.854,00 €</td>\n<td align=\"right\">1.651,71 €</td>\n<td align=\"right\">3.303,43 €</td>\n</tr>\n<tr>\n<td>Marzo</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">5.781,00 €</td>\n<td align=\"right\">1.651,71 €</td>\n<td align=\"right\">4.955,14 €</td>\n</tr>\n<tr>\n<td>Abril</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">7.708,00 €</td>\n<td align=\"right\">1.651,71 €</td>\n<td align=\"right\">6.606,86 €</td>\n</tr>\n<tr>\n<td>Mayo</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">9.635,00 €</td>\n<td align=\"right\">1.651,71 €</td>\n<td align=\"right\">8.258,57 €</td>\n</tr>\n<tr>\n<td>Junio</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">11.562,00 €</td>\n<td align=\"right\">3.303,43 €</td>\n<td align=\"right\">11.562,00 €</td>\n</tr>\n<tr>\n<td>Julio</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">13.489,00 €</td>\n<td align=\"right\">1.651,71 €</td>\n<td align=\"right\">13.213,71 €</td>\n</tr>\n<tr>\n<td>Agosto</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">15.416,00 €</td>\n<td align=\"right\">1.651,71 €</td>\n<td align=\"right\">14.865,43 €</td>\n</tr>\n<tr>\n<td>Septiembre</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">17.343,00 €</td>\n<td align=\"right\">1.651,71 €</td>\n<td align=\"right\">16.517,14 €</td>\n</tr>\n<tr>\n<td>Octubre</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">19.270,00 €</td>\n<td align=\"right\">1.651,71 €</td>\n<td align=\"right\">18.168,86 €</td>\n</tr>\n<tr>\n<td>Noviembre</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">21.197,00 €</td>\n<td align=\"right\">1.651,71 €</td>\n<td align=\"right\">19.820,57 €</td>\n</tr>\n<tr>\n<td>Diciembre</td>\n<td align=\"right\">1.927,00 €</td>\n<td align=\"right\">23.124,00 €</td>\n<td align=\"right\">3.303,43 €</td>\n<td align=\"right\">23.124,00 €</td>\n</tr>\n</tbody></table>\n<p>El motor devuelve <strong>1.927 € por paga</strong> en 12 pagos y <strong>1.651,714285… €</strong> en 14 pagas para este ejemplo. En junio y diciembre se suman dos salidas sin redondear; los acumulados usan esos valores antes de mostrar cada celda a céntimos.</p>\n"
+      },
+      {
+        "id": "como-leer-los-importes-acumulados",
+        "title": "Cómo leer los importes acumulados",
+        "html": "<p>El acumulado muestra el dinero que habría entrado hasta el mes en esta distribución. En la modalidad de 12 pagos, crece con una cantidad igual todos los meses. En el escenario de 14, el saldo acumulado es menor en los meses ordinarios y aumenta en junio y diciembre, cuando se añade una paga extraordinaria.</p>\n<p>Por ejemplo, hasta mayo el acumulado es <strong>9.635 €</strong> con 12 pagos y <strong>8.258,57 €</strong> con 14. En junio, al incluir la extra en el segundo calendario, ambos acumulados llegan a <strong>11.562 €</strong>. En noviembre son <strong>21.197 €</strong> y <strong>19.820,57 €</strong>, respectivamente; tras los pagos de diciembre ambos cierran el año en <strong>23.124 €</strong>. Son importes de la tabla y sirven para visualizar el calendario, no para calcular una nómina real.</p>\n<p>Por eso el promedio mensual y el dinero disponible en una fecha concreta responden a preguntas distintas. El promedio resume el año; el acumulado ayuda a prever cuándo entra el dinero. Si tienes pagos periódicos, observa las filas de cada mes y no uses el promedio anual como si fuera el abono bancario garantizado en todas las mensualidades.</p>\n"
+      },
+      {
+        "id": "que-hace-el-motor-con-el-numero-de-pagas",
+        "title": "Qué hace el motor con el número de pagas",
+        "html": "<p>La calculadora recibe el bruto anual y los datos del perfil, estima el neto anual y presenta dos divisiones: promedio mensual y neto por paga. Al elegir 12 o 14, el neto anual de este caso permanece igual; cambia el número por el que se divide para mostrar el neto por paga. El motor no conoce los meses en que se ingresan las extras ni transforma el importe en doce nóminas ordinarias y dos nóminas extraordinarias.</p>\n<p>Para formar la tabla, se ejecutó el motor con las opciones 12 y 14. Después, se distribuyó el resultado mensual en los meses: un neto por paga cada mes en la primera columna y, en la segunda, una paga adicional en junio y diciembre. El acumulado conserva los decimales internos del resultado y solo se redondea para presentar cada celda.</p>\n"
+      },
+      {
+        "id": "las-12-pagas-incluyen-las-extraordinarias",
+        "title": "¿Las 12 pagas incluyen las extraordinarias?",
+        "html": "<p>En esta distribución, sí: los doce pagos iguales representan el neto anual repartido a lo largo de los doce meses, como si las pagas extraordinarias estuvieran prorrateadas. El motor no verifica si esa distribución es la acordada ni calcula el prorrateo de una nómina real.</p>\n<p>En la columna de 14 pagas, el ejemplo sitúa doce pagos ordinarios y dos extras, en junio y diciembre. El importe de cada paga parte del neto por paga que devuelve el motor; en esos dos meses se suman dos pagos. Es una forma de visualizar el calendario solicitado, no una liquidación real.</p>\n<p>El artículo 31 del Estatuto de los Trabajadores reconoce dos gratificaciones extraordinarias: una con ocasión de Navidad y otra en el mes fijado por convenio colectivo o acuerdo. Establece que puede acordarse en convenio colectivo su prorrateo en las doce mensualidades. Por tanto, tener doce abonos no basta para deducir qué incluye cada uno: comprueba lo que se aplica a tu caso en el convenio y el contrato. No se puede concluir por esta simulación que una modalidad corresponda automáticamente a todas las nóminas.</p>\n"
+      },
+      {
+        "id": "como-afecta-a-tu-presupuesto",
+        "title": "Cómo afecta a tu presupuesto",
+        "html": "<ul>\n<li><strong>Reserva parte de las pagas extra</strong> para gastos anuales o irregulares, en vez de comprometerlas enteras en gastos fijos mensuales.</li>\n<li><strong>Compara ofertas por el total anual</strong>, el salario fijo y los conceptos variables antes de fijarte en el importe de una paga.</li>\n<li><strong>Revisa el contrato:</strong> comprueba si se indican 12 o 14 pagos, si las extras se prorratean y cuándo se abonan. Para entender retenciones y deducciones, consulta la guía de <a href=\"/guias/retencion-irpf-nomina-renta/\">IRPF en nómina y declaración de la renta</a>.</li>\n</ul>\n<blockquote>\n<p><strong>Sobre el autor:</strong> CuentaClara es un proyecto de Mario Galindo, que vive en Murcia, España. Para contactar, proponer una corrección o enviar una sugerencia, escribe a <a href=\"mailto:cuentaclaracalc@gmail.com\">cuentaclaracalc@gmail.com</a>.</p>\n</blockquote>\n<p><strong>Datos revisados: 23 de noviembre de 2026.</strong></p>\n"
+      }
+    ],
+    "headings": [
+      {
+        "id": "calendario-mensual-con-extras-en-junio-y-diciembre",
+        "title": "Calendario mensual con extras en junio y diciembre"
+      },
+      {
+        "id": "como-leer-los-importes-acumulados",
+        "title": "Cómo leer los importes acumulados"
+      },
+      {
+        "id": "que-hace-el-motor-con-el-numero-de-pagas",
+        "title": "Qué hace el motor con el número de pagas"
+      },
+      {
+        "id": "las-12-pagas-incluyen-las-extraordinarias",
+        "title": "¿Las 12 pagas incluyen las extraordinarias?"
+      },
+      {
+        "id": "como-afecta-a-tu-presupuesto",
+        "title": "Cómo afecta a tu presupuesto"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "¿Las 12 pagas incluyen las extraordinarias?",
+        "answer": "La tabla representa doce pagos iguales. El motor solo divide el neto anual entre el número de pagas; no comprueba si el convenio acuerda prorratear las extraordinarias."
+      },
+      {
+        "question": "¿Por qué en junio y diciembre aparecen dos pagos en el escenario de 14 pagas?",
+        "answer": "La distribución ilustrativa coloca una paga ordinaria y una extraordinaria en cada uno de esos meses. El motor no calcula fechas ni importes reales de nómina."
+      },
+      {
+        "question": "¿Cobrar en 14 pagas aumenta el neto anual?",
+        "answer": "No por sí solo. Con el mismo bruto anual y los mismos datos, el motor obtiene el mismo neto anual; cambia el importe y el calendario de cada pago."
+      },
+      {
+        "question": "¿El neto por paga será exactamente el de mi nómina?",
+        "answer": "No necesariamente. Es una estimación media del motor; no calcula la retención mensual real ni la distribución de tu nómina."
+      }
+    ],
+    "relatedCalculators": [
+      {
+        "label": "Calculadora de sueldo neto",
+        "url": "/sueldo-neto/"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Estatuto de los Trabajadores, artículo 31 (BOE)",
+        "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430#a31"
+      }
+    ]
+  },
+  {
+    "slug": "que-incluye-un-finiquito-y-que-no",
+    "title": "Qué incluye un finiquito y qué no",
+    "summary": "Sigue un caso paso a paso para separar salario pendiente, vacaciones, pagas extra e indemnización.",
+    "author": "Mario Galindo",
+    "publishedAt": "23 de noviembre de 2026",
+    "updatedAt": "23 de noviembre de 2026",
+    "publishedAtIso": "2026-11-23",
+    "updatedAtIso": "2026-11-23",
+    "leadHtml": "<p>En el caso de ejemplo, la calculadora estima <strong>3.123,29 € de finiquito</strong>: 2.465,75 € de salario pendiente y 657,53 € por 8 días de vacaciones. Suponemos 12 pagas con las extras prorrateadas, así que no queda una paga extra separada pendiente. Como es una baja voluntaria, la indemnización estimada es <strong>0 €</strong>.</p>\n<p>La clave es no mezclar conceptos: el finiquito liquida importes ya devengados y no cobrados; la indemnización, si corresponde según la causa, va aparte. El motor muestra ambas cantidades separadas, pero no decide qué días de vacaciones se han generado ni calcula por sí solo la parte proporcional de las pagas extra.</p>\n<blockquote>\n<p><strong>Estimación orientativa:</strong> el resultado depende de los días y cantidades que introduzcas; no sustituye la revisión de la liquidación real.</p>\n</blockquote>\n",
+    "sections": [
+      {
+        "id": "el-caso-que-datos-se-introducen",
+        "title": "El caso: qué datos se introducen",
+        "html": "<p>Imaginemos a una persona con salario bruto anual de <strong>30.000 €</strong> que comunica una baja voluntaria con fecha de fin <strong>30 de septiembre de 2026</strong>. Para poder reproducir el ejemplo, suponemos <strong>12 pagas con las extras prorrateadas</strong>, <strong>30 días de salario pendientes</strong> y <strong>8 días de vacaciones no disfrutadas</strong>. La fecha de inicio del contrato es <strong>1 de mayo de 2022</strong>.</p>\n<p>En la <a href=\"/calculadora-finiquito-indemnizacion/\">calculadora de finiquito e indemnización</a>, introduce estos valores:</p>\n<table>\n<thead>\n<tr>\n<th>Campo del motor</th>\n<th align=\"right\">Entrada del caso</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Salario bruto anual</td>\n<td align=\"right\">30.000 €</td>\n</tr>\n<tr>\n<td>Pagas del supuesto</td>\n<td align=\"right\">12, con extras prorrateadas</td>\n</tr>\n<tr>\n<td>Días de salario pendientes</td>\n<td align=\"right\">30</td>\n</tr>\n<tr>\n<td>Días de vacaciones no disfrutadas</td>\n<td align=\"right\">8</td>\n</tr>\n<tr>\n<td>Pagas extra pendientes</td>\n<td align=\"right\">0 €</td>\n</tr>\n<tr>\n<td>Fecha de inicio</td>\n<td align=\"right\">01/05/2022</td>\n</tr>\n<tr>\n<td>Fecha de fin</td>\n<td align=\"right\">30/09/2026</td>\n</tr>\n<tr>\n<td>Causa de extinción</td>\n<td align=\"right\">Baja voluntaria</td>\n</tr>\n</tbody></table>\n<p>Los 30 días son el salario de septiembre que suponemos aún no abonado; los 8 días se justifican en el paso de vacaciones. La persona cobra 12 veces al año porque en este supuesto las extras ya se prorratean; por eso el campo de pagas extra pendientes es 0 €.</p>\n<p>El motor calcula el salario diario dividiendo el salario bruto anual entre <strong>365</strong>; la guía de uso de la calculadora indica que ese salario anual incluye las pagas extra, por lo que su importe medio ya queda repartido a lo largo del año. El campo de extra pendiente se añade aparte. Con 14 pagos sin prorratear puede haber solapamiento: no introduzcas en ambos campos la misma cantidad. La herramienta no ofrece un ajuste para separar los componentes; si no puedes comprobar que el importe pendiente está separado de la base anual usada, no tomes el total como una liquidación fiable.</p>\n"
+      },
+      {
+        "id": "paso-1-localizar-el-salario-que-falta-por-cobrar",
+        "title": "Paso 1: localizar el salario que falta por cobrar",
+        "html": "<p>El motor obtiene un salario diario de <strong>82,19 €</strong> a partir del salario bruto anual indicado. Con 30 días pendientes, calcula <strong>2.465,75 €</strong> de salario pendiente. En esta simulación, los días se introducen directamente: no se determina automáticamente qué días del último mes están pagados ni se consulta el calendario de nómina.</p>\n<p>Comprueba hasta qué fecha se ha abonado el salario ordinario. El ejemplo supone que la nómina de agosto está pagada y que los 30 días de septiembre siguen pendientes. Si la empresa ya ha abonado parte del mes, ajusta los días para no contar dos veces el mismo periodo.</p>\n"
+      },
+      {
+        "id": "paso-2-anadir-las-vacaciones-pendientes",
+        "title": "Paso 2: añadir las vacaciones pendientes",
+        "html": "<p>Para explicar de dónde salen los <strong>8 días</strong>, supongamos que el contrato reconoce <strong>30 días naturales</strong> de vacaciones por año completo y que el periodo de cómputo de este ejemplo coincide con el año natural. Desde el 1 de enero hasta el 30 de septiembre han transcurrido nueve meses: <strong>30 × 9 ÷ 12 = 22,5 días generados</strong>. Si la persona ya ha disfrutado <strong>14,5 días</strong>, el saldo es <strong>22,5 − 14,5 = 8 días pendientes</strong>. Esta regla de tres es el supuesto ilustrativo de la guía, no una fórmula universal; el artículo 38 establece que la duración se pacta en convenio o contrato y que no puede ser inferior a treinta días naturales al año, pero no fija esta operación mensual para todos los casos.</p>\n<p>Al introducir los 8 días, el motor estima <strong>657,53 €</strong> con el mismo salario diario. La herramienta no calcula el saldo vacacional. El artículo 38 del Estatuto regula las vacaciones anuales retribuidas; el SEPE explica que, si quedan días sin disfrutar al terminar el contrato, se abonan en la liquidación o finiquito. Contrasta los días disfrutados y pendientes con el registro de vacaciones y con el contrato o convenio aplicable.</p>\n<p>Para entender cuánto pueden cambiar las vacaciones y las pagas en una nómina a lo largo del año, consulta también <a href=\"/guias/12-o-14-pagas-que-cambia-en-tu-sueldo/\">12 o 14 pagas: qué cambia de verdad en tu sueldo</a>. La guía explica el reparto del salario, no determina el saldo vacacional de este ejemplo.</p>\n"
+      },
+      {
+        "id": "paso-3-comprobar-como-se-cobran-las-pagas-extra",
+        "title": "Paso 3: comprobar cómo se cobran las pagas extra",
+        "html": "<p>Este caso elige <strong>12 pagas con las extras prorrateadas</strong>: los 30.000 € anuales ya se reparten entre los pagos del año y el campo de extra pendiente se deja en <strong>0 €</strong>. El motor divide el salario anual entre 365 para obtener el salario diario e incorpora las pagas en esa base; no calcula el calendario ni verifica si el prorrateo se acordó.</p>\n<p>El artículo 31 reconoce dos gratificaciones extraordinarias y contempla que su prorrateo en doce mensualidades pueda acordarse en convenio colectivo. El número de pagos, por sí solo, no permite saber qué se acordó en un contrato concreto. Comprueba la nómina, el contrato y el convenio. La guía de <a href=\"/guias/salario-bruto-neto/\">salario bruto y salario neto</a> explica cómo interpretar el bruto anual y las pagas.</p>\n"
+      },
+      {
+        "id": "paso-4-leer-el-resultado-sin-sumar-conceptos-dos-veces",
+        "title": "Paso 4: leer el resultado sin sumar conceptos dos veces",
+        "html": "<p>Con las entradas del caso, el resultado del motor queda así:</p>\n<table>\n<thead>\n<tr>\n<th>Concepto</th>\n<th align=\"right\">Resultado del motor</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Salario diario usado por el motor</td>\n<td align=\"right\">82,19 €</td>\n</tr>\n<tr>\n<td>Salario pendiente (30 días)</td>\n<td align=\"right\">2.465,75 €</td>\n</tr>\n<tr>\n<td>Vacaciones no disfrutadas (8 días)</td>\n<td align=\"right\">657,53 €</td>\n</tr>\n<tr>\n<td>Pagas extra pendientes</td>\n<td align=\"right\">0,00 €</td>\n</tr>\n<tr>\n<td><strong>Finiquito estimado</strong></td>\n<td align=\"right\"><strong>3.123,29 €</strong></td>\n</tr>\n<tr>\n<td>Indemnización por baja voluntaria</td>\n<td align=\"right\">0,00 €</td>\n</tr>\n<tr>\n<td><strong>Total estimado</strong></td>\n<td align=\"right\"><strong>3.123,29 €</strong></td>\n</tr>\n</tbody></table>\n<p>El desglose se reproduce con salario anual de 30.000 €, 12 pagas con extras prorrateadas, 30 días de salario pendientes, 8 días de vacaciones, 0 € de extras pendientes, inicio el 1 de mayo de 2022, fin el 30 de septiembre de 2026 y causa «Baja voluntaria».</p>\n<p>El finiquito es el subtotal que reúne las partidas pendientes; no vuelvas a sumarlo a cada línea. En este escenario, el motor devuelve 0 € de indemnización por baja voluntaria.</p>\n"
+      },
+      {
+        "id": "comparar-la-misma-liquidacion-con-un-despido-objetivo",
+        "title": "Comparar la misma liquidación con un despido objetivo",
+        "html": "<p>Sin cambiar salario, fechas ni cantidades pendientes, ejecuta el motor otra vez y selecciona «Despido objetivo». El resultado conserva el mismo finiquito y calcula aparte una indemnización distinta de cero:</p>\n<table>\n<thead>\n<tr>\n<th>Causa elegida en el motor</th>\n<th align=\"right\">Finiquito</th>\n<th align=\"right\">Indemnización</th>\n<th align=\"right\">Total</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Baja voluntaria</td>\n<td align=\"right\">3.123,29 €</td>\n<td align=\"right\">0,00 €</td>\n<td align=\"right\">3.123,29 €</td>\n</tr>\n<tr>\n<td>Despido objetivo</td>\n<td align=\"right\">3.123,29 €</td>\n<td align=\"right\">7.260,27 €</td>\n<td align=\"right\">10.383,56 €</td>\n</tr>\n</tbody></table>\n<p>La indemnización de la segunda fila corresponde al cálculo del motor para un despido objetivo: <strong>20 días de salario por año de servicio</strong>, según el artículo 53 del Estatuto de los Trabajadores. Otros tipos de despido se calculan de otra forma; aquí no se ofrecen cifras para ellos. La tabla reproduce una simulación y no determina si un caso real cumple los requisitos para calificarse como despido objetivo.</p>\n<p><strong>Alcance de los importes:</strong> todas las cantidades de los dos escenarios son brutas. A los conceptos salariales del finiquito se les aplican las cotizaciones y retenciones de IRPF que correspondan; esta guía y el motor no calculan esos descuentos ni el líquido final.</p>\n"
+      },
+      {
+        "id": "lo-que-el-calculo-no-resuelve",
+        "title": "Lo que el cálculo no resuelve",
+        "html": "<p>La herramienta no lee nóminas ni contratos, no determina si el motivo declarado coincide con la calificación legal de la extinción y no interpreta convenios o salarios variables.</p>\n<p>El artículo 49.2 del Estatuto de los Trabajadores prevé que, al comunicar la extinción, se acompañe una propuesta del documento de liquidación de las cantidades adeudadas. Compara ese documento con los conceptos y periodos que ya tienes registrados. Si existe una diferencia, pide el detalle del cálculo antes de dar por buena una cifra que no puedas reconstruir.</p>\n"
+      },
+      {
+        "id": "comprobaciones-antes-de-firmar",
+        "title": "Comprobaciones antes de firmar",
+        "html": "<ul>\n<li>Confirma la fecha de baja y hasta qué día está abonado el salario ordinario.</li>\n<li>Contrasta los días de vacaciones pendientes con el saldo que te comunica la empresa.</li>\n<li>Revisa si las pagas extra se pagan aparte o se prorratean y cómo se obtiene el importe pendiente.</li>\n<li>Comprueba que cada concepto del documento de liquidación aparece una sola vez.</li>\n<li>Separa el finiquito de cualquier indemnización y verifica que la causa de extinción introducida sea la correcta.</li>\n<li>Guarda las nóminas y justificantes que respaldan cada cantidad introducida.</li>\n</ul>\n<blockquote>\n<p><strong>Sobre el autor:</strong> CuentaClara es un proyecto de Mario Galindo, que vive en Murcia, España. Para contactar, proponer una corrección o enviar una sugerencia, escribe a <a href=\"mailto:cuentaclaracalc@gmail.com\">cuentaclaracalc@gmail.com</a>.</p>\n</blockquote>\n<p><strong>Datos revisados: 23 de noviembre de 2026.</strong></p>\n"
+      }
+    ],
+    "headings": [
+      {
+        "id": "el-caso-que-datos-se-introducen",
+        "title": "El caso: qué datos se introducen"
+      },
+      {
+        "id": "paso-1-localizar-el-salario-que-falta-por-cobrar",
+        "title": "Paso 1: localizar el salario que falta por cobrar"
+      },
+      {
+        "id": "paso-2-anadir-las-vacaciones-pendientes",
+        "title": "Paso 2: añadir las vacaciones pendientes"
+      },
+      {
+        "id": "paso-3-comprobar-como-se-cobran-las-pagas-extra",
+        "title": "Paso 3: comprobar cómo se cobran las pagas extra"
+      },
+      {
+        "id": "paso-4-leer-el-resultado-sin-sumar-conceptos-dos-veces",
+        "title": "Paso 4: leer el resultado sin sumar conceptos dos veces"
+      },
+      {
+        "id": "comparar-la-misma-liquidacion-con-un-despido-objetivo",
+        "title": "Comparar la misma liquidación con un despido objetivo"
+      },
+      {
+        "id": "lo-que-el-calculo-no-resuelve",
+        "title": "Lo que el cálculo no resuelve"
+      },
+      {
+        "id": "comprobaciones-antes-de-firmar",
+        "title": "Comprobaciones antes de firmar"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "¿Finiquito e indemnización son lo mismo?",
+        "answer": "No. El finiquito reúne las cantidades devengadas que quedan por liquidar. La indemnización es un concepto distinto, ligado a determinadas causas de extinción; en el caso de baja voluntaria de esta guía, el motor devuelve 0 €."
+      },
+      {
+        "question": "¿La calculadora determina cuántos días de vacaciones tengo pendientes?",
+        "answer": "No. Hay que introducir el número de días. El motor calcula su importe con el salario diario que obtiene del salario bruto anual."
+      },
+      {
+        "question": "¿El motor calcula la parte proporcional de las pagas extra?",
+        "answer": "No. En el caso ilustrativo de 12 pagas con extras prorrateadas, se introduce 0 € como extra pendiente; el motor no comprueba el acuerdo ni calcula el prorrateo."
+      },
+      {
+        "question": "¿El resultado es el importe neto que recibiré?",
+        "answer": "No. El motor solo suma los conceptos que introduces; no lee tu nómina ni el documento de liquidación."
+      }
+    ],
+    "relatedCalculators": [
+      {
+        "label": "Calculadora de finiquito e indemnización",
+        "url": "/calculadora-finiquito-indemnizacion/"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Estatuto de los Trabajadores, artículo 31: gratificaciones extraordinarias (BOE)",
+        "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430#a31"
+      },
+      {
+        "label": "Estatuto de los Trabajadores, artículo 38: vacaciones anuales (BOE)",
+        "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430#a38"
+      },
+      {
+        "label": "Estatuto de los Trabajadores, artículo 49: extinción del contrato (BOE)",
+        "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430#a49"
+      },
+      {
+        "label": "Estatuto de los Trabajadores, artículo 53: despido objetivo (BOE)",
+        "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430#a53"
+      },
+      {
+        "label": "SEPE: vacaciones no disfrutadas y liquidación o finiquito",
+        "url": "https://www.sepe.es/HomeSepe/preguntas-frecuentes/detalle-pregunta?detail=/preguntas/prestaciones-por-desempleo/pago-y-cuant-a/cobro-el-paro-desde-el-dia-siguiente-al-que-dejo-de-trabajar-o-tengo-que-esperar-al-fin-del-periodo-de-vacaciones-no-disfrutadas-o-a-estar-de-alta-medica-si-me-encuentro-de-baja-medica"
+      },
+      {
+        "label": "Seguridad Social: vacaciones no disfrutadas y abonadas al extinguirse el contrato",
+        "url": "https://www.seg-social.es/wps/portal/wss/internet/PortalEducativo/Profesores/Unidad6/pess602/edu_001163?changeLanguage=es"
+      },
+      {
+        "label": "Agencia Tributaria: retenciones del IRPF",
+        "url": "https://sede.agenciatributaria.gob.es/Sede/Retenciones.shtml"
+      }
+    ]
+  },
+  {
+    "slug": "tin-tae-comisiones-prestamo-personal",
+    "title": "TIN, comisiones y TAE: cómo comparar un préstamo personal",
+    "summary": "Compara seis escenarios de un préstamo de 10.000 € a 48 meses y distingue cuota, intereses, comisión de apertura y coste total.",
+    "author": "Mario Galindo",
+    "publishedAt": "23 de noviembre de 2026",
+    "updatedAt": "23 de noviembre de 2026",
+    "publishedAtIso": "2026-11-23",
+    "updatedAtIso": "2026-11-23",
+    "leadHtml": "<p>Para un préstamo de <strong>10.000 € a 48 meses</strong>, pasar del 6 % al 8 % TIN eleva el coste de financiación de <strong>1.272,82 € a 1.718,19 €</strong>: <strong>445,37 € más</strong>. Llegar al 10 % lo eleva a <strong>2.174,00 €</strong>, <strong>901,18 € más</strong> que al 6 %. La comisión de apertura del 2 % suma <strong>200 €</strong>; en estos escenarios pesa menos que subir el TIN.</p>\n<p>La comparación entre filas también importa: al 6 % con comisión, el coste es <strong>1.472,82 €</strong>; al 8 % sin comisión, <strong>1.718,19 €</strong>, es decir, <strong>245,37 € más</strong>. Para este ejemplo, reducir el TIN compensa más que eliminar la comisión por sí sola.</p>\n<blockquote>\n<p><strong>Estimación orientativa:</strong> las cifras describen un modelo matemático con los parámetros indicados; una oferta real puede incluir condiciones y costes que esta calculadora no modela.</p>\n</blockquote>\n",
+    "sections": [
+      {
+        "id": "seis-escenarios-para-el-mismo-prestamo",
+        "title": "Seis escenarios para el mismo préstamo",
+        "html": "<p>Los seis casos varían el TIN y la comisión de apertura, manteniendo iguales los demás parámetros:</p>\n<table>\n<thead>\n<tr>\n<th align=\"right\">TIN anual</th>\n<th align=\"right\">Comisión de apertura</th>\n<th align=\"right\">Cuota mensual (primera / última)</th>\n<th align=\"right\">Coste total de financiación</th>\n</tr>\n</thead>\n<tbody><tr>\n<td align=\"right\">6 %</td>\n<td align=\"right\">0 % (0 €)</td>\n<td align=\"right\">234,85 € / 234,87 €</td>\n<td align=\"right\">1.272,82 €</td>\n</tr>\n<tr>\n<td align=\"right\">6 %</td>\n<td align=\"right\">2 % (200 €)</td>\n<td align=\"right\">234,85 € / 234,87 €</td>\n<td align=\"right\">1.472,82 €</td>\n</tr>\n<tr>\n<td align=\"right\">8 %</td>\n<td align=\"right\">0 % (0 €)</td>\n<td align=\"right\">244,13 € / 244,08 €</td>\n<td align=\"right\">1.718,19 €</td>\n</tr>\n<tr>\n<td align=\"right\">8 %</td>\n<td align=\"right\">2 % (200 €)</td>\n<td align=\"right\">244,13 € / 244,08 €</td>\n<td align=\"right\">1.918,19 €</td>\n</tr>\n<tr>\n<td align=\"right\">10 %</td>\n<td align=\"right\">0 % (0 €)</td>\n<td align=\"right\">253,63 € / 253,39 €</td>\n<td align=\"right\">2.174,00 €</td>\n</tr>\n<tr>\n<td align=\"right\">10 %</td>\n<td align=\"right\">2 % (200 €)</td>\n<td align=\"right\">253,63 € / 253,39 €</td>\n<td align=\"right\">2.374,00 €</td>\n</tr>\n</tbody></table>\n<p><strong>Parámetros reproducibles:</strong> importe de <strong>10.000 €</strong>, plazo de <strong>48 meses</strong>, sistema <strong>francés</strong>, <strong>0 €</strong> de gastos iniciales y <strong>0 €</strong> de coste adicional mensual. El coste total de financiación suma intereses y comisión de apertura. Las cuotas se muestran como primera / última para reflejar el redondeo del motor.</p>\n<p>Las diferencias de céntimos entre primera y última cuota se deben al redondeo de cada periodo; el motor ajusta la amortización final para cancelar el saldo. Todos los importes de la tabla son salidas de <code>calculatePersonalLoan</code>.</p>\n"
+      },
+      {
+        "id": "que-cambia-mas-el-tipo-o-la-comision",
+        "title": "Qué cambia más: el tipo o la comisión",
+        "html": "<p>Compara primero las filas sin comisión. Al pasar del 6 % al 8 %, el coste total de financiación sube de 1.272,82 € a 1.718,19 €, una diferencia de 445,37 €. Como ambas filas tienen comisión cero y los demás costes también son cero, esa diferencia corresponde al interés adicional del escenario con el TIN más alto. Al 10 %, el coste llega a 2.174,00 €: son 901,18 € más que al 6 %.</p>\n<p>La comisión produce un efecto menor en este ejemplo. En cada pareja con el mismo TIN, pasar del 0 % al 2 % añade 200 € al coste de financiación: al 6 %, de 1.272,82 € a 1.472,82 €; al 8 %, de 1.718,19 € a 1.918,19 €; y al 10 %, de 2.174,00 € a 2.374,00 €. La cuota no cambia porque la comisión se paga aparte y no se suma al capital.</p>\n<p>La comparación cruzada confirma el orden: el caso del 8 % sin comisión (1.718,19 €) cuesta 245,37 € más que el del 6 % con comisión (1.472,82 €). Por tanto, con estos importes y plazos, reducir el TIN tiene más efecto que quitar la comisión del 2 %. La diferencia entre ofertas reales puede ser otra si cambian el plazo o los gastos.</p>\n"
+      },
+      {
+        "id": "la-tae-para-comparar-ofertas",
+        "title": "La TAE para comparar ofertas",
+        "html": "<p>La <strong>TAE</strong> expresa en porcentaje anual el coste de una operación e incorpora el interés y los gastos o comisiones que correspondan. Por eso es la cifra adecuada para comparar ofertas con condiciones distintas: reúne más elementos del coste que el TIN por sí solo. Esta tabla, en cambio, compara el TIN y la comisión de apertura por separado para mostrar el efecto de cada uno bajo los mismos parámetros.</p>\n<p>El motor de CuentaClara <strong>no calcula la TAE</strong>: su coste total de financiación es una cantidad en euros, no un porcentaje anual. Para estimarla a partir del importe, el plazo, el tipo y los costes aplicables, utiliza el <a href=\"https://clientebancario.bde.es/pcb/es/menu-horizontal/podemosayudarte/simuladores/calculo_tae_prestamo_personal.html\">simulador de TAE del Banco de España</a>. El simulador publica sus hipótesis; la TAE final de una entidad puede variar según las condiciones concretas de su oferta.</p>\n"
+      },
+      {
+        "id": "reproduce-la-tabla-en-la-calculadora",
+        "title": "Reproduce la tabla en la calculadora",
+        "html": "<p>Abre la <a href=\"/calculadora-prestamo-personal/\">calculadora de préstamo personal</a> e introduce estos valores:</p>\n<ol>\n<li><strong>Importe solicitado:</strong> 10.000 €.</li>\n<li><strong>TIN anual:</strong> primero 6 %, después 8 % y finalmente 10 %.</li>\n<li><strong>Plazo:</strong> cuatro años y cero meses adicionales (48 cuotas).</li>\n<li><strong>Sistema:</strong> francés, el valor predeterminado de la herramienta.</li>\n<li><strong>Comisión de apertura:</strong> 0 % para una pasada y 2 % para la otra.</li>\n<li><strong>Gastos iniciales y coste adicional mensual:</strong> 0 € en ambos campos.</li>\n</ol>\n<p>Anota para cada cálculo la primera y la última cuota y el coste total de financiación. Al comparar dos ofertas, introduce también los gastos que se vayan a cobrar; no los incluyas en la comisión si ya aparecen en otro campo. Comprueba que el capital recibido y el plazo coinciden con la documentación de la entidad.</p>\n<p>Para reconstruir una fila, selecciona el TIN indicado y ejecuta el cálculo una vez con comisión cero y otra con comisión del 2 %. Repite ambas pruebas para cada tipo, sin cambiar el importe, el plazo, el sistema ni los demás costes. En el resultado, usa «Coste total de financiación» para comparar lo que cuesta el crédito; no lo confundas con el total devuelto en cuotas, que también incluye el principal prestado. Las cifras de esta tabla corresponden a seis ejecuciones separadas del mismo motor.</p>\n"
+      },
+      {
+        "id": "que-mirar-antes-de-firmar",
+        "title": "Qué mirar antes de firmar",
+        "html": "<ul>\n<li><strong>Importe recibido:</strong> confirma si la entidad entrega el capital solicitado completo o descuenta algún coste al inicio. En el ejemplo, el motor presupone que se reciben los 10.000 € íntegros.</li>\n<li><strong>TIN, TAE y plazo:</strong> anota las condiciones de la oferta y verifica que comparas el mismo importe, periodicidad y duración. No elijas solo por la cuota más baja.</li>\n<li><strong>Comisión de apertura:</strong> revisa el porcentaje o importe en euros, cuándo se paga y si la documentación indica que se financia. La calculadora de esta página la suma aparte; no supone que se añada al capital.</li>\n<li><strong>Otros gastos:</strong> pregunta qué gastos iniciales, productos asociados o costes periódicos son obligatorios para obtener esas condiciones. Incluye los aplicables al comparar el coste, evitando contarlos dos veces.</li>\n<li><strong>Sistema, calendario y amortización anticipada:</strong> confirma cómo se amortiza la deuda, cuándo se pagan las cuotas y qué condiciones aplican si devuelves parte o todo antes de tiempo. Estos escenarios no incluyen ese posible coste.</li>\n<li><strong>Presupuesto mensual real:</strong> compara la cuota con el dinero disponible después de gastos habituales, no solo con el salario bruto. Para estimar el neto, consulta las guías de <a href=\"/guias/salario-bruto-neto/\">salario bruto y salario neto</a> y <a href=\"/guias/retencion-irpf-nomina-renta/\">retención de IRPF y declaración de la renta</a>.</li>\n</ul>\n<blockquote>\n<p><strong>Sobre el autor:</strong> CuentaClara es un proyecto de Mario Galindo, que vive en Murcia, España. Para contactar, proponer una corrección o enviar una sugerencia, escribe a <a href=\"mailto:cuentaclaracalc@gmail.com\">cuentaclaracalc@gmail.com</a>.</p>\n</blockquote>\n<p><strong>Datos revisados: 23 de noviembre de 2026.</strong></p>\n"
+      }
+    ],
+    "headings": [
+      {
+        "id": "seis-escenarios-para-el-mismo-prestamo",
+        "title": "Seis escenarios para el mismo préstamo"
+      },
+      {
+        "id": "que-cambia-mas-el-tipo-o-la-comision",
+        "title": "Qué cambia más: el tipo o la comisión"
+      },
+      {
+        "id": "la-tae-para-comparar-ofertas",
+        "title": "La TAE para comparar ofertas"
+      },
+      {
+        "id": "reproduce-la-tabla-en-la-calculadora",
+        "title": "Reproduce la tabla en la calculadora"
+      },
+      {
+        "id": "que-mirar-antes-de-firmar",
+        "title": "Qué mirar antes de firmar"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "¿La calculadora de CuentaClara calcula la TAE?",
+        "answer": "No. Muestra cuotas, intereses y los costes que introduces, pero no calcula la TAE."
+      },
+      {
+        "question": "¿La comisión de apertura cambia la cuota mensual?",
+        "answer": "En el modelo de CuentaClara, no. La comisión se calcula como porcentaje del capital solicitado y se añade aparte a los costes; no se financia ni se incorpora a la cuota."
+      },
+      {
+        "question": "¿Por qué la primera y la última cuota no coinciden exactamente?",
+        "answer": "Las cuotas y los saldos se redondean a céntimos en cada periodo. En el último pago, el motor ajusta la amortización para cancelar el saldo que quede."
+      },
+      {
+        "question": "¿Basta con comparar el TIN de dos ofertas?",
+        "answer": "No. Comprueba también el importe recibido, el plazo, las comisiones, los gastos vinculados y las condiciones completas de cada oferta."
+      }
+    ],
+    "relatedCalculators": [
+      {
+        "label": "Calculadora de préstamo personal",
+        "url": "/calculadora-prestamo-personal/"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Banco de España: cuidado con el coste de la financiación (TIN y TAE)",
+        "url": "https://clientebancario.bde.es/pcb/es/blog/Cuidado_con_el_6edceea38293961.html"
+      },
+      {
+        "label": "Banco de España: simulador de la TAE de un préstamo personal",
+        "url": "https://clientebancario.bde.es/pcb/es/menu-horizontal/podemosayudarte/simuladores/calculo_tae_prestamo_personal.html"
+      },
+      {
+        "label": "Banco de España: comparadores y simuladores financieros",
+        "url": "https://clientebancario.bde.es/pcb/es/menu-horizontal/actualidadeducac/educacion-financiera/comparadores-y-simuladores/"
+      }
+    ]
+  },
+  {
     "slug": "salario-bruto-neto",
     "title": "Salario bruto y salario neto en España: qué cambia de una cifra a otra",
     "summary": "Aprende a leer una oferta de salario, distinguir las deducciones de una nómina y comparar pagas con un ejemplo reproducible.",

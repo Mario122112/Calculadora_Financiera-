@@ -153,8 +153,12 @@ async function main() {
     }
 
     const words = wordCount(visibleContent, data.faqs);
-    if (words < 1200 || words > 1500) {
-      throw new Error(`${filename}: el artículo tiene ${words} palabras; el rango es 1.200-1.500.`);
+    if (data.maxWords !== undefined && (!Number.isInteger(data.maxWords) || data.maxWords < 1200)) {
+      throw new Error(`${filename}: "maxWords" debe ser un entero igual o superior a 1.200.`);
+    }
+    const maximumWords = data.maxWords ?? 2000;
+    if (words < 1200 || words > maximumWords) {
+      throw new Error(`${filename}: el artículo tiene ${words} palabras; el rango es 1.200-${maximumWords}.`);
     }
 
     const headingMatches = [...visibleContent.matchAll(/^##\s+(.+)$/gm)];

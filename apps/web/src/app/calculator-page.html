@@ -149,16 +149,16 @@
 
     }
 
-    @if (!selectedCalculator() && recentGuides.length) {
+    @if (!selectedCalculator() && guides.length) {
     <section class="home-guides" aria-labelledby="guides-title">
       <div class="section-heading">
         <div>
           <p class="eyebrow">LECTURAS PRÁCTICAS</p>
-          <h2 id="guides-title">Guías recientes</h2>
+          <h2 id="guides-title">Guías</h2>
         </div>
       </div>
       <div class="home-guide-grid">
-        @for (guide of recentGuides; track guide.slug) {
+        @for (guide of guides; track guide.slug) {
         <a class="calculator-card home-guide-card" [canonicalLink]="'/guias/' + guide.slug + '/'">
           <span class="card-title">{{ guide.title }}</span>
           <span class="card-description">{{ guide.summary }}</span>
@@ -166,6 +166,7 @@
         </a>
         }
       </div>
+      <a class="home-guides-more" canonicalLink="/guias/">Ver todas las guías <span aria-hidden="true">→</span></a>
     </section>
 
     <section class="home-method" aria-labelledby="home-method-title">
@@ -408,7 +409,7 @@
           </div>
           <span class="field-hint">
             @if (mortgageData.amortizationSystem === 'french') {
-            Cuota mensual constante durante toda la hipoteca. Es el sistema más habitual.
+            Sistema francés: cuota mensual constante durante toda la hipoteca.
             } @else {
             Se amortiza el mismo capital cada mes: la primera cuota es la más alta y va bajando.
             }
@@ -1022,7 +1023,7 @@
           </div>
           <span class="field-hint">
             @if (personalLoanData.amortizationSystem === 'french') {
-            Cuota mensual constante durante todo el préstamo. Es el sistema más habitual.
+            Sistema francés: cuota mensual constante durante todo el préstamo.
             } @else {
             Se amortiza el mismo capital cada mes: la primera cuota es la más alta y va bajando.
             }

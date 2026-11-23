@@ -4,6 +4,7 @@ import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { CalculatorPage as App } from './calculator-page';
 import { routes } from './app.routes';
+import { GUIDE_SEO_DATA } from './generated-guide-seo';
 import {
   calculateCompoundInterest,
   calculateMortgage,
@@ -202,8 +203,17 @@ describe('App', () => {
         '/sobre-nosotros/',
         '/contacto/'
       ]);
-    expect(Array.from(element.querySelectorAll('.home-guides .home-guide-card')).map(link => link.getAttribute('href')))
-      .toEqual(['/guias/salario-bruto-neto/', '/guias/retencion-irpf-nomina-renta/']);
+    const guideLinks = Array.from(element.querySelectorAll('.home-guides .home-guide-card'));
+    const expectedGuidePaths = [...GUIDE_SEO_DATA]
+      .sort((first, second) =>
+        first.publishedAtIso.localeCompare(second.publishedAtIso) || first.slug.localeCompare(second.slug)
+      )
+      .map(guide => `/guias/${guide.slug}/`);
+    expect(guideLinks).toHaveLength(GUIDE_SEO_DATA.length);
+    expect(guideLinks.map(link => link.getAttribute('href'))).toEqual(expectedGuidePaths);
+    expect(element.querySelector('.home-guides h2')?.textContent).toBe('Guías');
+    expect(element.querySelector('.home-guides-more')?.getAttribute('href')).toBe('/guias/');
+    expect(element.querySelector('.home-guides-more')?.textContent).toContain('Ver todas las guías');
   });
 
   it('shows calculator-specific context and hides the home calculator grid on tool pages', async () => {
@@ -217,17 +227,51 @@ describe('App', () => {
     expect(element.querySelector('.calculator-updated')?.textContent).toContain('20 de noviembre de 2026');
     expect(element.querySelector('.calculator-sources a[href="https://clientebancario.bde.es/pcb/es/"]')).not.toBeNull();
     expect(element.querySelector('.calculator-intro a[href="/como-se-calcula/"]')).not.toBeNull();
-    expect(element.querySelectorAll('.calculator-related a')).toHaveLength(2);
+    expect(element.querySelectorAll('.calculator-related a')).toHaveLength(3);
   });
 
-  it('links the salary calculator to the two editorial guides', async () => {
+  it('links the salary calculator to the editorial guides', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/sueldo-neto', App);
     const element = harness.routeNativeElement as HTMLElement;
 
     expect(Array.from(element.querySelectorAll('[aria-labelledby="related-guides-title"] a'))
       .map(link => link.getAttribute('href')))
-      .toEqual(['/guias/salario-bruto-neto/', '/guias/retencion-irpf-nomina-renta/']);
+      .toEqual([
+        '/guias/salario-bruto-neto/',
+        '/guias/retencion-irpf-nomina-renta/',
+        '/guias/12-o-14-pagas-que-cambia-en-tu-sueldo/'
+      ]);
+  });
+
+  it('links the personal-loan calculator to its editorial guide', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/calculadora-prestamo-personal', App);
+    const element = harness.routeNativeElement as HTMLElement;
+
+    expect(Array.from(element.querySelectorAll('[aria-labelledby="related-guides-title"] a'))
+      .map(link => link.getAttribute('href')))
+      .toEqual(['/guias/tin-tae-comisiones-prestamo-personal/']);
+  });
+
+  it('links the severance calculator to its editorial guide', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/calculadora-finiquito-indemnizacion', App);
+    const element = harness.routeNativeElement as HTMLElement;
+
+    expect(Array.from(element.querySelectorAll('[aria-labelledby="related-guides-title"] a'))
+      .map(link => link.getAttribute('href')))
+      .toEqual(['/guias/que-incluye-un-finiquito-y-que-no/']);
+  });
+
+  it('links the mortgage calculator to its editorial guide', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/calculadora-hipoteca', App);
+    const element = harness.routeNativeElement as HTMLElement;
+
+    expect(Array.from(element.querySelectorAll('[aria-labelledby="related-guides-title"] a'))
+      .map(link => link.getAttribute('href')))
+      .toEqual(['/guias/hipoteca-sistema-frances-amortizacion-constante/']);
   });
 
   it('should keep the salary, mortgage, and pension forms valid with their default values', async () => {

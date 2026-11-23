@@ -88,14 +88,15 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
     ],
     relatedGuides: [
       { label: 'Salario bruto y salario neto', path: '/guias/salario-bruto-neto/' },
-      { label: 'Retención de IRPF y declaración de la renta', path: '/guias/retencion-irpf-nomina-renta/' }
+      { label: 'Retención de IRPF y declaración de la renta', path: '/guias/retencion-irpf-nomina-renta/' },
+      { label: '12 o 14 pagas: qué cambia de verdad en tu sueldo', path: '/guias/12-o-14-pagas-que-cambia-en-tu-sueldo/' }
     ]
   },
   mortgage: {
     title: 'Calculadora de hipoteca',
     summary: 'Calcula la cuota mensual estimada y el coste total de una hipoteca con sistema de amortización francés o español.',
     detail: 'Indica el precio de la vivienda, la cantidad en euros que aportas como entrada, el interés nominal anual, el plazo y el sistema de amortización. La entrada se resta del precio para estimar el capital financiado.',
-    interpretation: 'En el sistema francés, el más habitual, la cuota es constante: al principio pesan más los intereses y con el tiempo más el capital. En el español se amortiza el mismo capital cada mes y la cuota disminuye. El total pagado permite ver el coste de intereses estimado. El gráfico y la tabla de amortización muestran cuánto capital e intereses pagas cada año.',
+    interpretation: 'En el sistema francés la cuota es constante: al principio pesan más los intereses y con el tiempo más el capital. En el español se amortiza el mismo capital cada mes y la cuota disminuye. El total pagado permite ver el coste de intereses estimado. El gráfico y la tabla de amortización muestran cuánto capital e intereses pagas cada año.',
     limitations: 'Supone un tipo de interés constante: en una hipoteca variable la cuota cambiaría con el Euríbor. No incluye comisiones, seguros, impuestos, tasación ni gastos de compraventa. Una oferta real puede usar tipos, condiciones o calendarios diferentes.',
     updatedAt: CALCULATOR_LAST_UPDATED,
     sources: [
@@ -104,6 +105,9 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
     related: [
       { label: 'Calculadora de préstamo personal', path: '/calculadora-prestamo-personal/' },
       { label: 'Calculadora de interés compuesto', path: '/calculadora-interes-compuesto/' }
+    ],
+    relatedGuides: [
+      { label: 'Hipoteca: sistema francés o amortización constante', path: '/guias/hipoteca-sistema-frances-amortizacion-constante/' }
     ]
   },
   pension: {
@@ -150,13 +154,16 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
     related: [
       { label: 'Calculadora de sueldo neto', path: '/sueldo-neto/' },
       { label: 'Calculadora de pensión', path: '/calculadora-pension/' }
+    ],
+    relatedGuides: [
+      { label: 'Qué incluye un finiquito y qué no', path: '/guias/que-incluye-un-finiquito-y-que-no/' }
     ]
   },
   'personal-loan': {
     title: 'Calculadora de préstamo personal',
     summary: 'Estima la cuota, los intereses y el coste total de un préstamo personal con comisión y gastos desglosados, con sistema francés o español.',
     detail: 'Indica el importe, el TIN anual, el plazo, el sistema de amortización y los posibles costes iniciales o periódicos. La comisión se calcula sobre el importe solicitado y se paga aparte.',
-    interpretation: 'En el sistema francés, el más habitual, la cuota es constante: al principio pesan más los intereses y con el tiempo más el capital. En el español se amortiza el mismo capital cada mes y las cuotas van bajando. En ambos casos el último pago se ajusta al céntimo para cancelar el saldo.',
+    interpretation: 'En el sistema francés la cuota es constante: al principio pesan más los intereses y con el tiempo más el capital. En el español se amortiza el mismo capital cada mes y las cuotas van bajando. En ambos casos el último pago se ajusta al céntimo para cancelar el saldo.',
     limitations: 'Es una simulación matemática, no una oferta bancaria ni la TAE real. No convierte TAE a TIN ni incorpora costes automáticamente al capital financiado.',
     updatedAt: CALCULATOR_LAST_UPDATED,
     sources: [
@@ -165,6 +172,9 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
     related: [
       { label: 'Calculadora de hipoteca', path: '/calculadora-hipoteca/' },
       { label: 'Calculadora de interés compuesto', path: '/calculadora-interes-compuesto/' }
+    ],
+    relatedGuides: [
+      { label: 'TIN, comisiones y TAE: cómo comparar un préstamo personal', path: '/guias/tin-tae-comisiones-prestamo-personal/' }
     ]
   }
 };
@@ -176,7 +186,10 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
   styleUrl: './calculator-page.scss'
 })
 export class CalculatorPage {
-  readonly recentGuides = GUIDE_SEO_DATA.slice(0, 2);
+  readonly guides = [...GUIDE_SEO_DATA]
+    .sort((first, second) =>
+      first.publishedAtIso.localeCompare(second.publishedAtIso) || first.slug.localeCompare(second.slug)
+    );
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly meta = inject(Meta);
