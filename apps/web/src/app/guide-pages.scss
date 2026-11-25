@@ -139,10 +139,10 @@
 .guide-body ul,
 .guide-body ol { padding-left: 24px; }
 .guide-body li { margin: 7px 0; }
-.guide-body table { width: 100%; border-collapse: collapse; }
-.guide-body th,
-.guide-body td { padding: 9px 10px; border-bottom: 1px solid var(--guide-line); text-align: left; }
-.guide-body blockquote { margin: 22px 0; padding: 8px 18px; border-left: 3px solid var(--guide-green); background: #fff; }
+.guide-body ::ng-deep table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+.guide-body ::ng-deep th,
+.guide-body ::ng-deep td { padding: 9px 10px; border-bottom: 1px solid var(--guide-line); text-align: left; }
+.guide-body ::ng-deep blockquote { margin: 22px 0; padding: 8px 18px; border-left: 3px solid var(--guide-green); background: #fff; }
 
 .guide-faq details { padding: 13px 0; border-top: 1px solid var(--guide-line); }
 .guide-faq summary { color: var(--guide-ink); font-weight: 700; cursor: pointer; }

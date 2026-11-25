@@ -17,6 +17,92 @@ export interface GuideArticle {
 
 export const GUIDE_ARTICLES: readonly GuideArticle[] = [
   {
+    "slug": "cuanto-crece-ahorro-aportaciones-mensuales",
+    "title": "Cuánto crece tu ahorro con aportaciones mensuales: tabla a 10, 20 y 30 años",
+    "summary": "Compara 27 escenarios hipotéticos de ahorro mensual y descubre cómo influyen el tiempo, las aportaciones y la rentabilidad.",
+    "author": "Mario Galindo",
+    "publishedAt": "25 de noviembre de 2026",
+    "updatedAt": "25 de noviembre de 2026",
+    "publishedAtIso": "2026-11-25",
+    "updatedAtIso": "2026-11-25",
+    "leadHtml": "<p>Si partes de <strong>0 €</strong> y aportas <strong>200 € al final de cada mes durante 20 años</strong>, con una rentabilidad hipotética constante del <strong>4 % nominal anual</strong>, el motor calcula <strong>48.000,00 € aportados</strong>, <strong>25.354,93 € de intereses teóricos</strong> y <strong>73.354,93 € de capital final</strong>. No es una previsión: son los resultados de aplicar esa hipótesis sin inflación, impuestos ni comisiones.</p>\n<blockquote>\n<p><strong>Aviso:</strong> este contenido es informativo y no constituye asesoramiento financiero.</p>\n</blockquote>\n",
+    "sections": [
+      {
+        "id": "tabla-central-27-escenarios-de-ahorro",
+        "title": "Tabla central: 27 escenarios de ahorro",
+        "html": "<p>Cada fila es una simulación independiente. La rentabilidad indicada es siempre una <strong>hipótesis nominal anual constante</strong>, no un rendimiento observado ni garantizado. El total aportado incluye el capital inicial, que aquí es cero, y todas las aportaciones mensuales. Los intereses son la diferencia entre el capital final y ese total.</p>\n<table>\n<thead>\n<tr>\n<th align=\"right\">Aportación mensual</th>\n<th align=\"right\">Años</th>\n<th align=\"right\">Rentabilidad hipotética nominal anual</th>\n<th align=\"right\">Total aportado</th>\n<th align=\"right\">Intereses teóricos</th>\n<th align=\"right\">Capital final</th>\n</tr>\n</thead>\n<tbody><tr>\n<td align=\"right\">100 €</td>\n<td align=\"right\">10</td>\n<td align=\"right\">2 %</td>\n<td align=\"right\">12.000,00 €</td>\n<td align=\"right\">1.271,97 €</td>\n<td align=\"right\">13.271,97 €</td>\n</tr>\n<tr>\n<td align=\"right\">100 €</td>\n<td align=\"right\">10</td>\n<td align=\"right\">4 %</td>\n<td align=\"right\">12.000,00 €</td>\n<td align=\"right\">2.724,98 €</td>\n<td align=\"right\">14.724,98 €</td>\n</tr>\n<tr>\n<td align=\"right\">100 €</td>\n<td align=\"right\">10</td>\n<td align=\"right\">6 %</td>\n<td align=\"right\">12.000,00 €</td>\n<td align=\"right\">4.387,93 €</td>\n<td align=\"right\">16.387,93 €</td>\n</tr>\n<tr>\n<td align=\"right\">100 €</td>\n<td align=\"right\">20</td>\n<td align=\"right\">2 %</td>\n<td align=\"right\">24.000,00 €</td>\n<td align=\"right\">5.479,68 €</td>\n<td align=\"right\">29.479,68 €</td>\n</tr>\n<tr>\n<td align=\"right\">100 €</td>\n<td align=\"right\">20</td>\n<td align=\"right\">4 %</td>\n<td align=\"right\">24.000,00 €</td>\n<td align=\"right\">12.677,46 €</td>\n<td align=\"right\">36.677,46 €</td>\n</tr>\n<tr>\n<td align=\"right\">100 €</td>\n<td align=\"right\">20</td>\n<td align=\"right\">6 %</td>\n<td align=\"right\">24.000,00 €</td>\n<td align=\"right\">22.204,09 €</td>\n<td align=\"right\">46.204,09 €</td>\n</tr>\n<tr>\n<td align=\"right\">100 €</td>\n<td align=\"right\">30</td>\n<td align=\"right\">2 %</td>\n<td align=\"right\">36.000,00 €</td>\n<td align=\"right\">13.272,54 €</td>\n<td align=\"right\">49.272,54 €</td>\n</tr>\n<tr>\n<td align=\"right\">100 €</td>\n<td align=\"right\">30</td>\n<td align=\"right\">4 %</td>\n<td align=\"right\">36.000,00 €</td>\n<td align=\"right\">33.404,94 €</td>\n<td align=\"right\">69.404,94 €</td>\n</tr>\n<tr>\n<td align=\"right\">100 €</td>\n<td align=\"right\">30</td>\n<td align=\"right\">6 %</td>\n<td align=\"right\">36.000,00 €</td>\n<td align=\"right\">64.451,50 €</td>\n<td align=\"right\">100.451,50 €</td>\n</tr>\n<tr>\n<td align=\"right\">200 €</td>\n<td align=\"right\">10</td>\n<td align=\"right\">2 %</td>\n<td align=\"right\">24.000,00 €</td>\n<td align=\"right\">2.543,93 €</td>\n<td align=\"right\">26.543,93 €</td>\n</tr>\n<tr>\n<td align=\"right\">200 €</td>\n<td align=\"right\">10</td>\n<td align=\"right\">4 %</td>\n<td align=\"right\">24.000,00 €</td>\n<td align=\"right\">5.449,96 €</td>\n<td align=\"right\">29.449,96 €</td>\n</tr>\n<tr>\n<td align=\"right\">200 €</td>\n<td align=\"right\">10</td>\n<td align=\"right\">6 %</td>\n<td align=\"right\">24.000,00 €</td>\n<td align=\"right\">8.775,87 €</td>\n<td align=\"right\">32.775,87 €</td>\n</tr>\n<tr>\n<td align=\"right\">200 €</td>\n<td align=\"right\">20</td>\n<td align=\"right\">2 %</td>\n<td align=\"right\">48.000,00 €</td>\n<td align=\"right\">10.959,37 €</td>\n<td align=\"right\">58.959,37 €</td>\n</tr>\n<tr>\n<td align=\"right\">200 €</td>\n<td align=\"right\">20</td>\n<td align=\"right\">4 %</td>\n<td align=\"right\">48.000,00 €</td>\n<td align=\"right\">25.354,93 €</td>\n<td align=\"right\">73.354,93 €</td>\n</tr>\n<tr>\n<td align=\"right\">200 €</td>\n<td align=\"right\">20</td>\n<td align=\"right\">6 %</td>\n<td align=\"right\">48.000,00 €</td>\n<td align=\"right\">44.408,18 €</td>\n<td align=\"right\">92.408,18 €</td>\n</tr>\n<tr>\n<td align=\"right\">200 €</td>\n<td align=\"right\">30</td>\n<td align=\"right\">2 %</td>\n<td align=\"right\">72.000,00 €</td>\n<td align=\"right\">26.545,08 €</td>\n<td align=\"right\">98.545,08 €</td>\n</tr>\n<tr>\n<td align=\"right\">200 €</td>\n<td align=\"right\">30</td>\n<td align=\"right\">4 %</td>\n<td align=\"right\">72.000,00 €</td>\n<td align=\"right\">66.809,88 €</td>\n<td align=\"right\">138.809,88 €</td>\n</tr>\n<tr>\n<td align=\"right\">200 €</td>\n<td align=\"right\">30</td>\n<td align=\"right\">6 %</td>\n<td align=\"right\">72.000,00 €</td>\n<td align=\"right\">128.903,01 €</td>\n<td align=\"right\">200.903,01 €</td>\n</tr>\n<tr>\n<td align=\"right\">300 €</td>\n<td align=\"right\">10</td>\n<td align=\"right\">2 %</td>\n<td align=\"right\">36.000,00 €</td>\n<td align=\"right\">3.815,90 €</td>\n<td align=\"right\">39.815,90 €</td>\n</tr>\n<tr>\n<td align=\"right\">300 €</td>\n<td align=\"right\">10</td>\n<td align=\"right\">4 %</td>\n<td align=\"right\">36.000,00 €</td>\n<td align=\"right\">8.174,94 €</td>\n<td align=\"right\">44.174,94 €</td>\n</tr>\n<tr>\n<td align=\"right\">300 €</td>\n<td align=\"right\">10</td>\n<td align=\"right\">6 %</td>\n<td align=\"right\">36.000,00 €</td>\n<td align=\"right\">13.163,80 €</td>\n<td align=\"right\">49.163,80 €</td>\n</tr>\n<tr>\n<td align=\"right\">300 €</td>\n<td align=\"right\">20</td>\n<td align=\"right\">2 %</td>\n<td align=\"right\">72.000,00 €</td>\n<td align=\"right\">16.439,05 €</td>\n<td align=\"right\">88.439,05 €</td>\n</tr>\n<tr>\n<td align=\"right\">300 €</td>\n<td align=\"right\">20</td>\n<td align=\"right\">4 %</td>\n<td align=\"right\">72.000,00 €</td>\n<td align=\"right\">38.032,39 €</td>\n<td align=\"right\">110.032,39 €</td>\n</tr>\n<tr>\n<td align=\"right\">300 €</td>\n<td align=\"right\">20</td>\n<td align=\"right\">6 %</td>\n<td align=\"right\">72.000,00 €</td>\n<td align=\"right\">66.612,27 €</td>\n<td align=\"right\">138.612,27 €</td>\n</tr>\n<tr>\n<td align=\"right\">300 €</td>\n<td align=\"right\">30</td>\n<td align=\"right\">2 %</td>\n<td align=\"right\">108.000,00 €</td>\n<td align=\"right\">39.817,62 €</td>\n<td align=\"right\">147.817,62 €</td>\n</tr>\n<tr>\n<td align=\"right\">300 €</td>\n<td align=\"right\">30</td>\n<td align=\"right\">4 %</td>\n<td align=\"right\">108.000,00 €</td>\n<td align=\"right\">100.214,82 €</td>\n<td align=\"right\">208.214,82 €</td>\n</tr>\n<tr>\n<td align=\"right\">300 €</td>\n<td align=\"right\">30</td>\n<td align=\"right\">6 %</td>\n<td align=\"right\">108.000,00 €</td>\n<td align=\"right\">193.354,51 €</td>\n<td align=\"right\">301.354,51 €</td>\n</tr>\n</tbody></table>\n<p>Para reproducir cualquier fila en la <a href=\"/calculadora-interes-compuesto/\">calculadora de interés compuesto</a>, introduce <strong>capital inicial cero</strong>, la aportación mensual de la fila, su rentabilidad nominal anual y el plazo en años. La herramienta supone que la aportación se realiza <strong>al final de cada mes</strong>. Ejecuta el cálculo y consulta el total aportado, los intereses y el capital final.</p>\n<p>El motor aplica cada mes la rentabilidad nominal anual dividida entre doce al saldo anterior y suma después la aportación. No redondea el saldo mes a mes; los importes de la tabla se muestran redondeados a céntimos. Por ese redondeo de presentación, sumar las dos primeras cantidades visibles puede diferir en un céntimo del capital final visible.</p>\n"
+      },
+      {
+        "id": "como-leer-los-resultados",
+        "title": "Cómo leer los resultados",
+        "html": "<p>Empieza por las columnas de entrada: cantidad mensual, años y rentabilidad hipotética. Después mira por separado el dinero aportado y los intereses teóricos. El capital final reúne ambos; no representa solo la ganancia. Las aportaciones pertenecen al plan de ahorro, mientras que los intereses dependen de la hipótesis de rentabilidad y del tiempo durante el que cada saldo permanece acumulado.</p>\n<p>Para aislar el efecto del plazo, compara filas con igual aportación y tipo hipotético. En el ejemplo inicial de 200 € mensuales y 4 %, el plazo de 10 años da <strong>29.449,96 €</strong> finales, frente a <strong>73.354,93 €</strong> a 20 años y <strong>138.809,88 €</strong> a 30 años. No es una comparación de intereses por sí solos: al prolongar el periodo también se realizan más aportaciones.</p>\n<p>Para observar el efecto de la hipótesis de rentabilidad, mantén iguales la aportación y el plazo. Con 200 € mensuales durante 20 años, el total aportado permanece en <strong>48.000,00 €</strong>. El capital final pasa de <strong>58.959,37 €</strong> con la hipótesis del 2 % a <strong>73.354,93 €</strong> con la del 4 % y <strong>92.408,18 €</strong> con la del 6 %. Estas diferencias ilustran la sensibilidad del modelo; no indican qué rentabilidad se conseguirá.</p>\n<p>Por último, compara cantidades mensuales para un mismo plazo y tipo. Con capital inicial cero y sin costes, aumentar la aportación multiplica tanto lo aportado como el saldo calculado. El ejercicio ayuda a decidir qué escenarios explorar, pero no dice si una cantidad concreta es sostenible para una economía familiar. Conviene mantener un presupuesto que permita atender también gastos cotidianos y necesidades imprevistas.</p>\n"
+      },
+      {
+        "id": "tiempo-frente-a-cantidad",
+        "title": "Tiempo frente a cantidad",
+        "html": "<p>Supongamos que dos personas quieren comparar su saldo en una misma fecha futura. La primera comienza <strong>10 años antes</strong> y aporta <strong>100 € al mes durante 30 años</strong>; la segunda empieza más tarde y aporta <strong>200 € al mes durante 20 años</strong>. Ambas parten de cero y usan la misma hipótesis constante del <strong>6 % nominal anual</strong>.</p>\n<p>La primera aporta <strong>36.000,00 €</strong>, acumula <strong>64.451,50 € de intereses teóricos</strong> y termina con <strong>100.451,50 €</strong>. La segunda aporta <strong>48.000,00 €</strong>, acumula <strong>44.408,18 € de intereses teóricos</strong> y termina con <strong>92.408,18 €</strong>. Las cifras proceden de las filas correspondientes de la tabla, con aportaciones al final de cada mes.</p>\n<p>En este caso concreto, empezar antes produce un capital final mayor pese a aportar menos dinero: las primeras aportaciones y sus intereses permanecen más tiempo en el cálculo. No significa que una aportación menor gane siempre. Con otra rentabilidad hipotética, otro plazo o una secuencia real de rendimientos diferente, la comparación puede cambiar. Tampoco se valora aquí el esfuerzo de ahorrar en momentos distintos.</p>\n<p>Si pruebas la comparación, conserva la misma fecha final y cambia solo los parámetros que quieres estudiar. Una comparación útil distingue el efecto de aportar más meses del efecto de aportar más cada mes. Si además cambias el tipo, resulta más difícil saber qué hipótesis explica cada diferencia.</p>\n"
+      },
+      {
+        "id": "que-no-modela-esta-calculadora",
+        "title": "Qué no modela esta calculadora",
+        "html": "<p><strong>Inflación:</strong> los importes son nominales. Una cantidad futura no necesariamente tendrá el mismo poder adquisitivo que hoy. El motor no ajusta los resultados por cambios en los precios, por lo que la tabla no muestra el valor real del ahorro.</p>\n<p><strong>Impuestos y comisiones:</strong> no se restan del saldo ni de los intereses. Un resultado calculado sin esos conceptos no equivale al dinero neto que una persona podría disponer en un producto real. Las condiciones y costes aplicables deben revisarse por separado; esta guía no estima su cuantía.</p>\n<p><strong>Rentabilidad constante:</strong> el porcentaje elegido se mantiene idéntico durante todo el periodo. En la práctica, la rentabilidad puede cambiar y algunos productos pueden implicar pérdidas. Una cifra final calculada bajo una hipótesis fija no describe todos los caminos posibles ni garantiza recuperar lo aportado.</p>\n<p><strong>Tipo nominal frente a efectivo:</strong> el motor divide la rentabilidad nominal anual entre doce y capitaliza mensualmente. Por tanto, una hipótesis nominal anual no equivale a una rentabilidad efectiva anual del mismo porcentaje: la capitalización mensual hace que ambas medidas sean distintas. Al comparar información de productos, comprueba qué medida se presenta y qué periodo cubre.</p>\n<p>La herramienta tampoco cambia automáticamente la aportación con el tiempo ni modela retiradas. Para explorar otro supuesto, introduce sus parámetros como un nuevo escenario; no interpretes una simulación aislada como una descripción completa de tu situación.</p>\n"
+      },
+      {
+        "id": "lista-de-comprobacion-antes-de-comparar",
+        "title": "Lista de comprobación antes de comparar",
+        "html": "<ul>\n<li><strong>Horizonte y disponibilidad:</strong> revisa durante cuánto tiempo puedes mantener el ahorro y cuándo podrías necesitarlo. Comprueba las condiciones de acceso y retirada antes de comparar saldos futuros.</li>\n<li><strong>Riesgo y garantías:</strong> identifica si el capital o la rentabilidad están sujetos a variaciones y qué garantías, si las hay, describe la documentación. Una cifra hipotética del simulador no sustituye esas condiciones.</li>\n<li><strong>Rentabilidad y periodicidad:</strong> distingue tipos nominales y efectivos, revisa cómo se calculan y si el rendimiento puede cambiar. Compara periodos y supuestos equivalentes.</li>\n<li><strong>Costes y tratamiento fiscal:</strong> identifica comisiones, otros gastos y el tratamiento aplicable a tu caso antes de estimar el resultado neto. La tabla no descuenta ninguno de ellos.</li>\n<li><strong>Condiciones y capacidad de aportación:</strong> comprueba mínimos, límites, cambios y posibles costes de retirada, y considera si podrás mantener la cantidad mensual sin comprometer otros gastos.</li>\n</ul>\n<p>La tabla sirve como punto de partida para formular preguntas, no como una clasificación de productos. Si también estás organizando tus ingresos o deudas, las guías de <a href=\"/guias/salario-bruto-neto/\">salario bruto y neto</a> y de <a href=\"/guias/tin-tae-comisiones-prestamo-personal/\">comparación de préstamos personales</a> ayudan a entender esos cálculos por separado. Sus resultados y supuestos no se incorporan automáticamente a esta simulación de ahorro.</p>\n"
+      }
+    ],
+    "headings": [
+      {
+        "id": "tabla-central-27-escenarios-de-ahorro",
+        "title": "Tabla central: 27 escenarios de ahorro"
+      },
+      {
+        "id": "como-leer-los-resultados",
+        "title": "Cómo leer los resultados"
+      },
+      {
+        "id": "tiempo-frente-a-cantidad",
+        "title": "Tiempo frente a cantidad"
+      },
+      {
+        "id": "que-no-modela-esta-calculadora",
+        "title": "Qué no modela esta calculadora"
+      },
+      {
+        "id": "lista-de-comprobacion-antes-de-comparar",
+        "title": "Lista de comprobación antes de comparar"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "¿La rentabilidad de la tabla está garantizada?",
+        "answer": "No. Cada porcentaje es una hipótesis constante para ilustrar el cálculo, no una previsión ni una promesa de resultado."
+      },
+      {
+        "question": "¿Puedo introducir un capital inicial?",
+        "answer": "Sí. La calculadora permite introducirlo, aunque todos los escenarios de esta guía parten de cero."
+      },
+      {
+        "question": "¿Se tiene en cuenta la inflación?",
+        "answer": "No. Los importes son nominales y no muestran cuánto poder adquisitivo tendrán en el futuro."
+      }
+    ],
+    "relatedCalculators": [
+      {
+        "label": "Calculadora de interés compuesto",
+        "url": "/calculadora-interes-compuesto/"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Finanzas para Todos: educación financiera",
+        "url": "https://www.finanzasparatodos.es/"
+      }
+    ]
+  },
+  {
     "slug": "hipoteca-sistema-frances-amortizacion-constante",
     "title": "Hipoteca: sistema francés o amortización constante, cuánto cambia la cuota y el coste",
     "summary": "Compara cuota inicial, pago medio, intereses y capital pendiente en dos sistemas con el mismo préstamo.",

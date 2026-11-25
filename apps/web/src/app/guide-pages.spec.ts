@@ -2,6 +2,7 @@ import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { TestBed } from '@angular/core/testing';
 import { Meta, Title } from '@angular/platform-browser';
+import { calculateCompoundInterest } from '@calculadora-financiera/calculation-engine';
 import { routes } from './app.routes';
 
 describe('GuidePages', () => {
@@ -20,13 +21,51 @@ describe('GuidePages', () => {
     expect(element.querySelector('.topbar .topbar-meta')?.textContent).toContain('Calculadoras para España');
     expect(element.querySelectorAll('.topbar .topbar-nav a')).toHaveLength(7);
     expect(element.querySelector('h1')?.textContent).toContain('Guías de finanzas personales');
-    expect(element.querySelectorAll('.guide-card')).toHaveLength(6);
+    expect(element.querySelectorAll('.guide-card')).toHaveLength(7);
+    expect(element.querySelector('a[href="/guias/cuanto-crece-ahorro-aportaciones-mensuales/"]')).not.toBeNull();
     expect(element.querySelector('a[href="/guias/salario-bruto-neto/"]')).not.toBeNull();
     expect(element.querySelector('a[href="/guias/retencion-irpf-nomina-renta/"]')).not.toBeNull();
     expect(element.querySelector('a[href="/guias/tin-tae-comisiones-prestamo-personal/"]')).not.toBeNull();
     expect(element.querySelector('a[href="/guias/12-o-14-pagas-que-cambia-en-tu-sueldo/"]')).not.toBeNull();
     expect(element.querySelector('a[href="/guias/que-incluye-un-finiquito-y-que-no/"]')).not.toBeNull();
     expect(element.querySelector('a[href="/guias/hipoteca-sistema-frances-amortizacion-constante/"]')).not.toBeNull();
+  });
+
+  it('renders all savings scenarios with the engine results', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/guias/cuanto-crece-ahorro-aportaciones-mensuales');
+    const element = harness.routeNativeElement as HTMLElement;
+    const rows = element.querySelectorAll('.guide-body table tbody tr');
+    const normalize = (value: string | null) => value?.replace(/\s+/g, ' ').trim();
+
+    expect(rows).toHaveLength(27);
+    let index = 0;
+    for (const contribution of [100, 200, 300]) {
+      for (const years of [10, 20, 30]) {
+        for (const rate of [2, 4, 6]) {
+          const result = calculateCompoundInterest({
+            initialCapital: 0,
+            monthlyContribution: contribution,
+            annualNominalRate: rate,
+            termYears: years
+          });
+          const cells = [...rows[index++].querySelectorAll('td')].map(cell => normalize(cell.textContent));
+          expect(cells.slice(0, 3)).toEqual([`${contribution} €`, `${years}`, `${rate} %`]);
+          const amounts = cells.slice(3).map(cell => {
+            expect(cell).toMatch(/^\d{1,3}(?:\.\d{3})*,\d{2} €$/);
+            return Number(cell!.replace(/\./g, '').replace(',', '.').replace(' €', ''));
+          });
+          expect(amounts).toEqual([
+            Number(result.totalContributions.toFixed(2)),
+            Number(result.interestEarned.toFixed(2)),
+            Number(result.futureValue.toFixed(2))
+          ]);
+        }
+      }
+    }
+    expect(element.querySelector('.guide-byline')?.textContent).toContain('25 de noviembre de 2026');
+    expect(element.querySelectorAll('.guide-body blockquote')).toHaveLength(1);
+    expect(element.querySelector('.guide-links a[href="/calculadora-interes-compuesto/"]')).not.toBeNull();
   });
 
   it('renders article metadata, contents, FAQs, calculators, and official sources', async () => {

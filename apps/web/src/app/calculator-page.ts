@@ -139,6 +139,9 @@ const calculatorContent: Record<Calculator, CalculatorContent> = {
     related: [
       { label: 'Calculadora de pensión', path: '/calculadora-pension/' },
       { label: 'Calculadora de préstamo personal', path: '/calculadora-prestamo-personal/' }
+    ],
+    relatedGuides: [
+      { label: 'Cuánto crece tu ahorro con aportaciones mensuales', path: '/guias/cuanto-crece-ahorro-aportaciones-mensuales/' }
     ]
   },
   severance: {

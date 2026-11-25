@@ -11,6 +11,29 @@ export interface GuideSeoData {
 
 export const GUIDE_SEO_DATA: readonly GuideSeoData[] = [
   {
+    "slug": "cuanto-crece-ahorro-aportaciones-mensuales",
+    "title": "Cuánto crece tu ahorro con aportaciones mensuales: tabla a 10, 20 y 30 años",
+    "summary": "Compara 27 escenarios hipotéticos de ahorro mensual y descubre cómo influyen el tiempo, las aportaciones y la rentabilidad.",
+    "author": "Mario Galindo",
+    "updatedAt": "25 de noviembre de 2026",
+    "publishedAtIso": "2026-11-25",
+    "updatedAtIso": "2026-11-25",
+    "faqs": [
+      {
+        "question": "¿La rentabilidad de la tabla está garantizada?",
+        "answer": "No. Cada porcentaje es una hipótesis constante para ilustrar el cálculo, no una previsión ni una promesa de resultado."
+      },
+      {
+        "question": "¿Puedo introducir un capital inicial?",
+        "answer": "Sí. La calculadora permite introducirlo, aunque todos los escenarios de esta guía parten de cero."
+      },
+      {
+        "question": "¿Se tiene en cuenta la inflación?",
+        "answer": "No. Los importes son nominales y no muestran cuánto poder adquisitivo tendrán en el futuro."
+      }
+    ]
+  },
+  {
     "slug": "hipoteca-sistema-frances-amortizacion-constante",
     "title": "Hipoteca: sistema francés o amortización constante, cuánto cambia la cuota y el coste",
     "summary": "Compara cuota inicial, pago medio, intereses y capital pendiente en dos sistemas con el mismo préstamo.",
